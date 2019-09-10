@@ -1,0 +1,6 @@
+{
+    "MsBuild": {
+        "UseLegacySdkResolver": true,
+        "msbuildextensionspath": "/opt/dotnet/sdk/2.2.108/"
+    }
+}
