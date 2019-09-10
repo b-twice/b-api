@@ -24,9 +24,15 @@ namespace Budget.API
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
+            Environment = env;
+            if (env.IsDevelopment())
+            {
+                builder.AddUserSecrets<Startup>();
+            }
             Configuration = builder.Build();
 
-            Environment = env;
+
+
             
         }
         public IConfigurationRoot Configuration { get; set; }
@@ -43,6 +49,8 @@ namespace Budget.API
             });
 
 
+            var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
+            services.AddScoped(sp => darkSky);
             services.AddScoped<BookRepository>();
             services.AddScoped<LookupRepository>();
 
@@ -95,6 +103,7 @@ namespace Budget.API
                         .AddDebug();
 
             }
+
 
             app.UseCors(builder =>
                 builder.WithOrigins(Configuration["clients:bgeo"], Configuration["clients:budget"], Configuration["clients:groceries"], Configuration["clients:me"])
