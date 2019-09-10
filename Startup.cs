@@ -25,7 +25,7 @@ namespace Budget.API
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
             Environment = env;
-            if (env.IsDevelopment())
+            if (env.EnvironmentName != "prod")
             {
                 builder.AddUserSecrets<Startup>();
             }
@@ -49,8 +49,8 @@ namespace Budget.API
             });
 
 
-            var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
-            services.AddScoped(sp => darkSky);
+            // var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
+            // services.AddScoped(sp => darkSky);
             services.AddScoped<BookRepository>();
             services.AddScoped<LookupRepository>();
 

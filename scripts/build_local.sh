@@ -1,4 +1,4 @@
 #!/bin/bash
 set -x #echo on
-./sync_org.sh
+./scripts/sync_org.sh
 TERM=xterm dotnet build
