@@ -22,10 +22,9 @@ namespace Budget.API
 
         [HttpGet("Forecast")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public async Task<ActionResult<DarkSkyResponse>> GetForecast() 
+        public async Task<ActionResult<DarkSkyResponse>> GetForecast(int x, int y) 
         {
-            return await _darkSkyService.GetForecast(42.915, -78.741);
-
+            return await _darkSkyService.GetForecast(x, y);
         }
 
    }
