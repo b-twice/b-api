@@ -17,7 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '2.2.108'
-    - run: echo '{"Weather":{"ServiceApiKey":"${{ secrets.WEATHER_SERVICE_API_KEY}}"}}' > appsettings.Production.json
+    - name: Building Production Appsettings File
+      run: echo '{"Weather":{"ServiceApiKey":"${{ secrets.WEATHER_SERVICE_API_KEY}}"}}' > appsettings.Production.json
     - run: dotnet build
     - run: dotnet publish -c Release
     - name: Deploy with rsync
@@ -29,5 +30,5 @@ jobs:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} 
         SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
       with: 
-        args: $GITHUB_WORKSPACE/bin/Release/netcoreapp2.2/publish/ jenkins@$HOST_NAME:/var/www/budget-api/
+        args: $GITHUB_WORKSPACE/bin/Release/netcoreapp2.2/publish/ jenkins@$HOST_NAME:/var/www/budget-api/ --exclude /resources
 
