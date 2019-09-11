@@ -3,6 +3,7 @@ using DarkSky.Models;
 using DarkSky.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Budget.API 
 {
@@ -22,9 +23,11 @@ namespace Budget.API
 
         [HttpGet("Forecast")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public async Task<ActionResult<DarkSkyResponse>> GetForecast(int x, int y) 
+        public async Task<ActionResult<DarkSkyResponse>> GetForecast([FromQuery] double latitude, [FromQuery] double longitude) 
         {
-            return await _darkSkyService.GetForecast(x, y);
+            var optionalParameters= new DarkSkyService.OptionalParameters();
+            optionalParameters.DataBlocksToExclude = new List<ExclusionBlock>(){ExclusionBlock.Flags, ExclusionBlock.Alerts, ExclusionBlock.Hourly, ExclusionBlock.Minutely};
+            return await _darkSkyService.GetForecast(latitude, longitude, optionalParameters );
         }
 
    }
