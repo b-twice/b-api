@@ -50,7 +50,7 @@ namespace Budget.API
 
 
             var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
-            // services.AddScoped(sp => darkSky);
+            services.AddScoped(sp => darkSky);
             services.AddScoped<BookRepository>();
             services.AddScoped<LookupRepository>();
 
