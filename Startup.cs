@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Budget.API.Entities;
 using Budget.API.Database;
+using Geocoding.Microsoft;
 
 namespace Budget.API
 {
@@ -51,6 +52,9 @@ namespace Budget.API
 
             var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
             services.AddScoped(sp => darkSky);
+
+            var geocoder = new BingMapsGeocoder(Configuration["Maps:ServiceApiKey"]);
+            services.AddScoped(sp => geocoder);
             services.AddScoped<BookRepository>();
             services.AddScoped<LookupRepository>();
 

@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: '2.2.108'
     - name: Building Production Appsettings File
-      run: echo '{"Weather":{"ServiceApiKey":"${{ secrets.WEATHER_SERVICE_API_KEY}}"}}' > appsettings.Production.json
+      run: echo '{"Weather":{"ServiceApiKey":"${{ secrets.WEATHER_SERVICE_API_KEY}}"}, "Maps":{"ServiceApiKey":"${{ secrets.MAP_SERVICE_API_KEY }}"}}' > appsettings.Production.json
     - run: dotnet build
     - run: dotnet publish -c Release
     - name: Deploy with rsync
