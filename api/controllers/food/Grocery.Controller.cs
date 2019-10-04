@@ -150,12 +150,11 @@ namespace Budget.API
             try {
 
                 foreach (Grocery item in cart.basket) {
-                    _context.Database.ExecuteSqlCommand(
-                        @"INSERT INTO GroceriesView (user, supermarket, name, date, count, weight, organic, seasonal, amount)
+                    _context.Database.ExecuteSqlInterpolated(
+                        $@"INSERT INTO GroceriesView (user, supermarket, name, date, count, weight, organic, seasonal, amount)
                         VALUES 
-                            ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8});
-                        ",
-                        item.user, item.supermarket, item.name, item.date, item.count, item.weight, item.organic, item.seasonal, item.amount);
+                            ({item.user}, {item.supermarket}, {item.name}, {item.date}, {item.count}, {item.weight}, {item.organic}, {item.seasonal}, {item.amount});
+                        ");
                 }
             }
             catch (Exception ex){
@@ -183,20 +182,19 @@ namespace Budget.API
 
  
             try {
-                _context.Database.ExecuteSqlCommand(
-                    @"UPDATE GroceriesView SET
-                        user = {0},
-                        supermarket = {1},
-                        name = {2},
-                        date = {3},
-                        count = {4},
-                        weight = {5},
-                        organic = {6},
-                        seasonal = {7},
-                        amount = {8}
-                    WHERE id = {9};
-                    ",
-                    item.user, item.supermarket, item.name, item.date, item.count, item.weight, item.organic, item.seasonal, item.amount, item.id);
+                _context.Database.ExecuteSqlInterpolated(
+                    $@"UPDATE GroceriesView SET
+                        user = {item.user},
+                        supermarket = {item.supermarket},
+                        name = {item.name},
+                        date = {item.date},
+                        count = {item.count},
+                        weight = {item.weight},
+                        organic = {item.organic},
+                        seasonal = {item.seasonal},
+                        amount = {item.amount}
+                    WHERE id = {item.id};
+                    ");
 
             }
             catch (Exception ex){
@@ -218,7 +216,7 @@ namespace Budget.API
 
 
             try {
-                _context.Database.ExecuteSqlCommand(@"DELETE FROM GroceriesView WHERE id = {0};", grocery.id);
+                _context.Database.ExecuteSqlInterpolated($@"DELETE FROM GroceriesView WHERE id = {grocery.id};");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.DeleteItemApplicationError, ex.Message);

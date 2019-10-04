@@ -25,8 +25,8 @@ namespace Budget.API
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public async Task<ActionResult<DarkSkyResponse>> GetForecast([FromQuery] double latitude, [FromQuery] double longitude) 
         {
-            var optionalParameters= new DarkSkyService.OptionalParameters();
-            optionalParameters.DataBlocksToExclude = new List<ExclusionBlock>(){ExclusionBlock.Flags, ExclusionBlock.Alerts, ExclusionBlock.Hourly, ExclusionBlock.Minutely};
+            var optionalParameters= new OptionalParameters();
+            optionalParameters.DataBlocksToExclude = new List<ExclusionBlocks>(){ExclusionBlocks.Flags, ExclusionBlocks.Alerts, ExclusionBlocks.Hourly, ExclusionBlocks.Minutely};
             return await _darkSkyService.GetForecast(latitude, longitude, optionalParameters );
         }
 

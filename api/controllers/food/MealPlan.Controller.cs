@@ -76,12 +76,8 @@ namespace Budget.API
                 return BadRequest();
             }
             try {
-               _context.Database.ExecuteSqlCommand(
-                    @"INSERT INTO MealPlansView(name, user, days)
-                    VALUES 
-                        ({0}, {1}, {2});
-                    ",
-                    item.name, item.user, item.days);
+               _context.Database.ExecuteSqlInterpolated(
+                    $"INSERT INTO MealPlansView(name, user, days) VALUES  ({item.name}, {item.user}, {item.days});");
             }
             catch (Exception ex){
                 _logger.LogWarning(LoggingEvents.InsertItemApplicationError, ex.Message);
@@ -107,14 +103,13 @@ namespace Budget.API
 
  
             try {
-                _context.Database.ExecuteSqlCommand(
-                    @"UPDATE MealPlansView SET
-                        name = {0},
-                        user = {1},
-                        days = {2}
-                    WHERE id = {3};
-                    ",
-                    item.name, item.user, item.days, item.id);
+                _context.Database.ExecuteSqlInterpolated(
+                    $@"UPDATE MealPlansView SET
+                        name = {item.name},
+                        user = {item.user},
+                        days = {item.days}
+                    WHERE id = {item.id};
+                    ");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.UpdateItemApplicationError, ex.Message);
@@ -134,7 +129,7 @@ namespace Budget.API
             }
 
             try {
-                _context.Database.ExecuteSqlCommand(@"DELETE FROM MealPlansView WHERE id = {0};", mealPlan.id);
+                _context.Database.ExecuteSqlInterpolated($"DELETE FROM MealPlansView WHERE id = {mealPlan.id};");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.DeleteItemApplicationError, ex.Message);
@@ -153,12 +148,11 @@ namespace Budget.API
             try {
 
                 foreach (MealPlanRecipe item in list.recipes) {
-                    _context.Database.ExecuteSqlCommand(
-                        @"INSERT INTO MealPlanRecipesView(meal_plan_name, name, count)
+                    _context.Database.ExecuteSqlInterpolated(
+                        $@"INSERT INTO MealPlanRecipesView(meal_plan_name, name, count)
                         VALUES 
-                            ({0}, {1}, {2});
-                        ",
-                        item.mealPlanName, item.name, item.count);
+                            ({item.mealPlanName}, {item.name}, {item.count});
+                        ");
                 }
             }
             catch (Exception ex){
@@ -177,12 +171,11 @@ namespace Budget.API
                 return BadRequest();
             }
             try {
-               _context.Database.ExecuteSqlCommand(
-                    @"INSERT INTO MealPlanRecipesView(meal_plan_name, name, count)
+               _context.Database.ExecuteSqlInterpolated(
+                    $@"INSERT INTO MealPlanRecipesView(meal_plan_name, name, count)
                     VALUES 
-                        ({0}, {1}, {2});
-                    ",
-                    item.mealPlanName, item.name, item.count);
+                        ({item.mealPlanName}, {item.name}, {item.count});
+                    ");
             }
             catch (Exception ex){
                 _logger.LogWarning(LoggingEvents.InsertItemApplicationError, ex.Message);
@@ -208,14 +201,13 @@ namespace Budget.API
 
  
             try {
-                _context.Database.ExecuteSqlCommand(
-                    @"UPDATE MealPlanRecipesView SET
-                        meal_plan_name = {0},
-                        name = {1},
-                        count = {2}
-                    WHERE id = {3};
-                    ",
-                    item.mealPlanName, item.name, item.count, item.id);
+                _context.Database.ExecuteSqlInterpolated(
+                    $@"UPDATE MealPlanRecipesView SET
+                        meal_plan_name = {item.mealPlanName},
+                        name = {item.name},
+                        count = {item.count}
+                    WHERE id = {item.id};
+                    ");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.UpdateItemApplicationError, ex.Message);
@@ -235,7 +227,7 @@ namespace Budget.API
             }
 
             try {
-                _context.Database.ExecuteSqlCommand(@"DELETE FROM MealPlanRecipesView WHERE id = {0};", mealPlanRecipe.id);
+                _context.Database.ExecuteSqlInterpolated($@"DELETE FROM MealPlanRecipesView WHERE id = {mealPlanRecipe.id};");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.DeleteItemApplicationError, ex.Message);
