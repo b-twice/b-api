@@ -17,7 +17,7 @@ namespace Budget.API
 
         // hosting environment points to the root of our app
         // specify specific environments after default env
-        public Startup(IHostingEnvironment env)
+        public Startup(IWebHostEnvironment env)
         {
 
             var builder = new ConfigurationBuilder()
@@ -38,16 +38,17 @@ namespace Budget.API
         }
         public IConfigurationRoot Configuration { get; set; }
 
-        public IHostingEnvironment Environment { get; set; }
+        public IWebHostEnvironment Environment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc(options =>
-                {
-                    options.RespectBrowserAcceptHeader = true; // false by default
-            });
+            // services.AddMvc(options =>
+            //     {
+            //         options.RespectBrowserAcceptHeader = true; // false by default
+            // });
+            services.AddControllers();
 
 
             var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
@@ -94,7 +95,7 @@ namespace Budget.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             // References launch.jon ASPNETCORE_Environment
             if (env.EnvironmentName != "prod")
@@ -102,9 +103,12 @@ namespace Budget.API
                 // display detailed errors for dev 
                 app.UseDeveloperExceptionPage();
 
-                loggerFactory
-                        .AddConsole()
-                        .AddDebug();
+                LoggerFactory.Create(builder => {
+                    builder.AddFilter("Microsoft", LogLevel.Warning)
+                        .AddFilter("System", LogLevel.Warning)
+                        .AddFilter("SampleApp.Program", LogLevel.Debug)
+                        .AddConsole();
+                });
 
             }
 
@@ -123,8 +127,11 @@ namespace Budget.API
 
             app.UseAuthentication();
 
-            // Use MVC framework to handle http requests
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
         }
     }

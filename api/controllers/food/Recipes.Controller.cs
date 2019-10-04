@@ -112,12 +112,11 @@ namespace Budget.API
                 return BadRequest();
             }
             try {
-               _context.Database.ExecuteSqlCommand(
-                    @"INSERT INTO RecipesView(user, category, cookbook, name, servings, page_number, url)
+               _context.Database.ExecuteSqlInterpolated(
+                    $@"INSERT INTO RecipesView(user, category, cookbook, name, servings, page_number, url)
                     VALUES 
-                        ({0}, {1}, {2}, {3}, {4}, {5}, {6});
-                    ",
-                    item.user, item.category, item.cookbook, item.name, item.servings, item.pageNumber, item.url);
+                        ({item.user}, {item.category}, {item.cookbook}, {item.name}, {item.servings}, {item.pageNumber}, {item.url});
+                    ");
             }
             catch (Exception ex){
                 _logger.LogWarning(LoggingEvents.InsertItemApplicationError, ex.Message);
@@ -141,18 +140,17 @@ namespace Budget.API
                 return NotFound();
             }
             try {
-                _context.Database.ExecuteSqlCommand(
-                    @"UPDATE RecipesView SET
-                        user = {0},
-                        category = {1},
-                        cookbook = {2},
-                        name = {3},
-                        servings = {4},
-                        page_number = {5},
-                        url = {6}
-                    WHERE id = {7};
-                    ",
-                    item.user, item.category, item.cookbook, item.name, item.servings, item.pageNumber, item.url, item.id);
+                _context.Database.ExecuteSqlInterpolated(
+                    $@"UPDATE RecipesView SET
+                        user = {item.user},
+                        category = {item.category},
+                        cookbook = {item.cookbook},
+                        name = {item.name},
+                        servings = {item.servings},
+                        page_number = {item.pageNumber},
+                        url = {item.id}
+                    WHERE id = {item.url};
+                ");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.UpdateItemApplicationError, ex.Message);
@@ -172,7 +170,7 @@ namespace Budget.API
             }
 
             try {
-                _context.Database.ExecuteSqlCommand(@"DELETE FROM RecipesView WHERE id = {0};", recipe.id);
+                _context.Database.ExecuteSqlInterpolated($@"DELETE FROM RecipesView WHERE id = {recipe.id};");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.DeleteItemApplicationError, ex.Message);
@@ -192,12 +190,11 @@ namespace Budget.API
             try {
 
                 foreach (RecipeIngredient item in list.ingredients) {
-                    _context.Database.ExecuteSqlCommand(
-                            @"INSERT INTO RecipeIngredientsView(recipe, name, count, weight, measurement)
-                            VALUES 
-                                ({0}, {1}, {2}, {3}, {4});
-                            ",
-                            item.recipe, item.name, item.count, item.weight, item.measurement);
+                    _context.Database.ExecuteSqlInterpolated(
+                        $@"INSERT INTO RecipeIngredientsView(recipe, name, count, weight, measurement)
+                        VALUES 
+                            ({item.recipe}, {item.name}, {item.count}, {item.weight}, {item.measurement});
+                        ");
                 }
             }
             catch (Exception ex){
@@ -216,12 +213,11 @@ namespace Budget.API
                 return BadRequest();
             }
             try {
-               _context.Database.ExecuteSqlCommand(
-                    @"INSERT INTO RecipeIngredientsView(recipe, name, count, weight, measurement)
+               _context.Database.ExecuteSqlInterpolated(
+                    $@"INSERT INTO RecipeIngredientsView(recipe, name, count, weight, measurement)
                     VALUES 
-                        ({0}, {1}, {2}, {3}, {4});
-                    ",
-                    item.recipe, item.name, item.count, item.weight, item.measurement);
+                    ({item.recipe}, {item.name}, {item.count}, {item.weight}, {item.measurement});
+                ");
             }
             catch (Exception ex){
                 _logger.LogWarning(LoggingEvents.InsertItemApplicationError, ex.Message);
@@ -247,16 +243,15 @@ namespace Budget.API
 
  
             try {
-                _context.Database.ExecuteSqlCommand(
-                    @"UPDATE RecipeIngredientsView SET
-                        recipe = {0},
-                        name = {1},
-                        count = {2},
-                        weight = {3},
-                        measurement= {4}
-                    WHERE id = {5};
-                    ",
-                    item.recipe, item.name, item.count, item.weight, item.measurement, item.id);
+                _context.Database.ExecuteSqlInterpolated(
+                    $@"UPDATE RecipeIngredientsView SET
+                        recipe = {item.recipe},
+                        name = {item.name},
+                        count = {item.count},
+                        weight = {item.weight},
+                        measurement= {item.measurement}
+                    WHERE id = {item.id};
+                    ");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.UpdateItemApplicationError, ex.Message);
@@ -276,7 +271,7 @@ namespace Budget.API
             }
 
             try {
-                _context.Database.ExecuteSqlCommand(@"DELETE FROM RecipeIngredientsView WHERE id = {0};", ingredient.id);
+                _context.Database.ExecuteSqlInterpolated($@"DELETE FROM RecipeIngredientsView WHERE id = {ingredient.id};");
             }
             catch (Exception ex){
                 _logger.LogError(LoggingEvents.DeleteItemApplicationError, ex.Message);
