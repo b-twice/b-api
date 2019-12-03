@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Budget.API.Models.Core;
-using Budget.API.Models.Finance;
-using Budget.API.Models.Food;
-using Budget.API.Models.Book;
+using B.API.Models.Core;
+using B.API.Models.Finance;
+using B.API.Models.Food;
+using B.API.Models.Book;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Budget.API.Entities
+namespace B.API.Entities
 {
     // DB Context gets registered in configure services
     public class DatabaseContext : DbContext
@@ -327,17 +327,17 @@ namespace Budget.API.Entities
                 .HasOne<BookCategory>(s => s.bookCategory)
                 .WithMany()
                 .HasForeignKey("BookCategoryId")
-                .HasPrincipalKey(u => u.id);
+                .HasPrincipalKey(u => u.Id);
             builder
                 .HasOne<BookAuthor>(s => s.bookAuthor)
                 .WithMany()
                 .HasForeignKey("BookAuthorId")
-                .HasPrincipalKey(u => u.id);
+                .HasPrincipalKey(u => u.Id);
             builder
                 .HasOne<BookStatus>(s => s.bookStatus)
                 .WithMany()
                 .HasForeignKey("BookStatusId")
-                .HasPrincipalKey(u => u.id);
+                .HasPrincipalKey(u => u.Id);
         }
 
 

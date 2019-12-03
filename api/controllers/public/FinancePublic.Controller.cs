@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Budget.API.Models;
-using Budget.API.Entities;
-using Budget.API.Helpers;
+using B.API.Models;
+using B.API.Entities;
+using B.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace Budget.API 
+namespace B.API 
 {
     [Route("api/public/finance/")]
     public class FinancePublicController: ControllerBase

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Budget.API.Entities;
-using Budget.API.Models.Food;
+using B.API.Entities;
+using B.API.Models.Food;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Budget.Core;
 
-namespace Budget.API 
+namespace B.API 
 {
 
     [Authorize]

@@ -2,14 +2,14 @@ using System.Security.Claims;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Budget.API.Entities;
+using B.API.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Budget.API.Models.Event;
+using B.API.Models.Event;
 using Microsoft.Extensions.Logging;
 using Budget.Core;
 using System.Collections.Generic;
 
-namespace Budget.API 
+namespace B.API 
 {
 
     // [Authorize]

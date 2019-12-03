@@ -1,9 +1,9 @@
 using System.Linq;
-using Budget.API.Entities;
-using Microsoft.Extensions.Logging;
-using Budget.API.Models.Common;
+using B.API.Entities;
+using B.API.Models.Common;
+using System.Collections.Generic;
 
-namespace Budget.API.Database
+namespace B.API.Database
 {
 
     public class LookupRepository
@@ -14,39 +14,39 @@ namespace Budget.API.Database
         {
             _context = context;
         }
-        public IQueryable<AppLookup> OrderBy(IQueryable<AppLookup> items, string sortName) 
+        public IQueryable<T> OrderBy<T>(IQueryable<T> items, string sortName) 
         {
             switch(sortName) {
-                case nameof(AppLookup.id) + "_asc":
-                    items = items.OrderBy(b => b.id);
+                case nameof(AppLookup.Id) + "_asc":
+                    items = items.OrderBy(b => typeof(T).GetProperty("Id").GetValue(b));
                     break;
-                case nameof(AppLookup.id) + "_desc":
-                    items = items.OrderByDescending(b => b.id);
+                case nameof(AppLookup.Id) + "_desc":
+                    items = items.OrderByDescending(b => typeof(T).GetProperty("Id").GetValue(b));
                     break;
-                case nameof(AppLookup.name) + "_asc":
-                    items = items.OrderBy(b => b.name);
+                case nameof(AppLookup.Name) + "_asc":
+                    items = items.OrderBy(b => typeof(T).GetProperty("Name").GetValue(b));
                     break;
-                case nameof(AppLookup.name) + "_desc":
-                    items = items.OrderByDescending(b => b.name);
+                case nameof(AppLookup.Name) + "_desc":
+                    items = items.OrderByDescending(b => typeof(T).GetProperty("Name").GetValue(b));
                     break;
                default:
                     break;
             }
             return items;
         }
-        public IQueryable<AppLookup> Filter(IQueryable<AppLookup> items, string name)
+        public IQueryable<T> Filter<T>(IQueryable<T> items, string name)
         {
             if (!string.IsNullOrEmpty(name)) {
-                items = items.Where(o => o.name.Contains(name));
+                items = items.Where(o => ((string)typeof(T).GetProperty("Name").GetValue(o)).Contains(name));
             }
             return items;
         }
 
 
 
-        public PaginatedResult<AppLookup> Paginate(IQueryable<AppLookup> items, int pageNumber, int pageSize) {
-          var paginatedList = PaginatedList<AppLookup>.Create(items, pageNumber, pageSize);
-          return new PaginatedResult<AppLookup>(paginatedList, paginatedList.TotalCount);
+        public PaginatedResult<T> Paginate<T>(IQueryable<T> items, int pageNumber, int pageSize) {
+          var paginatedList = PaginatedList<T>.Create(items, pageNumber, pageSize);
+          return new PaginatedResult<T>(paginatedList, paginatedList.TotalCount);
         }
 
   }

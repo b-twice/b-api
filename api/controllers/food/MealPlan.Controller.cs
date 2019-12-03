@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Budget.API.Models.Food;
-using Budget.API.Entities;
+using B.API.Models.Food;
+using B.API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Budget.Core;
 
 
-namespace Budget.API 
+namespace B.API 
 {
 
     [Authorize]

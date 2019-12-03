@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Budget.API 
+namespace B.API 
 {
 
     [Route("org")]

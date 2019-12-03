@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace Budget.API.Models.Event
+namespace B.API.Models.Event
 {
     public class ReoccuringType
     {
