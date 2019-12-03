@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using B.API.Entities;
 using B.API.Database;
 using Geocoding.Microsoft;
-using B.api.models;
+using B.API.Models;
 
 namespace B.API
 {
@@ -104,20 +103,13 @@ namespace B.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // References launch.jon ASPNETCORE_Environment
             if (env.EnvironmentName != "prod")
             {
                 // display detailed errors for dev 
                 app.UseDeveloperExceptionPage();
-
-                LoggerFactory.Create(builder => {
-                    builder.AddFilter("Microsoft", LogLevel.Warning)
-                        .AddFilter("System", LogLevel.Warning)
-                        .AddFilter("SampleApp.Program", LogLevel.Debug)
-                        .AddConsole();
-                });
 
             }
 

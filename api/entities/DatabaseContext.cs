@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using B.API.Models.Core;
 using B.API.Models.Finance;
 using B.API.Models.Food;
-using B.API.Models.Book;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace B.API.Entities
@@ -47,13 +46,6 @@ namespace B.API.Entities
         public DbSet<Supermarket> Supermarkets { get; set; }
         public DbSet<RecipeCategory> RecipeCategories{ get; set; }
 
-        // BOOKS
-        public DbSet<BookCategory> BookCategories { get; set; }
-        public DbSet<BookStatus> BookStatuses { get; set; }
-        public DbSet<BookAuthor> BookAuthors { get; set; }
-        public DbSet<Book> Books { get; set; }
-
-
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,8 +54,6 @@ namespace B.API.Entities
             financeModelCreating(modelBuilder);
             foodModelCreating(modelBuilder);
 
-            // BOOKS
-            bookCreating(modelBuilder);
         }
 
         private void coreModelCreating(ModelBuilder modelBuilder) {
@@ -313,33 +303,6 @@ namespace B.API.Entities
             modelBuilder.Entity<RecipeIngredient>().ToTable("RecipeIngredientsView");
 
         }
-
-        private void bookCreating(ModelBuilder modelBuilder) {
-            var builder = modelBuilder.Entity<Book>();
-            modelBuilder.Entity<Book>(t =>
-            {
-                t.Property<int>("BookCategoryId").HasColumnName("book_category_id");
-                t.Property<int>("BookAuthorId").HasColumnName("book_author_id");
-                t.Property<int>("BookStatusId").HasColumnName("book_status_id");
-            });
-
-            builder
-                .HasOne<BookCategory>(s => s.bookCategory)
-                .WithMany()
-                .HasForeignKey("BookCategoryId")
-                .HasPrincipalKey(u => u.Id);
-            builder
-                .HasOne<BookAuthor>(s => s.bookAuthor)
-                .WithMany()
-                .HasForeignKey("BookAuthorId")
-                .HasPrincipalKey(u => u.Id);
-            builder
-                .HasOne<BookStatus>(s => s.bookStatus)
-                .WithMany()
-                .HasForeignKey("BookStatusId")
-                .HasPrincipalKey(u => u.Id);
-        }
-
 
    }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace B.api.models
+namespace B.API.Models
 {
     public partial class Earnings
     {

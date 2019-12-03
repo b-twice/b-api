@@ -1,6 +1,6 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using B.api.models;
+using B.API.Models;
 using System.Collections.Generic;
 
 namespace B.API.Database
@@ -28,7 +28,9 @@ namespace B.API.Database
 
         public IQueryable<Books> Include(IQueryable<Books> books) 
         {
-            return books.AsNoTracking().Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
+            // return books.AsNoTracking().Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
+            return books.Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
+            // return books;
         }
 
 
@@ -74,22 +76,22 @@ namespace B.API.Database
             return books;
         }
  
-        public IQueryable<Books> Filter(IQueryable<Books> books, string bookName, List<int> bookAuthors, List<int> bookCategories, List<int> bookStatuses, List<string> readYears)
+        public IQueryable<Books> Filter(IQueryable<Books> books, string bookName, List<long> bookAuthors, List<long> bookCategories, List<long> bookStatuses, List<string> readYears)
         {
             if (!string.IsNullOrEmpty(bookName)) {
                 books = books.Where(b => b.Name.Contains(bookName));
             }
             if (bookAuthors?.Any() == true) {
-                books = books.Where(b => bookAuthors.Exists(id => id == b.BookAuthor.Id));
+                books = books.Where(b => bookAuthors.Contains(b.BookAuthor.Id));
             }
             if (bookStatuses?.Any() == true) {
-                books = books.Where(b => bookStatuses.Exists(id => id == b.BookStatus.Id));
+                books = books.Where(b => bookStatuses.Contains(b.BookStatus.Id));
             }
             if (bookCategories?.Any() == true) {
-                books = books.Where(b => bookCategories.Exists(id => id == b.BookCategory.Id));
+                books = books.Where(b => bookCategories.Contains(b.BookCategory.Id));
             }
             if (readYears?.Any() == true) {
-                books = books.Where(b => readYears.Exists(year => year == b.ReadYear));
+                books = books.Where(b => readYears.Contains(b.ReadYear));
             }
            return books;
         }
