@@ -1,7 +1,43 @@
 {
     "version": "2.0.0",
-    "runner": "terminal",
     "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/B.API.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/B.API.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/B.API.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
         {
             "label": "build",
             "type": "shell",
@@ -17,7 +53,7 @@
         {
             "label": "generate",
             "type": "shell",
-            "command": "dotnet ef dbcontext scaffold \"DataSource=app.db;\" Microsoft.EntityFrameworkCore.Sqlite -o api/models -v -c ApiDbContext --force",
+            "command": "dotnet ef dbcontext scaffold \"DataSource=app.db;\" Microsoft.EntityFrameworkCore.Sqlite -o Models -v -c ApiDbContext --force",
             "problemMatcher": []
         }
     ]

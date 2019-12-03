@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace B.api.models
+namespace B.API.Models
 {
     public partial class ApiDbContext : DbContext
     {
@@ -21,14 +21,14 @@ namespace B.api.models
         public virtual DbSet<BookCategories> BookCategories { get; set; }
         public virtual DbSet<BookStatuses> BookStatuses { get; set; }
         public virtual DbSet<Books> Books { get; set; }
+        public virtual DbSet<CategoryMap> CategoryMap { get; set; }
         public virtual DbSet<Earnings> Earnings { get; set; }
         public virtual DbSet<Investments> Investments { get; set; }
         public virtual DbSet<TransactionCategories> TransactionCategories { get; set; }
         public virtual DbSet<Transactions> Transactions { get; set; }
+        public virtual DbSet<TransactionsStaging> TransactionsStaging { get; set; }
+        public virtual DbSet<TransactionsStagingView> TransactionsStagingView { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-
-        // Unable to generate entity type for table 'TransactionsStaging'. Please see the warning messages.
-        // Unable to generate entity type for table 'CategoryMap'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -41,8 +41,6 @@ namespace B.api.models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
-
             modelBuilder.Entity<Assets>(entity =>
             {
                 entity.Property(e => e.Id)
@@ -177,6 +175,15 @@ namespace B.api.models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
+            modelBuilder.Entity<CategoryMap>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.Automap).HasColumnName("automap");
+
+                entity.Property(e => e.Category).HasColumnName("category");
+            });
+
             modelBuilder.Entity<Earnings>(entity =>
             {
                 entity.HasIndex(e => new { e.Year, e.UserId })
@@ -301,6 +308,58 @@ namespace B.api.models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
+            modelBuilder.Entity<TransactionsStaging>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.Amount)
+                    .HasColumnName("amount")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Automap)
+                    .HasColumnName("automap")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.Bank)
+                    .IsRequired()
+                    .HasColumnName("bank");
+
+                entity.Property(e => e.Category).HasColumnName("category");
+
+                entity.Property(e => e.Date).HasColumnName("date");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.UserName).HasColumnName("user_name");
+
+                entity.Property(e => e.Wedding)
+                    .HasColumnName("wedding")
+                    .HasDefaultValueSql("0");
+            });
+
+            modelBuilder.Entity<TransactionsStagingView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("TransactionsStagingView");
+
+                entity.Property(e => e.Amount).HasColumnName("amount");
+
+                entity.Property(e => e.Automap).HasColumnName("automap");
+
+                entity.Property(e => e.Bank).HasColumnName("bank");
+
+                entity.Property(e => e.Category).HasColumnName("category");
+
+                entity.Property(e => e.Date).HasColumnName("date");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.UserName).HasColumnName("user_name");
+
+                entity.Property(e => e.Wedding).HasColumnName("wedding");
+            });
+
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.HasIndex(e => new { e.FirstName, e.LastName })
@@ -318,6 +377,10 @@ namespace B.api.models
                     .IsRequired()
                     .HasColumnName("last_name");
             });
+
+            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

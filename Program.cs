@@ -7,23 +7,21 @@ namespace B.API
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
-            var host = new HostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel(serverOptions =>
-                    {
-                        // Set properties and call methods on options
-                    })
-                    .UseIISIntegration()
-                    .UseStartup<Startup>();
-                })
-                .Build();
-
-    host.Run();
-        }
-        
+                    webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
+                    webBuilder.UseStartup<Startup>();
+                });
     }
+
+
+
 }

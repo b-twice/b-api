@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using B.API.Database;
 using Microsoft.AspNetCore.Authorization;
-using B.api.models;
+using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
@@ -35,9 +35,9 @@ namespace B.API
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
             [FromQuery]string bookName,
-            [FromQuery]List<int> bookAuthors,
-            [FromQuery]List<int> bookCategories,
-            [FromQuery]List<int> bookStatuses,
+            [FromQuery]List<long> bookAuthors,
+            [FromQuery]List<long> bookCategories,
+            [FromQuery]List<long> bookStatuses,
             [FromQuery]List<string> readYears
 
 
