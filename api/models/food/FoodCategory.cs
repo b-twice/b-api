@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace Budget.API.Models.Food
+namespace B.API.Models.Food
 {
     public class FoodCategory
     {

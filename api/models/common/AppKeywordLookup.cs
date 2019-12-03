@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Budget.API.Models.Common;
+using B.API.Models.Common;
 
-namespace Budget.API.Models.Book
+namespace B.API.Models.Book
 {
     public class AppKeywordLookup: AppLookup
     {

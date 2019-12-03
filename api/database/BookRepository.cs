@@ -1,73 +1,72 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Budget.API.Entities;
-using Budget.API.Models.Book;
+using B.api.models;
 using System.Collections.Generic;
 
-namespace Budget.API.Database
+namespace B.API.Database
 {
 
     public class BookRepository
     {
-        private readonly AppDatabaseContext _context;
+        private readonly ApiDbContext _context;
 
-        public BookRepository(AppDatabaseContext context)
+        public BookRepository(ApiDbContext context)
         {
             _context = context;
         }
 
-        public Book Find(int id) 
+        public Books Find(int id) 
         {
-            return Include(_context.Books).First(b => b.id == id);
+            return Include(_context.Books).First(b => b.Id == id);
         }
 
         
-        public IQueryable<Book> FindAll() 
+        public IQueryable<Books> FindAll() 
         {
             return Include(_context.Books);
         }
 
-        public IQueryable<Book> Include(IQueryable<Book> books) 
+        public IQueryable<Books> Include(IQueryable<Books> books) 
         {
-            return books.Include(b => b.bookCategory).Include(b => b.bookAuthor).Include(b => b.bookStatus);
+            return books.AsNoTracking().Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
         }
 
 
 
-        public IQueryable<Book> Order(IQueryable<Book> books, string sortName) 
+        public IQueryable<Books> Order(IQueryable<Books> books, string sortName) 
         {
             // TODO: tranlsate this to a generic method using IQueryable? 
             // May not be worth it, this is clear and conscise as is
             switch(sortName) {
-                case nameof(Book.id) + "_asc":
-                    books = books.OrderBy(b => b.id);
+                case nameof(Books.Id) + "_asc":
+                    books = books.OrderBy(b => b.Id);
                     break;
-                case nameof(Book.id) + "_desc":
-                    books = books.OrderByDescending(b => b.id);
+                case nameof(Books.Id) + "_desc":
+                    books = books.OrderByDescending(b => b.Id);
                     break;
-                case nameof(Book.name) + "_asc":
-                    books = books.OrderBy(b => b.name);
+                case nameof(Books.Name) + "_asc":
+                    books = books.OrderBy(b => b.Name);
                     break;
-                case nameof(Book.name) + "_desc":
-                    books = books.OrderByDescending(b => b.name);
+                case nameof(Books.Name) + "_desc":
+                    books = books.OrderByDescending(b => b.Name);
                     break;
-                case nameof(Book.bookAuthor) + "_asc":
-                    books = books.OrderBy(b => b.bookAuthor.name);
+                case nameof(Books.BookAuthor) + "_asc":
+                    books = books.OrderBy(b => b.BookAuthor.Name);
                     break;
-                case nameof(Book.bookAuthor) + "_desc":
-                    books = books.OrderByDescending(b => b.bookAuthor.name);
+                case nameof(Books.BookAuthor) + "_desc":
+                    books = books.OrderByDescending(b => b.BookAuthor.Name);
                     break;
-                case nameof(Book.readYear) + "_asc":
-                    books = books.OrderBy(b => b.readYear);
+                case nameof(Books.ReadYear) + "_asc":
+                    books = books.OrderBy(b => b.ReadYear);
                     break;
-                case nameof(Book.readYear) + "_desc":
-                    books = books.OrderByDescending(b => b.readYear);
+                case nameof(Books.ReadYear) + "_desc":
+                    books = books.OrderByDescending(b => b.ReadYear);
                     break;
-                case nameof(Book.bookCategory) + "_asc":
-                    books = books.OrderBy(b => b.bookCategory.name);
+                case nameof(Books.BookCategory) + "_asc":
+                    books = books.OrderBy(b => b.BookCategory.Name);
                     break;
-                case nameof(Book.bookCategory) + "_desc":
-                    books = books.OrderByDescending(b => b.bookCategory.name);
+                case nameof(Books.BookCategory) + "_desc":
+                    books = books.OrderByDescending(b => b.BookCategory.Name);
                     break;
                 default:
                     break;
@@ -75,22 +74,22 @@ namespace Budget.API.Database
             return books;
         }
  
-        public IQueryable<Book> Filter(IQueryable<Book> books, string bookName, List<int> bookAuthors, List<int> bookCategories, List<int> bookStatuses, List<string> readYears)
+        public IQueryable<Books> Filter(IQueryable<Books> books, string bookName, List<int> bookAuthors, List<int> bookCategories, List<int> bookStatuses, List<string> readYears)
         {
             if (!string.IsNullOrEmpty(bookName)) {
-                books = books.Where(b => b.name.Contains(bookName));
+                books = books.Where(b => b.Name.Contains(bookName));
             }
             if (bookAuthors?.Any() == true) {
-                books = books.Where(b => bookAuthors.Exists(id => id == b.bookAuthor.id));
+                books = books.Where(b => bookAuthors.Exists(id => id == b.BookAuthor.Id));
             }
             if (bookStatuses?.Any() == true) {
-                books = books.Where(b => bookStatuses.Exists(id => id == b.bookStatus.id));
+                books = books.Where(b => bookStatuses.Exists(id => id == b.BookStatus.Id));
             }
             if (bookCategories?.Any() == true) {
-                books = books.Where(b => bookCategories.Exists(id => id == b.bookCategory.id));
+                books = books.Where(b => bookCategories.Exists(id => id == b.BookCategory.Id));
             }
             if (readYears?.Any() == true) {
-                books = books.Where(b => readYears.Exists(year => year == b.readYear));
+                books = books.Where(b => readYears.Exists(year => year == b.ReadYear));
             }
            return books;
         }

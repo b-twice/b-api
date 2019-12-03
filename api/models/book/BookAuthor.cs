@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Budget.API.Models.Common;
+using B.API.Models.Common;
 
 
-namespace Budget.API.Models.Book
+namespace B.API.Models.Book
 {
     [Table("BookAuthors")]
     public class BookAuthor: AppLookup

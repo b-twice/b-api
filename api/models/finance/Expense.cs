@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace Budget.API.Models.Finance
+namespace B.API.Models.Finance
 {
     public class Expense
     {

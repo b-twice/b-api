@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Budget.API.Models.Event;
+using B.API.Models.Event;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Budget.API.Entities
+namespace B.API.Entities
 {
     // DB Context gets registered in configure services
     public class EventDatabaseContext : DbContext
