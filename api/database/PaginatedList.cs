@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Budget.API.Database
+namespace B.API.Database
 {
     // Pulled from: https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/sort-filter-page?view=aspnetcore-2.2#add-paging-to-index-method 
     public class PaginatedList<T> : List<T>

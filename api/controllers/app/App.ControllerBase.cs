@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Budget.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Budget.API 
+namespace B.API 
 {
 
    public class AppControllerBase: ControllerBase

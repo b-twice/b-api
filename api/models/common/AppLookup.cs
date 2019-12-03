@@ -1,15 +1,15 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Budget.API.Models.Common
+namespace B.API.Models.Common
 {
     public class AppLookup
     {
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        public string name { get; set; }
+        public string Name { get; set; }
 
     }
 }

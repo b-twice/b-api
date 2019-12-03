@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Budget.API.Models.Common;
+using B.API.Models.Common;
 
-namespace Budget.API.Models.Book
+namespace B.API.Models.Book
 {
     [Table("BookCategories")]
     public class BookCategory: AppLookup {}

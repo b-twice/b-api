@@ -1,9 +1,9 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Budget.API.Entities;
+using B.API.Entities;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Budget.API 
+namespace B.API 
 {
 
     [Authorize]

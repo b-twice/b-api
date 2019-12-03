@@ -1,6 +1,6 @@
 using System;
 
-namespace Budget.API.Helpers
+namespace B.API.Helpers
 {
     class DateHelper {
 
