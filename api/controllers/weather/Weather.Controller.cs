@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
-namespace Budget.API 
+namespace B.API 
 {
 
     [Route("Weather")]

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace Budget.API.Models.Book
+namespace B.API.Models.Book
 {
     [Table("Books")]
     public class Book

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Geocoding.Microsoft;
 
-namespace Budget.API 
+namespace B.API 
 {
 
     [Route("Geocode")]

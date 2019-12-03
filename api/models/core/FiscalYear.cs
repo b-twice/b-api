@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Budget.API.Models.Core
+namespace B.API.Models.Core
 {
     public class FiscalYear
     {

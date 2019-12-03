@@ -6,11 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
-using Budget.API.Entities;
-using Budget.API.Database;
+using B.API.Entities;
+using B.API.Database;
 using Geocoding.Microsoft;
+using B.api.models;
 
-namespace Budget.API
+namespace B.API
 {
     public class Startup
     {
@@ -69,11 +70,13 @@ namespace Budget.API
             services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>(options => options.UseSqlite(connectionString));
 
             // IMPORTANT - AppDatabase Context is using new database
-            var appConnectionStringBuilder = new SqliteConnectionStringBuilder{ 
+            var appApiConnectionStringBuilder = new SqliteConnectionStringBuilder{ 
                 DataSource = Configuration.GetSection("Database")[Environment.EnvironmentName]
             };
-            var appConnectionString = appConnectionStringBuilder.ToString();
-            services.AddEntityFrameworkSqlite().AddDbContext<AppDatabaseContext>(options => options.UseSqlite(appConnectionString));
+            var appApiConnectionString = appApiConnectionStringBuilder.ToString();
+            services.AddEntityFrameworkSqlite().AddDbContext<ApiDbContext>(options => options.UseSqlite(appApiConnectionString));
+
+
 
             string domain = $"https://{Configuration["authentication:Domain"]}/";
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -84,13 +87,19 @@ namespace Budget.API
 
             services.AddOpenApiDocument(config => 
                 config.PostProcess = document => {
-                    document.Info.Title = "Mythic API";
+                    document.Info.Title = "B API";
                     document.Info.Version = "v1";
                     document.Info.Description = "";
 
                 }
             ); // add OpenAPI v3 document
 
+
+            // generated models are self-referencing, side effect of db first design
+            services.AddMvc()
+                 .AddJsonOptions(
+                    options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -125,7 +134,6 @@ namespace Budget.API
 
             // Use MVC framework to handle http requests
             app.UseMvc();
-
         }
     }
 }

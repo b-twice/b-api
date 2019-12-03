@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Budget.API.Models.Finance;
-using Budget.API.Entities;
+using B.API.Models.Finance;
+using B.API.Entities;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Budget.API 
+namespace B.API 
 {
 
     [Authorize]
