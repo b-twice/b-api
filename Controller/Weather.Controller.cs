@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
-namespace B.API 
+namespace B.API.Controller
 {
 
-    [Route("Weather")]
+    [Route("weather")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class WeatherController: ControllerBase
@@ -21,7 +21,7 @@ namespace B.API
           _darkSkyService = darkSkyService;
         }
 
-        [HttpGet("Forecast")]
+        [HttpGet("forecast/today")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public async Task<ActionResult<DarkSkyResponse>> GetForecast([FromQuery] double latitude, [FromQuery] double longitude) 
         {

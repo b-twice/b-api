@@ -94,12 +94,6 @@ namespace B.API
                 }
             ); // add OpenAPI v3 document
 
-
-            // generated models are self-referencing, side effect of db first design
-            // services.AddMvc()
-            //      .AddJsonOptions(
-            //         options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //     );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,9 +104,7 @@ namespace B.API
             {
                 // display detailed errors for dev 
                 app.UseDeveloperExceptionPage();
-
             }
-
 
             app.UseCors(builder =>
                 builder.WithOrigins(Configuration["clients:bgeo"], Configuration["clients:budget"], Configuration["clients:groceries"], Configuration["clients:me"])
