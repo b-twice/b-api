@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Geocoding.Microsoft;
 
-namespace B.API 
+namespace B.API.Controller
 {
 
-    [Route("Geocode")]
+    [Route("geocode")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class GeocodeController: ControllerBase
@@ -20,7 +20,7 @@ namespace B.API
           _geocoder = geocoder;
         }
 
-        [HttpGet("Reverse")]
+        [HttpGet("reverse")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public async Task<IEnumerable<BingAddress>> Reverse([FromQuery] double latitude, [FromQuery] double longitude) 
         {

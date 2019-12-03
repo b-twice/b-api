@@ -38,18 +38,18 @@
             ],
             "problemMatcher": "$msCompile"
         },
-        {
-            "label": "build",
-            "type": "shell",
-            "command": "./scripts/build_local.sh",
-            "windows": {
-                "command": "dotnet build"
-            },
-            "osx": {
-                "command": "dotnet build"
-            },
-            "problemMatcher": []
-        },
+        // {
+        //     "label": "build",
+        //     "type": "shell",
+        //     "command": "./scripts/build_local.sh",
+        //     "windows": {
+        //         "command": "dotnet build"
+        //     },
+        //     "osx": {
+        //         "command": "dotnet build"
+        //     },
+        //     "problemMatcher": []
+        // },
         {
             "label": "generate",
             "type": "shell",
