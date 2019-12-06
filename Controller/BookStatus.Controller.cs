@@ -27,46 +27,46 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<BookStatuses>> GetStatuses()
+        public ActionResult<IEnumerable<BookStatus>> GetStatuses()
         {
-            return Ok(_context.BookStatuses);
+            return Ok(_context.BookStatus);
         }
         [Authorize]
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<BookStatuses>> GetStatusesPage(
+        public ActionResult<PaginatedResult<BookStatus>> GetStatusesPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber = 1,
             [FromQuery]int pageSize = 25
         ) 
         {
-            var items = _lookupRepository.OrderBy<BookStatuses>(_context.BookStatuses, sortName);
+            var items = _lookupRepository.OrderBy<BookStatus>(_context.BookStatus, sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<BookStatuses> GetStatus(int id)
+        public ActionResult<BookStatus> GetStatus(int id)
         {
-            return Ok(_context.BookStatuses.First(o => o.Id == id));
+            return Ok(_context.BookStatus.First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]
-        public ActionResult<BookStatuses> CreateStatus([FromBody] BookStatuses item)
+        public ActionResult<BookStatus> CreateStatus([FromBody] BookStatus item)
         {
-            return Create<BookStatuses>(item, nameof(CreateStatus));
+            return Create<BookStatus>(item, nameof(CreateStatus));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateStatus(int id, [FromBody] BookStatuses item)
+        public IActionResult UpdateStatus(int id, [FromBody] BookStatus item)
         {
-            return Update<BookStatuses>(id, item);
+            return Update<BookStatus>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteStatus (int id)
         {
-            return Delete<BookStatuses>(id);
+            return Delete<BookStatus>(id);
         }
  
 

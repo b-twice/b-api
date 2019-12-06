@@ -15,18 +15,18 @@ namespace B.API.Database
             _context = context;
         }
 
-        public Books Find(int id) 
+        public Book Find(int id) 
         {
-            return Include(_context.Books).First(b => b.Id == id);
+            return Include(_context.Book).First(b => b.Id == id);
         }
 
         
-        public IQueryable<Books> FindAll() 
+        public IQueryable<Book> FindAll() 
         {
-            return Include(_context.Books);
+            return Include(_context.Book);
         }
 
-        public IQueryable<Books> Include(IQueryable<Books> books) 
+        public IQueryable<Book> Include(IQueryable<Book> books) 
         {
             // return books.AsNoTracking().Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
             return books.Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
@@ -35,39 +35,39 @@ namespace B.API.Database
 
 
 
-        public IQueryable<Books> Order(IQueryable<Books> books, string sortName) 
+        public IQueryable<Book> Order(IQueryable<Book> books, string sortName) 
         {
             // TODO: tranlsate this to a generic method using IQueryable? 
             // May not be worth it, this is clear and conscise as is
             switch(sortName) {
-                case nameof(Books.Id) + "_asc":
+                case nameof(Book.Id) + "_asc":
                     books = books.OrderBy(b => b.Id);
                     break;
-                case nameof(Books.Id) + "_desc":
+                case nameof(Book.Id) + "_desc":
                     books = books.OrderByDescending(b => b.Id);
                     break;
-                case nameof(Books.Name) + "_asc":
+                case nameof(Book.Name) + "_asc":
                     books = books.OrderBy(b => b.Name);
                     break;
-                case nameof(Books.Name) + "_desc":
+                case nameof(Book.Name) + "_desc":
                     books = books.OrderByDescending(b => b.Name);
                     break;
-                case nameof(Books.BookAuthor) + "_asc":
+                case nameof(Book.BookAuthor) + "_asc":
                     books = books.OrderBy(b => b.BookAuthor.Name);
                     break;
-                case nameof(Books.BookAuthor) + "_desc":
+                case nameof(Book.BookAuthor) + "_desc":
                     books = books.OrderByDescending(b => b.BookAuthor.Name);
                     break;
-                case nameof(Books.ReadYear) + "_asc":
+                case nameof(Book.ReadYear) + "_asc":
                     books = books.OrderBy(b => b.ReadYear);
                     break;
-                case nameof(Books.ReadYear) + "_desc":
+                case nameof(Book.ReadYear) + "_desc":
                     books = books.OrderByDescending(b => b.ReadYear);
                     break;
-                case nameof(Books.BookCategory) + "_asc":
+                case nameof(Book.BookCategory) + "_asc":
                     books = books.OrderBy(b => b.BookCategory.Name);
                     break;
-                case nameof(Books.BookCategory) + "_desc":
+                case nameof(Book.BookCategory) + "_desc":
                     books = books.OrderByDescending(b => b.BookCategory.Name);
                     break;
                 default:
@@ -76,7 +76,7 @@ namespace B.API.Database
             return books;
         }
  
-        public IQueryable<Books> Filter(IQueryable<Books> books, string bookName, List<long> bookAuthors, List<long> bookCategories, List<long> bookStatuses, List<string> readYears)
+        public IQueryable<Book> Filter(IQueryable<Book> books, string bookName, List<long> bookAuthors, List<long> bookCategories, List<long> bookStatuses, List<string> readYears)
         {
             if (!string.IsNullOrEmpty(bookName)) {
                 books = books.Where(b => b.Name.Contains(bookName));

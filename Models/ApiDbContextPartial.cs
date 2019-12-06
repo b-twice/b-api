@@ -7,13 +7,13 @@ namespace B.API.Models {
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
         {
             // prevent self referential loops
-            modelBuilder.Entity<BookAuthors>().Ignore(c => c.Books);
-            modelBuilder.Entity<BookStatuses>().Ignore(c => c.Books);
-            modelBuilder.Entity<BookCategories>().Ignore(c => c.Books);
-            modelBuilder.Entity<Users>().Ignore(c => c.Transactions);
-            modelBuilder.Entity<Users>().Ignore(c => c.Earnings);
-            modelBuilder.Entity<Banks>().Ignore(c => c.Transactions);
-            modelBuilder.Entity<TransactionCategories>().Ignore(c => c.Transactions);
+            modelBuilder.Entity<BookAuthor>().Ignore(c => c.Book);
+            modelBuilder.Entity<BookStatus>().Ignore(c => c.Book);
+            modelBuilder.Entity<BookCategory>().Ignore(c => c.Book);
+            modelBuilder.Entity<Users>().Ignore(c => c.TransactionRecord);
+            modelBuilder.Entity<Users>().Ignore(c => c.Earning);
+            modelBuilder.Entity<Bank>().Ignore(c => c.TransactionRecord);
+            modelBuilder.Entity<TransactionCategory>().Ignore(c => c.TransactionRecord);
         }
     }
 }

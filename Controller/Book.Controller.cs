@@ -28,7 +28,7 @@ namespace B.API.Controller
 
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<Books>> GetBooksPage(
+        public ActionResult<PaginatedResult<Book>> GetBookPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
@@ -41,16 +41,16 @@ namespace B.API.Controller
 
         ) 
         {
-            var books = _bookRepository.Filter(_context.Books, bookName, bookAuthors, bookCategories, bookStatuses, readYears);
+            var books = _bookRepository.Filter(_context.Book, bookName, bookAuthors, bookCategories, bookStatuses, readYears);
             books = _bookRepository.Include(_bookRepository.Order(books, sortName));
-            var paginatedList = PaginatedList<Books>.Create(books, pageNumber, pageSize);
-            return Ok(new PaginatedResult<Books>(paginatedList, paginatedList.TotalCount));
+            var paginatedList = PaginatedList<Book>.Create(books, pageNumber, pageSize);
+            return Ok(new PaginatedResult<Book>(paginatedList, paginatedList.TotalCount));
         }
 
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<Books>> GetBooks(
+        public ActionResult<IEnumerable<Book>> GetBooks(
             [FromQuery]int size 
         ) 
         {
@@ -67,32 +67,32 @@ namespace B.API.Controller
         [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<Books> GetBook(int id)
+        public ActionResult<Book> GetBook(int id)
         {
             return Ok(_bookRepository.Find(id));
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult<Books> CreateBook([FromBody] Books item)
+        public ActionResult<Book> CreateBook([FromBody] Book item)
         {
-            item.BookAuthor = _context.BookAuthors.First(a => a.Id == item.BookAuthor.Id);
-            item.BookCategory = _context.BookCategories.First(a => a.Id == item.BookCategory.Id);
-            item.BookStatus  = _context.BookStatuses.First(a => a.Id == item.BookStatus.Id);
+            item.BookAuthor = _context.BookAuthor.First(a => a.Id == item.BookAuthor.Id);
+            item.BookCategory = _context.BookCategory.First(a => a.Id == item.BookCategory.Id);
+            item.BookStatus  = _context.BookStatus.First(a => a.Id == item.BookStatus.Id);
  
-            return Create<Books>(item, nameof(CreateBook));
+            return Create<Book>(item, nameof(CreateBook));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(int id, [FromBody] Books item)
+        public IActionResult UpdateBook(int id, [FromBody] Book item)
         {
-            return Update<Books>(id, item);
+            return Update<Book>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteBook (int id)
         {
-            return Delete<Books>(id);
+            return Delete<Book>(id);
 
         }
 

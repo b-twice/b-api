@@ -3,19 +3,16 @@ using System.Collections.Generic;
 
 namespace B.API.Models
 {
-    public partial class Users
+    public partial class Bank
     {
-        public Users()
+        public Bank()
         {
-            Earning = new HashSet<Earning>();
             TransactionRecord = new HashSet<TransactionRecord>();
         }
 
         public long Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string Name { get; set; }
 
-        public virtual ICollection<Earning> Earning { get; set; }
         public virtual ICollection<TransactionRecord> TransactionRecord { get; set; }
     }
 }
