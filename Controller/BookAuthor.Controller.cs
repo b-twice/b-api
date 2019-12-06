@@ -27,48 +27,48 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<BookAuthors>> GetAuthors()
+        public ActionResult<IEnumerable<BookAuthor>> GetAuthors()
         {
-            return Ok(_context.BookAuthors.OrderBy(c => c.Name));
+            return Ok(_context.BookAuthor.OrderBy(c => c.Name));
         }
 
         [Authorize]
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<BookAuthors>> GetAuthorsPage(
+        public ActionResult<PaginatedResult<BookAuthor>> GetAuthorsPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy(_lookupRepository.Filter(_context.BookAuthors, name), sortName);
+            var items = _lookupRepository.OrderBy(_lookupRepository.Filter(_context.BookAuthor, name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<BookAuthors> GetAuthor(int id)
+        public ActionResult<BookAuthor> GetAuthor(int id)
         {
-            return Ok(_context.BookAuthors.First(o => o.Id == id));
+            return Ok(_context.BookAuthor.First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]
-        public ActionResult<BookAuthors> CreateAuthor([FromBody] BookAuthors item)
+        public ActionResult<BookAuthor> CreateAuthor([FromBody] BookAuthor item)
         {
-            return Create<BookAuthors>(item, nameof(CreateAuthor));
+            return Create<BookAuthor>(item, nameof(CreateAuthor));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateAuthor(int id, [FromBody] BookAuthors item)
+        public IActionResult UpdateAuthor(int id, [FromBody] BookAuthor item)
         {
-            return Update<BookAuthors>(id, item);
+            return Update<BookAuthor>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteAuthor (int id)
         {
-            return Delete<BookAuthors>(id);
+            return Delete<BookAuthor>(id);
         }
 
 

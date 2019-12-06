@@ -15,17 +15,17 @@ namespace B.API.Models
         {
         }
 
-        public virtual DbSet<Assets> Assets { get; set; }
-        public virtual DbSet<Banks> Banks { get; set; }
-        public virtual DbSet<BookAuthors> BookAuthors { get; set; }
-        public virtual DbSet<BookCategories> BookCategories { get; set; }
-        public virtual DbSet<BookStatuses> BookStatuses { get; set; }
-        public virtual DbSet<Books> Books { get; set; }
+        public virtual DbSet<Asset> Asset { get; set; }
+        public virtual DbSet<Bank> Bank { get; set; }
+        public virtual DbSet<Book> Book { get; set; }
+        public virtual DbSet<BookAuthor> BookAuthor { get; set; }
+        public virtual DbSet<BookCategory> BookCategory { get; set; }
+        public virtual DbSet<BookStatus> BookStatus { get; set; }
         public virtual DbSet<CategoryMap> CategoryMap { get; set; }
-        public virtual DbSet<Earnings> Earnings { get; set; }
-        public virtual DbSet<Investments> Investments { get; set; }
-        public virtual DbSet<TransactionCategories> TransactionCategories { get; set; }
-        public virtual DbSet<Transactions> Transactions { get; set; }
+        public virtual DbSet<Earning> Earning { get; set; }
+        public virtual DbSet<Investment> Investment { get; set; }
+        public virtual DbSet<TransactionCategory> TransactionCategory { get; set; }
+        public virtual DbSet<TransactionRecord> TransactionRecord { get; set; }
         public virtual DbSet<TransactionsStaging> TransactionsStaging { get; set; }
         public virtual DbSet<TransactionsStagingView> TransactionsStagingView { get; set; }
         public virtual DbSet<Users> Users { get; set; }
@@ -41,269 +41,171 @@ namespace B.API.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Assets>(entity =>
+            modelBuilder.Entity<Asset>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Auto)
-                    .HasColumnName("auto")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Auto).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Home)
-                    .HasColumnName("home")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Home).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Hsa)
-                    .HasColumnName("hsa")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Hsa).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Retirement)
-                    .HasColumnName("retirement")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Retirement).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Saving)
-                    .HasColumnName("saving")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Saving).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Stock)
-                    .HasColumnName("stock")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Stock).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Year)
-                    .IsRequired()
-                    .HasColumnName("year");
+                entity.Property(e => e.Year).IsRequired();
             });
 
-            modelBuilder.Entity<Banks>(entity =>
+            modelBuilder.Entity<Bank>(entity =>
             {
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name");
+                entity.Property(e => e.Name).IsRequired();
             });
 
-            modelBuilder.Entity<BookAuthors>(entity =>
-            {
-                entity.HasIndex(e => e.Name)
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name");
-            });
-
-            modelBuilder.Entity<BookCategories>(entity =>
-            {
-                entity.HasIndex(e => e.Name)
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name");
-            });
-
-            modelBuilder.Entity<BookStatuses>(entity =>
-            {
-                entity.HasIndex(e => e.Name)
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Keyword)
-                    .IsRequired()
-                    .HasColumnName("keyword");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name");
-            });
-
-            modelBuilder.Entity<Books>(entity =>
+            modelBuilder.Entity<Book>(entity =>
             {
                 entity.HasIndex(e => new { e.Name, e.BookAuthorId, e.BookCategoryId, e.BookStatusId, e.ReadYear })
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BookAuthorId).HasColumnName("book_author_id");
+                entity.Property(e => e.Name).IsRequired();
 
-                entity.Property(e => e.BookCategoryId).HasColumnName("book_category_id");
-
-                entity.Property(e => e.BookStatusId).HasColumnName("book_status_id");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name");
-
-                entity.Property(e => e.ReadYear)
-                    .IsRequired()
-                    .HasColumnName("read_year");
+                entity.Property(e => e.ReadYear).IsRequired();
 
                 entity.HasOne(d => d.BookAuthor)
-                    .WithMany(p => p.Books)
+                    .WithMany(p => p.Book)
                     .HasForeignKey(d => d.BookAuthorId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.BookCategory)
-                    .WithMany(p => p.Books)
+                    .WithMany(p => p.Book)
                     .HasForeignKey(d => d.BookCategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.BookStatus)
-                    .WithMany(p => p.Books)
+                    .WithMany(p => p.Book)
                     .HasForeignKey(d => d.BookStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<BookAuthor>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<BookCategory>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<BookStatus>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Keyword).IsRequired();
+
+                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<CategoryMap>(entity =>
             {
                 entity.HasNoKey();
-
-                entity.Property(e => e.Automap).HasColumnName("automap");
-
-                entity.Property(e => e.Category).HasColumnName("category");
             });
 
-            modelBuilder.Entity<Earnings>(entity =>
+            modelBuilder.Entity<Earning>(entity =>
             {
                 entity.HasIndex(e => new { e.Year, e.UserId })
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Gross)
-                    .HasColumnName("gross")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Gross).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Taxable)
-                    .HasColumnName("taxable")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Taxable).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Taxed)
-                    .HasColumnName("taxed")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Taxed).HasDefaultValueSql("0");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.Property(e => e.Year)
-                    .IsRequired()
-                    .HasColumnName("year");
+                entity.Property(e => e.Year).IsRequired();
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Earnings)
+                    .WithMany(p => p.Earning)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<Investments>(entity =>
+            modelBuilder.Entity<Investment>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Hsa)
-                    .HasColumnName("hsa")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Hsa).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Ira)
-                    .HasColumnName("ira")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Ira).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Roth)
-                    .HasColumnName("roth")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Roth).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Saving)
-                    .HasColumnName("saving")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Saving).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Stock)
-                    .HasColumnName("stock")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Stock).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Year)
-                    .IsRequired()
-                    .HasColumnName("year");
+                entity.Property(e => e.Year).IsRequired();
             });
 
-            modelBuilder.Entity<TransactionCategories>(entity =>
+            modelBuilder.Entity<TransactionCategory>(entity =>
             {
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name");
+                entity.Property(e => e.Name).IsRequired();
             });
 
-            modelBuilder.Entity<Transactions>(entity =>
+            modelBuilder.Entity<TransactionRecord>(entity =>
             {
-                entity.HasKey(e => e.TransactionId);
+                entity.Property(e => e.TransactionRecordId).ValueGeneratedNever();
 
-                entity.ToTable("transactions");
+                entity.Property(e => e.Amount).HasDefaultValueSql("0");
 
-                entity.Property(e => e.TransactionId)
-                    .HasColumnName("transaction_id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Date).IsRequired();
 
-                entity.Property(e => e.Amount)
-                    .HasColumnName("amount")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Description).IsRequired();
 
-                entity.Property(e => e.BankId).HasColumnName("bank_id");
-
-                entity.Property(e => e.CategoryId).HasColumnName("category_id");
-
-                entity.Property(e => e.Date)
-                    .IsRequired()
-                    .HasColumnName("date");
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasColumnName("description");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.Property(e => e.Wedding)
-                    .HasColumnName("wedding")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Wedding).HasDefaultValueSql("0");
 
                 entity.HasOne(d => d.Bank)
-                    .WithMany(p => p.Transactions)
+                    .WithMany(p => p.TransactionRecord)
                     .HasForeignKey(d => d.BankId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Transactions)
+                    .WithMany(p => p.TransactionRecord)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Transactions)
+                    .WithMany(p => p.TransactionRecord)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
@@ -312,29 +214,13 @@ namespace B.API.Models
             {
                 entity.HasNoKey();
 
-                entity.Property(e => e.Amount)
-                    .HasColumnName("amount")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Amount).HasDefaultValueSql("0");
 
-                entity.Property(e => e.Automap)
-                    .HasColumnName("automap")
-                    .HasDefaultValueSql("1");
+                entity.Property(e => e.Automap).HasDefaultValueSql("1");
 
-                entity.Property(e => e.Bank)
-                    .IsRequired()
-                    .HasColumnName("bank");
+                entity.Property(e => e.Bank).IsRequired();
 
-                entity.Property(e => e.Category).HasColumnName("category");
-
-                entity.Property(e => e.Date).HasColumnName("date");
-
-                entity.Property(e => e.Description).HasColumnName("description");
-
-                entity.Property(e => e.UserName).HasColumnName("user_name");
-
-                entity.Property(e => e.Wedding)
-                    .HasColumnName("wedding")
-                    .HasDefaultValueSql("0");
+                entity.Property(e => e.Wedding).HasDefaultValueSql("0");
             });
 
             modelBuilder.Entity<TransactionsStagingView>(entity =>
@@ -342,22 +228,6 @@ namespace B.API.Models
                 entity.HasNoKey();
 
                 entity.ToView("TransactionsStagingView");
-
-                entity.Property(e => e.Amount).HasColumnName("amount");
-
-                entity.Property(e => e.Automap).HasColumnName("automap");
-
-                entity.Property(e => e.Bank).HasColumnName("bank");
-
-                entity.Property(e => e.Category).HasColumnName("category");
-
-                entity.Property(e => e.Date).HasColumnName("date");
-
-                entity.Property(e => e.Description).HasColumnName("description");
-
-                entity.Property(e => e.UserName).HasColumnName("user_name");
-
-                entity.Property(e => e.Wedding).HasColumnName("wedding");
             });
 
             modelBuilder.Entity<Users>(entity =>

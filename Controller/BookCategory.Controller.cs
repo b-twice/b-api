@@ -27,45 +27,45 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<BookCategories>> GetCategories()
+        public ActionResult<IEnumerable<BookCategory>> GetCategories()
         {
-            return Ok(_context.BookCategories.OrderBy(c => c.Name));
+            return Ok(_context.BookCategory.OrderBy(c => c.Name));
         }
         [Authorize]
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<BookCategories>> GetCategoriesPage(
+        public ActionResult<PaginatedResult<BookCategory>> GetCategoriesPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber = 1,
             [FromQuery]int pageSize = 25
         ) 
         {
-            var items = _lookupRepository.OrderBy(_context.BookCategories, sortName);
+            var items = _lookupRepository.OrderBy(_context.BookCategory, sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<BookCategories> GetCategory(int id)
+        public ActionResult<BookCategory> GetCategory(int id)
         {
-            return Ok(_context.BookCategories.First(o => o.Id == id));
+            return Ok(_context.BookCategory.First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]
-        public ActionResult<BookCategories> CreateCategory([FromBody] BookCategories item)
+        public ActionResult<BookCategory> CreateCategory([FromBody] BookCategory item)
         {
-            return Create<BookCategories>(item, nameof(CreateCategory));
+            return Create<BookCategory>(item, nameof(CreateCategory));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory(int id, [FromBody] BookCategories item)
+        public IActionResult UpdateCategory(int id, [FromBody] BookCategory item)
         {
-            return Update<BookCategories>(id, item);
+            return Update<BookCategory>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteCategory (int id)
         {
-            return Delete<BookCategories>(id);
+            return Delete<BookCategory>(id);
         }
 
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace B.API.Models
 {
-    public partial class Investments
+    public partial class Investment
     {
         public long Id { get; set; }
         public string Year { get; set; }

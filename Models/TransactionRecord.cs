@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace B.API.Models
 {
-    public partial class Transactions
+    public partial class TransactionRecord
     {
-        public long TransactionId { get; set; }
+        public long TransactionRecordId { get; set; }
         public long BankId { get; set; }
         public long UserId { get; set; }
         public long CategoryId { get; set; }
@@ -14,8 +14,8 @@ namespace B.API.Models
         public long? Amount { get; set; }
         public long? Wedding { get; set; }
 
-        public virtual Banks Bank { get; set; }
-        public virtual TransactionCategories Category { get; set; }
+        public virtual Bank Bank { get; set; }
+        public virtual TransactionCategory Category { get; set; }
         public virtual Users User { get; set; }
     }
 }

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace B.API.Models
 {
-    public partial class BookStatuses
+    public partial class BookStatus
     {
-        public BookStatuses()
+        public BookStatus()
         {
-            Books = new HashSet<Books>();
+            Book = new HashSet<Book>();
         }
 
         public long Id { get; set; }
         public string Name { get; set; }
         public string Keyword { get; set; }
 
-        public virtual ICollection<Books> Books { get; set; }
+        public virtual ICollection<Book> Book { get; set; }
     }
 }

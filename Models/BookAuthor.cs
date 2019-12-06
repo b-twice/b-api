@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace B.API.Models
 {
-    public partial class Banks
+    public partial class BookAuthor
     {
-        public Banks()
+        public BookAuthor()
         {
-            Transactions = new HashSet<Transactions>();
+            Book = new HashSet<Book>();
         }
 
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<Transactions> Transactions { get; set; }
+        public virtual ICollection<Book> Book { get; set; }
     }
 }
