@@ -30,13 +30,13 @@ namespace B.API
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            int itemId = (int)item.GetType().GetProperty("id").GetValue(item, null);
+            var itemId = (long)item.GetType().GetProperty("Id").GetValue(item, null);
             return CreatedAtAction(actionName, new { id = itemId}, item);
         }
 
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        protected IActionResult Update<T>(int id, T item) where T : class {
-            int itemId = (int)item.GetType().GetProperty("id").GetValue(item, null);
+        protected IActionResult Update<T>(long id, T item) where T : class {
+            var itemId = (long)item.GetType().GetProperty("Id").GetValue(item, null);
             if (item == null || itemId != id) {
                 _logger.LogWarning(LoggingEvents.UpdateItemBadRequest, $"UPDATE({id}) BAD REQUEST");
                 return BadRequest();
@@ -59,7 +59,7 @@ namespace B.API
         }
 
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-        protected IActionResult Delete<T>(int id) where T : class {
+        protected IActionResult Delete<T>(long id) where T : class {
             var evt = _context.Set<T>().Find(id);
             if (evt == null)
             {

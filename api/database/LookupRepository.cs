@@ -1,7 +1,6 @@
 using System.Linq;
 using B.API.Entities;
-using B.API.Models.Common;
-using System.Collections.Generic;
+using B.API.Models;
 
 namespace B.API.Database
 {
@@ -14,30 +13,31 @@ namespace B.API.Database
         {
             _context = context;
         }
-        public IQueryable<T> OrderBy<T>(IQueryable<T> items, string sortName) 
+
+        public IQueryable<T> OrderBy<T>(IQueryable<T> items, string sortName) where T: IAppLookup
         {
             switch(sortName) {
-                case nameof(AppLookup.Id) + "_asc":
-                    items = items.OrderBy(b => typeof(T).GetProperty("Id").GetValue(b));
+                case "id_asc":
+                    items = items.OrderBy(b => b.Id);
                     break;
-                case nameof(AppLookup.Id) + "_desc":
-                    items = items.OrderByDescending(b => typeof(T).GetProperty("Id").GetValue(b));
+                case "id_desc":
+                    items = items.OrderByDescending(b => b.Id);
                     break;
-                case nameof(AppLookup.Name) + "_asc":
-                    items = items.OrderBy(b => typeof(T).GetProperty("Name").GetValue(b));
+                case "name_asc":
+                    items = items.OrderBy(b => b.Name);
                     break;
-                case nameof(AppLookup.Name) + "_desc":
-                    items = items.OrderByDescending(b => typeof(T).GetProperty("Name").GetValue(b));
+                case "name_desc":
+                    items = items.OrderByDescending(b => b.Name);
                     break;
                default:
                     break;
             }
-            return items;
+            return (IQueryable<T>)items;
         }
-        public IQueryable<T> Filter<T>(IQueryable<T> items, string name)
+        public IQueryable<T> Filter<T>(IQueryable<T> items, string name) where T: IAppLookup
         {
             if (!string.IsNullOrEmpty(name)) {
-                items = items.Where(o => ((string)typeof(T).GetProperty("Name").GetValue(o)).Contains(name));
+                items = items.Where(o => o.Name.Contains(name));
             }
             return items;
         }

@@ -67,7 +67,7 @@ namespace B.API.Controller
         [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<Book> GetBook(int id)
+        public ActionResult<Book> GetBook(long id)
         {
             return Ok(_bookRepository.Find(id));
         }
@@ -84,13 +84,13 @@ namespace B.API.Controller
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(int id, [FromBody] Book item)
+        public IActionResult UpdateBook(long id, [FromBody] Book item)
         {
             return Update<Book>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
-        public IActionResult DeleteBook (int id)
+        public IActionResult DeleteBook (long id)
         {
             return Delete<Book>(id);
 
