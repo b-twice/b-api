@@ -16,7 +16,7 @@ jobs:
     - name: Dotnet Build and Publish
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '2.2.108'
+        dotnet-version: '3.1.100'
     - name: Building Production Appsettings File
       run: echo '{"Weather":{"ServiceApiKey":"${{ secrets.WEATHER_SERVICE_API_KEY}}"}, "Maps":{"ServiceApiKey":"${{ secrets.MAP_SERVICE_API_KEY }}"}}' > appsettings.Production.json
     - run: dotnet build
@@ -30,7 +30,7 @@ jobs:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} 
         SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
       with: 
-        args: $GITHUB_WORKSPACE/bin/Release/netcoreapp2.2/publish/ ${{ secrets.HOST_USER }}@$HOST_NAME:${{ secrets.DEPLOY_PATH }} --exclude /resources
+        args: $GITHUB_WORKSPACE/bin/Release/netcoreapp3.1/publish/ ${{ secrets.HOST_USER }}@$HOST_NAME:${{ secrets.DEPLOY_PATH }} --exclude /resources
     - name: Restart service
       uses: maddox/actions/ssh@master
       env:
