@@ -10,7 +10,7 @@ namespace B.API.Models
         public long BookAuthorId { get; set; }
         public long BookCategoryId { get; set; }
         public long BookStatusId { get; set; }
-        public string ReadYear { get; set; }
+        public string ReadDate { get; set; }
 
         public virtual BookAuthor BookAuthor { get; set; }
         public virtual BookCategory BookCategory { get; set; }

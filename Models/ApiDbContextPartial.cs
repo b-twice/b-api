@@ -1,5 +1,6 @@
 using B.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace B.API.Models {
     public partial class ApiDbContext : DbContext

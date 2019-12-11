@@ -72,14 +72,14 @@ namespace B.API.Models
 
             modelBuilder.Entity<Book>(entity =>
             {
-                entity.HasIndex(e => new { e.Name, e.BookAuthorId, e.BookCategoryId, e.BookStatusId, e.ReadYear })
+                entity.HasIndex(e => new { e.Name, e.BookAuthorId, e.BookCategoryId, e.BookStatusId, e.ReadDate })
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name).IsRequired();
 
-                entity.Property(e => e.ReadYear).IsRequired();
+                entity.Property(e => e.ReadDate).IsRequired();
 
                 entity.HasOne(d => d.BookAuthor)
                     .WithMany(p => p.Book)
