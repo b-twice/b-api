@@ -40,34 +40,34 @@ namespace B.API.Database
             // TODO: tranlsate this to a generic method using IQueryable? 
             // May not be worth it, this is clear and conscise as is
             switch(sortName) {
-                case nameof(Book.Id) + "_asc":
+                case "id_asc":
                     books = books.OrderBy(b => b.Id);
                     break;
-                case nameof(Book.Id) + "_desc":
+                case "id_desc":
                     books = books.OrderByDescending(b => b.Id);
                     break;
-                case nameof(Book.Name) + "_asc":
+                case "name_asc":
                     books = books.OrderBy(b => b.Name);
                     break;
-                case nameof(Book.Name) + "_desc":
+                case "name_desc":
                     books = books.OrderByDescending(b => b.Name);
                     break;
-                case nameof(Book.BookAuthor) + "_asc":
+                case "bookAuthor_asc":
                     books = books.OrderBy(b => b.BookAuthor.Name);
                     break;
-                case nameof(Book.BookAuthor) + "_desc":
+                case "bookAuthor_desc":
                     books = books.OrderByDescending(b => b.BookAuthor.Name);
                     break;
-                case nameof(Book.ReadYear) + "_asc":
-                    books = books.OrderBy(b => b.ReadYear);
+                case "readDate_asc":
+                    books = books.OrderBy(b => b.ReadDate);
                     break;
-                case nameof(Book.ReadYear) + "_desc":
-                    books = books.OrderByDescending(b => b.ReadYear);
+                case "readDate_desc":
+                    books = books.OrderByDescending(b => b.ReadDate);
                     break;
-                case nameof(Book.BookCategory) + "_asc":
+                case "bookCategory_asc":
                     books = books.OrderBy(b => b.BookCategory.Name);
                     break;
-                case nameof(Book.BookCategory) + "_desc":
+                case "bookCategory_desc":
                     books = books.OrderByDescending(b => b.BookCategory.Name);
                     break;
                 default:
@@ -91,7 +91,7 @@ namespace B.API.Database
                 books = books.Where(b => bookCategories.Contains(b.BookCategory.Id));
             }
             if (readYears?.Any() == true) {
-                books = books.Where(b => readYears.Contains(b.ReadYear));
+                books = books.Where(b => readYears.Contains(b.ReadDate.Substring(0,4)));
             }
            return books;
         }
