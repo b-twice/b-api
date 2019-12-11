@@ -42,7 +42,7 @@ namespace B.API.Controller
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy(_lookupRepository.Filter(_context.BookAuthor, name), sortName);
+            var items = _lookupRepository.OrderBy<BookAuthor>(_lookupRepository.Filter<BookAuthor>(_context.BookAuthor, name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]

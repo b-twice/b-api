@@ -15,7 +15,7 @@ namespace B.API.Database
             _context = context;
         }
 
-        public Book Find(int id) 
+        public Book Find(long id) 
         {
             return Include(_context.Book).First(b => b.Id == id);
         }

@@ -40,7 +40,7 @@ namespace B.API.Controller
             [FromQuery]int pageSize = 25
         ) 
         {
-            var items = _lookupRepository.OrderBy(_context.BookCategory, sortName);
+            var items = _lookupRepository.OrderBy<BookCategory>(_context.BookCategory, sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [HttpGet("{id}")]
