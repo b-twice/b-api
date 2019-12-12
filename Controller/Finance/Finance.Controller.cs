@@ -30,7 +30,7 @@ namespace B.API.Controller
 
         [HttpGet("summary/{year}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<User>> GetUserProfile(string year) 
+        public ActionResult<FinancialSummary> GetSummary(string year) 
         {
             var asset = _context.Asset.First(o => o.Year.Substring(0,4) == year);
             var debt = _context.Debt.First(o => o.Year.Substring(0,4) == year);
@@ -44,12 +44,21 @@ namespace B.API.Controller
             return Ok(summary);
         }
 
-
-        [HttpGet("{id}")]
+        [HttpGet("spending-categories/{year}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<TransactionRecord> GetUser(long id)
+        public ActionResult<IEnumerable<TransactionCategoryTotal>> GetTransactionCategoryTotals(string year) 
         {
-            return Ok(_context.User.First(o => o.Id == id));
+            var groups = (
+                from tr in _context.TransactionRecord 
+                where tr.Date.Substring(0,4) == year
+                group tr by tr.Category.Name into g
+                orderby g.Key
+                select new TransactionCategoryTotal {
+                    Name = g.Key,
+                    Amount = g.Sum(gc => gc.Amount)
+                }
+            );
+            return Ok(groups);
         }
 
 
