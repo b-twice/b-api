@@ -15,11 +15,11 @@ namespace B.API
 {
     [Authorize]
     [Route("api/finance/transactions")]
-    public class TransactionController: ControllerBase
+    public class TransactionDeprecatedController: ControllerBase
     {
         private readonly DatabaseContext _context;
 
-        public TransactionController (DatabaseContext context)
+        public TransactionDeprecatedController (DatabaseContext context)
         {
             _context = context;
         }

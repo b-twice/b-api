@@ -9,6 +9,9 @@ using B.API.Entities;
 using B.API.Database;
 using Geocoding.Microsoft;
 using B.API.Models;
+using B.API.AutoMapper;
+
+using AutoMapper;
 
 namespace B.API
 {
@@ -50,6 +53,8 @@ namespace B.API
             // });
             services.AddControllers();
 
+            services.AddAutoMapper(typeof(MappingProfile));
+
 
             var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
             services.AddScoped(sp => darkSky);
@@ -57,6 +62,7 @@ namespace B.API
             var geocoder = new BingMapsGeocoder(Configuration["Maps:ServiceApiKey"]);
             services.AddScoped(sp => geocoder);
             services.AddScoped<BookRepository>();
+            services.AddScoped<TransactionRepository>();
             services.AddScoped<LookupRepository>();
 
             // SOURCED FROM https://www.scottbrady91.com/Entity-Framework/Entity-Framework-Core-In-Memory-Testing

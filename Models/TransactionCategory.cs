@@ -8,11 +8,13 @@ namespace B.API.Models
         public TransactionCategory()
         {
             TransactionRecord = new HashSet<TransactionRecord>();
+            YearlyPlannedExpense = new HashSet<YearlyPlannedExpense>();
         }
 
         public long Id { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<TransactionRecord> TransactionRecord { get; set; }
+        public virtual ICollection<YearlyPlannedExpense> YearlyPlannedExpense { get; set; }
     }
 }

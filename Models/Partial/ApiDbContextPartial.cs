@@ -11,10 +11,12 @@ namespace B.API.Models {
             modelBuilder.Entity<BookAuthor>().Ignore(c => c.Book);
             modelBuilder.Entity<BookStatus>().Ignore(c => c.Book);
             modelBuilder.Entity<BookCategory>().Ignore(c => c.Book);
-            modelBuilder.Entity<Users>().Ignore(c => c.TransactionRecord);
-            modelBuilder.Entity<Users>().Ignore(c => c.Earning);
+            modelBuilder.Entity<User>().Ignore(c => c.TransactionRecord);
+            modelBuilder.Entity<User>().Ignore(c => c.Earning);
             modelBuilder.Entity<Bank>().Ignore(c => c.TransactionRecord);
             modelBuilder.Entity<TransactionCategory>().Ignore(c => c.TransactionRecord);
+
+            modelBuilder.Entity<TransactionRecord>().Property(t => t.Amount).HasColumnType("decimal");
         }
     }
 }

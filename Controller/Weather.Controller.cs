@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace B.API.Controller
 {
 
-    [Route("weather")]
+    [Route("v1/analysis/weather")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class WeatherController: ControllerBase

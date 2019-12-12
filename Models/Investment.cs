@@ -7,10 +7,10 @@ namespace B.API.Models
     {
         public long Id { get; set; }
         public string Year { get; set; }
-        public long? Saving { get; set; }
-        public long? Hsa { get; set; }
-        public long? Ira { get; set; }
-        public long? Roth { get; set; }
-        public long? Stock { get; set; }
+        public long Saving { get; set; }
+        public long Hsa { get; set; }
+        public long Ira { get; set; }
+        public long Roth { get; set; }
+        public long Stock { get; set; }
     }
 }

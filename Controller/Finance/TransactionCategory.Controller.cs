@@ -9,16 +9,16 @@ using System.Collections.Generic;
 namespace B.API.Controller
 {
 
-    [Route("reading/authors")]
+    [Route("v1/finance/transaction-categories")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
-    public class BookAuthorController: AppControllerBase
+    public class TransactionCategoryController: AppControllerBase
     {
         private readonly LookupRepository _lookupRepository;
         private readonly ApiDbContext _context;
 
         private readonly ILogger _logger;
-        public BookAuthorController(ApiDbContext context, ILogger<BookAuthorController> logger,  LookupRepository lookupRepository): base(context, logger)
+        public TransactionCategoryController(ApiDbContext context, ILogger<TransactionCategoryController> logger,  LookupRepository lookupRepository): base(context, logger)
         {
             _lookupRepository = lookupRepository;
             _context = context;
@@ -27,48 +27,48 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<BookAuthor>> GetAuthors()
+        public ActionResult<IEnumerable<TransactionCategory>> GetTransactionCategories()
         {
-            return Ok(_context.BookAuthor.OrderBy(c => c.Name));
+            return Ok(_context.TransactionCategory.OrderBy(c => c.Name));
         }
 
         [Authorize]
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<BookAuthor>> GetAuthorsPage(
+        public ActionResult<PaginatedResult<TransactionCategory>> GetTransactionCategoriesPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy<BookAuthor>(_lookupRepository.Filter<BookAuthor>(_context.BookAuthor, name), sortName);
+            var items = _lookupRepository.OrderBy<TransactionCategory>(_lookupRepository.Filter<TransactionCategory>(_context.TransactionCategory, name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<BookAuthor> GetAuthor(int id)
+        public ActionResult<TransactionCategory> GetTransactionCategory(int id)
         {
-            return Ok(_context.BookAuthor.First(o => o.Id == id));
+            return Ok(_context.TransactionCategory.First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]
-        public ActionResult<BookAuthor> CreateAuthor([FromBody] BookAuthor item)
+        public ActionResult<TransactionCategory> CreateTransactionCategory([FromBody] TransactionCategory item)
         {
-            return Create<BookAuthor>(item, nameof(CreateAuthor));
+            return Create<TransactionCategory>(item, nameof(CreateTransactionCategory));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateAuthor(int id, [FromBody] BookAuthor item)
+        public IActionResult UpdateTransactionCategory(int id, [FromBody] TransactionCategory item)
         {
-            return Update<BookAuthor>(id, item);
+            return Update<TransactionCategory>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
-        public IActionResult DeleteAuthor (int id)
+        public IActionResult DeleteTransactionCategory (int id)
         {
-            return Delete<BookAuthor>(id);
+            return Delete<TransactionCategory>(id);
         }
 
 
