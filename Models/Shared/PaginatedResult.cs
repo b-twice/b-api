@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace B.API.Database
+namespace B.API.Models
 {
     public class PaginatedResult<T>
     {

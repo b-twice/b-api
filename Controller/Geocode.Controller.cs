@@ -7,7 +7,7 @@ using Geocoding.Microsoft;
 namespace B.API.Controller
 {
 
-    [Route("geocode")]
+    [Route("v1/analysis/geocode")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class GeocodeController: ControllerBase

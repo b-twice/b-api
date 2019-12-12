@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace B.API.Controller
 {
 
-    [Route("reading/books")]
+    [Route("v1/reading/books")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class BookController: AppControllerBase
@@ -54,10 +54,7 @@ namespace B.API.Controller
             [FromQuery]int size 
         ) 
         {
-            // NOTE - This is not an exact approach, just takes the last added, since we only store the year and not a date. 
-            // Considering I've added all the books I've already read this, I should only be adding ones I actually just read.
-            // If the order is slight out of sync with reality, not that big of a deal            
-            var books =_bookRepository.FindAll().OrderByDescending(b => b.Id);
+            var books =_bookRepository.FindAll().OrderByDescending(b => b.ReadDate);
             if (size > 0) {
                 return Ok(books.Take(size));
             }

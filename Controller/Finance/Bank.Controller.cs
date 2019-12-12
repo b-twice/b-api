@@ -9,16 +9,16 @@ using System.Collections.Generic;
 namespace B.API.Controller
 {
 
-    [Route("reading/categories")]
+    [Route("v1/finance/banks")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
-    public class BookCategoryController: AppControllerBase
+    public class BankController: AppControllerBase
     {
         private readonly LookupRepository _lookupRepository;
         private readonly ApiDbContext _context;
 
         private readonly ILogger _logger;
-        public BookCategoryController(ApiDbContext context, ILogger<BookCategoryController> logger,  LookupRepository lookupRepository): base(context, logger)
+        public BankController(ApiDbContext context, ILogger<BankController> logger,  LookupRepository lookupRepository): base(context, logger)
         {
             _lookupRepository = lookupRepository;
             _context = context;
@@ -27,48 +27,52 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<BookCategory>> GetCategories()
+        public ActionResult<IEnumerable<Bank>> GetBanks()
         {
-            return Ok(_context.BookCategory.OrderBy(c => c.Name));
+            return Ok(_context.Bank.OrderBy(c => c.Name));
         }
+
         [Authorize]
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<BookCategory>> GetCategoriesPage(
+        public ActionResult<PaginatedResult<Bank>> GetBanksPage(
             [FromQuery]string sortName,
-            [FromQuery]int pageNumber = 1,
-            [FromQuery]int pageSize = 25
+            [FromQuery]int pageNumber,
+            [FromQuery]int pageSize,
+            [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy<BookCategory>(_context.BookCategory, sortName);
+            var items = _lookupRepository.OrderBy<Bank>(_lookupRepository.Filter<Bank>(_context.Bank, name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
+        [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<BookCategory> GetCategory(int id)
+        public ActionResult<Bank> GetBank(int id)
         {
-            return Ok(_context.BookCategory.First(o => o.Id == id));
+            return Ok(_context.Bank.First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]
-        public ActionResult<BookCategory> CreateCategory([FromBody] BookCategory item)
+        public ActionResult<Bank> CreateBank([FromBody] Bank item)
         {
-            return Create<BookCategory>(item, nameof(CreateCategory));
+            return Create<Bank>(item, nameof(CreateBank));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory(int id, [FromBody] BookCategory item)
+        public IActionResult UpdateBank(int id, [FromBody] Bank item)
         {
-            return Update<BookCategory>(id, item);
+            return Update<Bank>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategory (int id)
+        public IActionResult DeleteBank (int id)
         {
-            return Delete<BookCategory>(id);
+            return Delete<Bank>(id);
         }
 
 
-    }
-}
 
+    }
+
+}

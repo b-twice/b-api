@@ -22,13 +22,15 @@ namespace B.API.Models
         public virtual DbSet<BookCategory> BookCategory { get; set; }
         public virtual DbSet<BookStatus> BookStatus { get; set; }
         public virtual DbSet<CategoryMap> CategoryMap { get; set; }
+        public virtual DbSet<Debt> Debt { get; set; }
         public virtual DbSet<Earning> Earning { get; set; }
         public virtual DbSet<Investment> Investment { get; set; }
         public virtual DbSet<TransactionCategory> TransactionCategory { get; set; }
         public virtual DbSet<TransactionRecord> TransactionRecord { get; set; }
         public virtual DbSet<TransactionsStaging> TransactionsStaging { get; set; }
         public virtual DbSet<TransactionsStagingView> TransactionsStagingView { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<YearlyPlannedExpense> YearlyPlannedExpense { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -44,18 +46,6 @@ namespace B.API.Models
             modelBuilder.Entity<Asset>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Auto).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Home).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Hsa).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Retirement).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Saving).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Stock).HasDefaultValueSql("0");
 
                 entity.Property(e => e.Year).IsRequired();
             });
@@ -134,18 +124,22 @@ namespace B.API.Models
                 entity.HasNoKey();
             });
 
+            modelBuilder.Entity<Debt>(entity =>
+            {
+                entity.HasIndex(e => e.Year)
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Year).IsRequired();
+            });
+
             modelBuilder.Entity<Earning>(entity =>
             {
                 entity.HasIndex(e => new { e.Year, e.UserId })
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Gross).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Taxable).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Taxed).HasDefaultValueSql("0");
 
                 entity.Property(e => e.Year).IsRequired();
 
@@ -158,16 +152,6 @@ namespace B.API.Models
             modelBuilder.Entity<Investment>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Hsa).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Ira).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Roth).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Saving).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Stock).HasDefaultValueSql("0");
 
                 entity.Property(e => e.Year).IsRequired();
             });
@@ -184,9 +168,7 @@ namespace B.API.Models
 
             modelBuilder.Entity<TransactionRecord>(entity =>
             {
-                entity.Property(e => e.TransactionRecordId).ValueGeneratedNever();
-
-                entity.Property(e => e.Amount).HasDefaultValueSql("0");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Date).IsRequired();
 
@@ -230,22 +212,37 @@ namespace B.API.Models
                 entity.ToView("TransactionsStagingView");
             });
 
-            modelBuilder.Entity<Users>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => new { e.FirstName, e.LastName })
+                entity.HasIndex(e => e.Email)
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasColumnName("first_name");
+                entity.Property(e => e.Email).IsRequired();
 
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasColumnName("last_name");
+                entity.Property(e => e.FirstName).IsRequired();
+
+                entity.Property(e => e.LastName).IsRequired();
+
+                entity.Property(e => e.Phone).IsRequired();
+            });
+
+            modelBuilder.Entity<YearlyPlannedExpense>(entity =>
+            {
+                entity.HasIndex(e => new { e.Year, e.CategoryId })
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Amount).HasDefaultValueSql("0");
+
+                entity.Property(e => e.Year).IsRequired();
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.YearlyPlannedExpense)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             OnModelCreatingPartial(modelBuilder);

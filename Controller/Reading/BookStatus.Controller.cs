@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace B.API.Controller
 {
 
-    [Route("reading/statuses")]
+    [Route("v1/reading/statuses")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class BookStatusController: AppControllerBase
