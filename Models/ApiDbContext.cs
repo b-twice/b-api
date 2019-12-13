@@ -230,14 +230,12 @@ namespace B.API.Models
 
             modelBuilder.Entity<YearlyPlannedExpense>(entity =>
             {
-                entity.HasIndex(e => new { e.Year, e.CategoryId })
+                entity.HasIndex(e => new { e.Date, e.CategoryId })
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Amount).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Year).IsRequired();
+                entity.Property(e => e.Date).IsRequired();
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.YearlyPlannedExpense)
