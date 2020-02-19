@@ -53,7 +53,7 @@
         {
             "label": "generate",
             "type": "shell",
-            "command": "dotnet ef dbcontext scaffold \"DataSource=app.db;\" Microsoft.EntityFrameworkCore.Sqlite -o Models -v -c ApiDbContext --force",
+            "command": "dotnet ef dbcontext scaffold \"DataSource=app.db;\" Microsoft.EntityFrameworkCore.Sqlite -o Models -v -c AppDbContext --force && rsync -a ${workspaceFolder}/Models ${workspaceFolder}/../b-graphql-generator",
             "problemMatcher": []
         }
     ]

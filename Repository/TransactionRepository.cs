@@ -8,9 +8,9 @@ namespace B.API.Database
 
     public class TransactionRepository
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
-        public TransactionRepository(ApiDbContext context)
+        public TransactionRepository(AppDbContext context)
         {
             _context = context;
         }
@@ -86,7 +86,7 @@ namespace B.API.Database
             return items;
         }
  
-        public IQueryable<TransactionRecord> Filter(IQueryable<TransactionRecord> items, string description, List<long> categories, List<long> banks, List<long> users, List<string> years)
+        public IQueryable<TransactionRecord> Filter(IQueryable<TransactionRecord> items, string description, List<long> categories, List<long> banks, List<long> users, List<string> years, List<string> months)
         {
             if (!string.IsNullOrEmpty(description)) {
                 items = items.Where(o => o.Description.Contains(description));
@@ -102,6 +102,9 @@ namespace B.API.Database
             }
             if (years?.Any() == true) {
                 items = items.Where(b => years.Contains(b.Date.Substring(0,4)));
+            }
+            if (months?.Any() == true) {
+                items = items.Where(b => months.Contains(b.Date.Substring(5,2)));
             }
            return items;
         }

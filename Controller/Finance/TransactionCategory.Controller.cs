@@ -15,10 +15,10 @@ namespace B.API.Controller
     public class TransactionCategoryController: AppControllerBase
     {
         private readonly LookupRepository _lookupRepository;
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public TransactionCategoryController(ApiDbContext context, ILogger<TransactionCategoryController> logger,  LookupRepository lookupRepository): base(context, logger)
+        public TransactionCategoryController(AppDbContext context, ILogger<TransactionCategoryController> logger,  LookupRepository lookupRepository): base(context, logger)
         {
             _lookupRepository = lookupRepository;
             _context = context;

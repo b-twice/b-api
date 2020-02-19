@@ -16,18 +16,26 @@ namespace B.API.Controller
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class FinanceController: AppControllerBase
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
 
         private readonly FinanceRepository _repository;
 
 
         private readonly ILogger _logger;
-        public FinanceController(ApiDbContext context, ILogger<FinanceController> logger, FinanceRepository repository): base(context, logger)
+        public FinanceController(AppDbContext context, ILogger<FinanceController> logger, FinanceRepository repository): base(context, logger)
         {
             _context = context;
             _logger = logger;
             _repository = repository;
+        }
+
+
+        [HttpGet("categories")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<TransactionCategory>> GetCategories(string year) 
+        {
+            return Ok(_context.TransactionCategory.OrderBy(o => o.Name));
         }
 
 
@@ -48,20 +56,34 @@ namespace B.API.Controller
 
         [HttpGet("expenses")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<Expense>> GetExpenses(
-            [FromQuery] string year,
-            [FromQuery] string month
+        public ActionResult<IEnumerable<ExpenseSummary>> GetExpenses(
+            [FromQuery] List<string> years,
+            [FromQuery] List<string> months,
+            [FromQuery] List<long> categories
         ) {
-           return Ok(_repository.FindMonthlyExpenses(year, month));
+            if (years.Count > 0 && months.Count == 0) {
+                return Ok(new ExpenseSummary { expenses = _repository.FindYearlyExpenses(years, categories)});
+            }
+            else if (years.Count > 0 && months.Count > 0) {
+                return Ok(new ExpenseSummary { expenses =_repository.FindMonthlyExpenses(years, months, categories)});
+            }
+            return BadRequest();
         }
 
         [HttpGet("expense-summary")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<ExpenseSummary> GetExpenseSummary(
-            [FromQuery] string year,
-            [FromQuery] string month
+            [FromQuery] List<string> years,
+            [FromQuery] List<string> months,
+            [FromQuery] List<long> categories 
         ) {
-           return Ok(new ExpenseSummary { expenses = _repository.FindMonthlyExpenses(year, month)});
+            if (years.Count > 0 && months.Count == 0) {
+                return Ok(new ExpenseSummary { expenses = _repository.FindYearlyExpenses(years, categories)});
+            }
+            else if (years.Count > 0 && months.Count > 0) {
+                return Ok(new ExpenseSummary { expenses = _repository.FindMonthlyExpenses(years, months, categories)});
+            }
+            return BadRequest();
         }
 
    }

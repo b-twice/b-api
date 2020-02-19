@@ -16,10 +16,10 @@ namespace B.API.Controller
     public class TransactionController: AppControllerBase
     {
         private readonly TransactionRepository _repository;
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public TransactionController(ApiDbContext context, ILogger<TransactionController> logger, TransactionRepository repository): base(context, logger)
+        public TransactionController(AppDbContext context, ILogger<TransactionController> logger, TransactionRepository repository): base(context, logger)
         {
             _repository = repository;
             _context = context;
@@ -38,10 +38,11 @@ namespace B.API.Controller
             [FromQuery]List<long> banks,
             [FromQuery]List<long> users,
             [FromQuery]List<long> categories,
-            [FromQuery]List<string> years 
+            [FromQuery]List<string> years,
+            [FromQuery]List<string> months
         ) 
         {
-            var records =  _repository.Filter(_context.TransactionRecord, description, categories, banks, users, years);
+            var records =  _repository.Filter(_context.TransactionRecord, description, categories, banks, users, years, months);
             records = _repository.Include(_repository.Order(records, sortName));
             var paginatedList = PaginatedList<TransactionRecord>.Create(records, pageNumber, pageSize);
             return Ok(new PaginatedTransactionResult(paginatedList, paginatedList.TotalCount, records.Sum(t => t.Amount)));

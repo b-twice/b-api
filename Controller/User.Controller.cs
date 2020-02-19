@@ -14,10 +14,10 @@ namespace B.API.Controller
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class UserController: AppControllerBase
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public UserController(ApiDbContext context, ILogger<UserController> logger): base(context, logger)
+        public UserController(AppDbContext context, ILogger<UserController> logger): base(context, logger)
         {
             _context = context;
             _logger = logger;

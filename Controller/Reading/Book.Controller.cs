@@ -15,10 +15,10 @@ namespace B.API.Controller
     public class BookController: AppControllerBase
     {
         private readonly BookRepository _bookRepository;
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public BookController(ApiDbContext context, ILogger<BookController> logger, BookRepository bookRepository): base(context, logger)
+        public BookController(AppDbContext context, ILogger<BookController> logger, BookRepository bookRepository): base(context, logger)
         {
             _bookRepository = bookRepository;
             _context = context;

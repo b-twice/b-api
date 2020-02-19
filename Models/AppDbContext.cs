@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace B.API.Models
 {
-    public partial class ApiDbContext : DbContext
+    public partial class AppDbContext : DbContext
     {
-        public ApiDbContext()
+        public AppDbContext()
         {
         }
 
-        public ApiDbContext(DbContextOptions<ApiDbContext> options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
