@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace B.API.Models
 {
-    public partial class ApiDbContext : DbContext
+    public partial class AppDbContext : DbContext
     {
-        public ApiDbContext()
+        public AppDbContext()
         {
         }
 
-        public ApiDbContext(DbContextOptions<ApiDbContext> options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
@@ -45,7 +45,7 @@ namespace B.API.Models
         {
             modelBuilder.Entity<Asset>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Year).IsRequired();
             });
@@ -55,7 +55,7 @@ namespace B.API.Models
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name).IsRequired();
             });
@@ -65,7 +65,7 @@ namespace B.API.Models
                 entity.HasIndex(e => new { e.Name, e.BookAuthorId, e.BookCategoryId, e.BookStatusId, e.ReadDate })
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name).IsRequired();
 
@@ -92,7 +92,7 @@ namespace B.API.Models
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name).IsRequired();
             });
@@ -102,7 +102,7 @@ namespace B.API.Models
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name).IsRequired();
             });
@@ -112,7 +112,7 @@ namespace B.API.Models
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Keyword).IsRequired();
 
@@ -129,7 +129,7 @@ namespace B.API.Models
                 entity.HasIndex(e => e.Year)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Year).IsRequired();
             });
@@ -139,7 +139,7 @@ namespace B.API.Models
                 entity.HasIndex(e => new { e.Year, e.UserId })
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Year).IsRequired();
 
@@ -151,7 +151,7 @@ namespace B.API.Models
 
             modelBuilder.Entity<Investment>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Year).IsRequired();
             });
@@ -161,14 +161,14 @@ namespace B.API.Models
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<TransactionRecord>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Date).IsRequired();
 
@@ -217,7 +217,7 @@ namespace B.API.Models
                 entity.HasIndex(e => e.Email)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Email).IsRequired();
 
@@ -233,7 +233,7 @@ namespace B.API.Models
                 entity.HasIndex(e => new { e.Date, e.CategoryId })
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Date).IsRequired();
 

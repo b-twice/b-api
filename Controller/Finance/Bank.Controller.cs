@@ -15,10 +15,10 @@ namespace B.API.Controller
     public class BankController: AppControllerBase
     {
         private readonly LookupRepository _lookupRepository;
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public BankController(ApiDbContext context, ILogger<BankController> logger,  LookupRepository lookupRepository): base(context, logger)
+        public BankController(AppDbContext context, ILogger<BankController> logger,  LookupRepository lookupRepository): base(context, logger)
         {
             _lookupRepository = lookupRepository;
             _context = context;

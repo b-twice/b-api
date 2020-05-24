@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller
 {
@@ -15,10 +17,10 @@ namespace B.API.Controller
     public class BookController: AppControllerBase
     {
         private readonly BookRepository _bookRepository;
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public BookController(ApiDbContext context, ILogger<BookController> logger, BookRepository bookRepository): base(context, logger)
+        public BookController(AppDbContext context, ILogger<BookController> logger, BookRepository bookRepository): base(context, logger)
         {
             _bookRepository = bookRepository;
             _context = context;
@@ -73,9 +75,10 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<Book> CreateBook([FromBody] Book item)
         {
-            item.BookAuthor = _context.BookAuthor.First(a => a.Id == item.BookAuthor.Id);
-            item.BookCategory = _context.BookCategory.First(a => a.Id == item.BookCategory.Id);
-            item.BookStatus  = _context.BookStatus.First(a => a.Id == item.BookStatus.Id);
+            // Without this EF Core will not bind the FK to these entities
+            _context.Entry(item.BookAuthor).State = EntityState.Unchanged;
+            _context.Entry(item.BookCategory).State = EntityState.Unchanged;
+            _context.Entry(item.BookStatus).State = EntityState.Unchanged;
  
             return Create<Book>(item, nameof(CreateBook));
         }
@@ -83,6 +86,10 @@ namespace B.API.Controller
         [HttpPut("{id}")]
         public IActionResult UpdateBook(long id, [FromBody] Book item)
         {
+            item.BookAuthorId = item?.BookAuthor?.Id ?? default(int);
+            item.BookCategoryId = item?.BookCategory?.Id ?? default(int);
+            item.BookStatusId  = item?.BookStatus?.Id ?? default(int);
+ 
             return Update<Book>(id, item);
         }
         [Authorize]

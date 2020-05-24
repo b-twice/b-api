@@ -16,10 +16,10 @@ namespace B.API.Controller
     public class TransactionController: AppControllerBase
     {
         private readonly TransactionRepository _repository;
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public TransactionController(ApiDbContext context, ILogger<TransactionController> logger, TransactionRepository repository): base(context, logger)
+        public TransactionController(AppDbContext context, ILogger<TransactionController> logger, TransactionRepository repository): base(context, logger)
         {
             _repository = repository;
             _context = context;

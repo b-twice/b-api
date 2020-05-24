@@ -8,9 +8,9 @@ namespace B.API.Database
 
     public class TransactionRepository
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
-        public TransactionRepository(ApiDbContext context)
+        public TransactionRepository(AppDbContext context)
         {
             _context = context;
         }
