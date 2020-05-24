@@ -8,9 +8,9 @@ namespace B.API.Database
 
     public class BookRepository
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
-        public BookRepository(ApiDbContext context)
+        public BookRepository(AppDbContext context)
         {
             _context = context;
         }
@@ -23,13 +23,13 @@ namespace B.API.Database
         
         public IQueryable<Book> FindAll() 
         {
-            return Include(_context.Book);
+            return Include(_context.Book).AsNoTracking();
         }
 
         public IQueryable<Book> Include(IQueryable<Book> books) 
         {
             // return books.AsNoTracking().Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
-            return books.Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
+            return books.Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus).AsNoTracking();
             // return books;
         }
 

@@ -15,10 +15,10 @@ namespace B.API.Controller
     public class BookAuthorController: AppControllerBase
     {
         private readonly LookupRepository _lookupRepository;
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public BookAuthorController(ApiDbContext context, ILogger<BookAuthorController> logger,  LookupRepository lookupRepository): base(context, logger)
+        public BookAuthorController(AppDbContext context, ILogger<BookAuthorController> logger,  LookupRepository lookupRepository): base(context, logger)
         {
             _lookupRepository = lookupRepository;
             _context = context;

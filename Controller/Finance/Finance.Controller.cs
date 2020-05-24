@@ -16,14 +16,14 @@ namespace B.API.Controller
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class FinanceController: AppControllerBase
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
 
         private readonly FinanceRepository _repository;
 
 
         private readonly ILogger _logger;
-        public FinanceController(ApiDbContext context, ILogger<FinanceController> logger, FinanceRepository repository): base(context, logger)
+        public FinanceController(AppDbContext context, ILogger<FinanceController> logger, FinanceRepository repository): base(context, logger)
         {
             _context = context;
             _logger = logger;

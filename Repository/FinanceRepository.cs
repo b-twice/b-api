@@ -9,11 +9,11 @@ namespace B.API.Database
 
   public class FinanceRepository
   {
-    private readonly ApiDbContext _context;
+    private readonly AppDbContext _context;
 
     private readonly IMapper _mapper;
 
-    public FinanceRepository(ApiDbContext context, IMapper mapper)
+    public FinanceRepository(AppDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

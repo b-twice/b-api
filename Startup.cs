@@ -81,7 +81,7 @@ namespace B.API
                 DataSource = Configuration.GetSection("Database")[Environment.EnvironmentName]
             };
             var appApiConnectionString = appApiConnectionStringBuilder.ToString();
-            services.AddEntityFrameworkSqlite().AddDbContext<ApiDbContext>(options => options.UseSqlite(appApiConnectionString));
+            services.AddEntityFrameworkSqlite().AddDbContext<AppDbContext>(options => options.UseSqlite(appApiConnectionString));
 
 
 
