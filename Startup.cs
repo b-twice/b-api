@@ -56,11 +56,8 @@ namespace B.API
             services.AddAutoMapper(typeof(MappingProfile));
 
 
-            var darkSky = new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]);
-            services.AddScoped(sp => darkSky);
-
-            var geocoder = new BingMapsGeocoder(Configuration["Maps:ServiceApiKey"]);
-            services.AddScoped(sp => geocoder);
+            services.AddScoped(sp => new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]));
+            services.AddScoped(sp => new BingMapsGeocoder(Configuration["Maps:ServiceApiKey"]));
             services.AddScoped<BookRepository>();
             services.AddScoped<TransactionRepository>();
             services.AddScoped<LookupRepository>();
