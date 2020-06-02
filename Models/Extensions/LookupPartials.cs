@@ -5,4 +5,5 @@ namespace B.API.Models
     public partial class BookStatus: IAppKeywordLookup{}
     public partial class Bank: IAppLookup{}
     public partial class TransactionCategory: IAppLookup{}
+    public partial class TransactionTag: IAppLookup{}
 }

@@ -12,9 +12,10 @@ namespace B.API.Models {
             modelBuilder.Entity<BookStatus>().Ignore(c => c.Book);
             modelBuilder.Entity<BookCategory>().Ignore(c => c.Book);
             modelBuilder.Entity<User>().Ignore(c => c.TransactionRecord);
-            modelBuilder.Entity<User>().Ignore(c => c.Earning);
             modelBuilder.Entity<Bank>().Ignore(c => c.TransactionRecord);
             modelBuilder.Entity<TransactionCategory>().Ignore(c => c.TransactionRecord);
+            modelBuilder.Entity<TransactionRecordTag>().Ignore(c => c.TransactionRecord);
+            modelBuilder.Entity<TransactionTag>().Ignore(c => c.TransactionRecordTag);
 
             modelBuilder.Entity<TransactionRecord>().Property(t => t.Amount).HasColumnType("decimal");
         }

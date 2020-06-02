@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller
 {
@@ -29,7 +30,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<BookAuthor>> GetAuthors()
         {
-            return Ok(_context.BookAuthor.OrderBy(c => c.Name));
+            return Ok(_context.BookAuthor.AsNoTracking().OrderBy(c => c.Name));
         }
 
         [Authorize]
@@ -42,7 +43,7 @@ namespace B.API.Controller
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy<BookAuthor>(_lookupRepository.Filter<BookAuthor>(_context.BookAuthor, name), sortName);
+            var items = _lookupRepository.OrderBy<BookAuthor>(_lookupRepository.Filter<BookAuthor>(_context.BookAuthor.AsNoTracking(), name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
@@ -50,7 +51,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<BookAuthor> GetAuthor(int id)
         {
-            return Ok(_context.BookAuthor.First(o => o.Id == id));
+            return Ok(_context.BookAuthor.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]

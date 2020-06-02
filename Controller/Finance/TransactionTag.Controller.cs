@@ -10,16 +10,16 @@ using Microsoft.EntityFrameworkCore;
 namespace B.API.Controller
 {
 
-    [Route("v1/finance/banks")]
+    [Route("v1/finance/transaction-tags")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
-    public class BankController: AppControllerBase
+    public class TransactionTagController: AppControllerBase
     {
         private readonly LookupRepository _lookupRepository;
         private readonly AppDbContext _context;
 
         private readonly ILogger _logger;
-        public BankController(AppDbContext context, ILogger<BankController> logger,  LookupRepository lookupRepository): base(context, logger)
+        public TransactionTagController(AppDbContext context, ILogger<TransactionTagController> logger,  LookupRepository lookupRepository): base(context, logger)
         {
             _lookupRepository = lookupRepository;
             _context = context;
@@ -28,48 +28,48 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<Bank>> GetBanks()
+        public ActionResult<IEnumerable<TransactionTag>> GetTransactionTags()
         {
-            return Ok(_context.Bank.AsNoTracking().OrderBy(c => c.Name));
+            return Ok(_context.TransactionTag.AsNoTracking().OrderBy(c => c.Name));
         }
 
         [Authorize]
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<Bank>> GetBanksPage(
+        public ActionResult<PaginatedResult<TransactionTag>> GetTransactionTagsPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy<Bank>(_lookupRepository.Filter<Bank>(_context.Bank.AsNoTracking(), name), sortName);
+            var items = _lookupRepository.OrderBy<TransactionTag>(_lookupRepository.Filter<TransactionTag>(_context.TransactionTag.AsNoTracking(), name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<Bank> GetBank(int id)
+        public ActionResult<TransactionTag> GetTransactionTag(int id)
         {
-            return Ok(_context.Bank.AsNoTracking().First(o => o.Id == id));
+            return Ok(_context.TransactionTag.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]
-        public ActionResult<Bank> CreateBank([FromBody] Bank item)
+        public ActionResult<TransactionTag> CreateTransactionTag([FromBody] TransactionTag item)
         {
-            return Create<Bank>(item, nameof(CreateBank));
+            return Create<TransactionTag>(item, nameof(CreateTransactionTag));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateBank(int id, [FromBody] Bank item)
+        public IActionResult UpdateTransactionTag(int id, [FromBody] TransactionTag item)
         {
-            return Update<Bank>(id, item);
+            return Update<TransactionTag>(id, item);
         }
         [Authorize]
         [HttpDelete("{id}")]
-        public IActionResult DeleteBank (int id)
+        public IActionResult DeleteTransactionTag (int id)
         {
-            return Delete<Bank>(id);
+            return Delete<TransactionTag>(id);
         }
 
 

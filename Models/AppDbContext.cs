@@ -21,14 +21,13 @@ namespace B.API.Models
         public virtual DbSet<BookAuthor> BookAuthor { get; set; }
         public virtual DbSet<BookCategory> BookCategory { get; set; }
         public virtual DbSet<BookStatus> BookStatus { get; set; }
-        public virtual DbSet<CategoryMap> CategoryMap { get; set; }
         public virtual DbSet<Debt> Debt { get; set; }
         public virtual DbSet<Earning> Earning { get; set; }
         public virtual DbSet<Investment> Investment { get; set; }
         public virtual DbSet<TransactionCategory> TransactionCategory { get; set; }
         public virtual DbSet<TransactionRecord> TransactionRecord { get; set; }
-        public virtual DbSet<TransactionsStaging> TransactionsStaging { get; set; }
-        public virtual DbSet<TransactionsStagingView> TransactionsStagingView { get; set; }
+        public virtual DbSet<TransactionRecordTag> TransactionRecordTag { get; set; }
+        public virtual DbSet<TransactionTag> TransactionTag { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<YearlyPlannedExpense> YearlyPlannedExpense { get; set; }
 
@@ -37,7 +36,7 @@ namespace B.API.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlite("DataSource=app.db;");
+                optionsBuilder.UseSqlite("DataSource=../b-database/app.db;");
             }
         }
 
@@ -119,16 +118,8 @@ namespace B.API.Models
                 entity.Property(e => e.Name).IsRequired();
             });
 
-            modelBuilder.Entity<CategoryMap>(entity =>
-            {
-                entity.HasNoKey();
-            });
-
             modelBuilder.Entity<Debt>(entity =>
             {
-                entity.HasIndex(e => e.Year)
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Year).IsRequired();
@@ -136,17 +127,9 @@ namespace B.API.Models
 
             modelBuilder.Entity<Earning>(entity =>
             {
-                entity.HasIndex(e => new { e.Year, e.UserId })
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Year).IsRequired();
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Earning)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Investment>(entity =>
@@ -168,13 +151,14 @@ namespace B.API.Models
 
             modelBuilder.Entity<TransactionRecord>(entity =>
             {
+                entity.HasIndex(e => new { e.BankId, e.UserId, e.CategoryId, e.Date, e.Description, e.Amount })
+                    .IsUnique();
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Date).IsRequired();
 
                 entity.Property(e => e.Description).IsRequired();
-
-                entity.Property(e => e.Wedding).HasDefaultValueSql("0");
 
                 entity.HasOne(d => d.Bank)
                     .WithMany(p => p.TransactionRecord)
@@ -192,24 +176,29 @@ namespace B.API.Models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<TransactionsStaging>(entity =>
+            modelBuilder.Entity<TransactionRecordTag>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Amount).HasDefaultValueSql("0");
+                entity.HasOne(d => d.Tag)
+                    .WithMany(p => p.TransactionRecordTag)
+                    .HasForeignKey(d => d.TagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
-                entity.Property(e => e.Automap).HasDefaultValueSql("1");
-
-                entity.Property(e => e.Bank).IsRequired();
-
-                entity.Property(e => e.Wedding).HasDefaultValueSql("0");
+                entity.HasOne(d => d.TransactionRecord)
+                    .WithMany(p => p.TransactionRecordTag)
+                    .HasForeignKey(d => d.TransactionRecordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<TransactionsStagingView>(entity =>
+            modelBuilder.Entity<TransactionTag>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasIndex(e => e.Name)
+                    .IsUnique();
 
-                entity.ToView("TransactionsStagingView");
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<User>(entity =>

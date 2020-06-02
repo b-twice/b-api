@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller
 {
@@ -38,10 +39,12 @@ namespace B.API.Controller
             [FromQuery]List<long> banks,
             [FromQuery]List<long> users,
             [FromQuery]List<long> categories,
-            [FromQuery]List<string> years 
+            [FromQuery]List<long> tags,
+            [FromQuery]List<string> years,
+            [FromQuery]List<string>  months
         ) 
         {
-            var records =  _repository.Filter(_context.TransactionRecord, description, categories, banks, users, years);
+            var records =  _repository.Filter(_context.TransactionRecord, description, categories, tags, banks, users, years, months);
             records = _repository.Include(_repository.Order(records, sortName));
             var paginatedList = PaginatedList<TransactionRecord>.Create(records, pageNumber, pageSize);
             return Ok(new PaginatedTransactionResult(paginatedList, paginatedList.TotalCount, records.Sum(t => t.Amount)));
@@ -57,9 +60,15 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<TransactionRecord> CreateTransaction([FromBody] TransactionRecord item)
         {
-            item.Bank = _context.Bank.First(a => a.Id == item.Bank.Id);
-            item.Category = _context.TransactionCategory.First(a => a.Id == item.Category.Id);
-            item.User = _context.User.First(a => a.Id == item.User.Id);
+            // Without this EF Core will not bind the FK to these entities
+            _context.Entry(item.Bank).State = EntityState.Unchanged;
+            _context.Entry(item.Category).State = EntityState.Unchanged;
+            _context.Entry(item.User).State = EntityState.Unchanged;
+
+            foreach (TransactionRecordTag tag in item.TransactionRecordTag) {
+                _context.Entry(tag).State = EntityState.Added;
+            }
+ 
  
             return Create<TransactionRecord>(item, nameof(CreateTransaction));
         }
@@ -67,12 +76,39 @@ namespace B.API.Controller
         [HttpPut("{id}")]
         public IActionResult UpdateTransaction(long id, [FromBody] TransactionRecord item)
         {
+            _context.Entry(item);
+            item.UserId = item?.User?.Id ?? default(int);
+            item.CategoryId = item?.Category?.Id ?? default(int);
+            item.BankId  = item?.Bank?.Id ?? default(int);
+
+            var existingTags = _context.TransactionRecordTag.Where(t => t.TransactionRecordId == id).ToList();
+            var existingTagIds = existingTags.Select(t => t.Id).ToList();
+            foreach (var tag in item.TransactionRecordTag)  {
+                if (existingTagIds.Contains(tag.Id)) {
+                    var existingEntry  = _context.Entry(existingTags.Single(t => t.Id == tag.Id));
+                    existingEntry.CurrentValues.SetValues(tag);
+                    existingEntry.State = EntityState.Modified;
+                }
+                else {
+                    tag.Id = 0;
+                    var newEntry = _context.Entry(tag);
+                    newEntry.State = EntityState.Added;
+                    existingTags.Add(tag);
+                }
+            }
+            var deleteTags = existingTags.Where(old => !item.TransactionRecordTag.Any(t => t.Id == old.Id));
+            _context.TransactionRecordTag.RemoveRange(deleteTags);
+
+            // _context.SaveChanges();
+
             return Update<TransactionRecord>(id, item);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteTransaction(long id)
         {
+
+            _context.RemoveRange(_context.TransactionRecordTag.Where(t => t.TransactionRecordId == id));
             return Delete<TransactionRecord>(id);
 
         }

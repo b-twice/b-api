@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller
 {
@@ -29,7 +30,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<BookStatus>> GetStatuses()
         {
-            return Ok(_context.BookStatus);
+            return Ok(_context.BookStatus.AsNoTracking());
         }
         [Authorize]
         [HttpGet("page")]
@@ -40,7 +41,7 @@ namespace B.API.Controller
             [FromQuery]int pageSize = 25
         ) 
         {
-            var items = _lookupRepository.OrderBy<BookStatus>(_context.BookStatus, sortName);
+            var items = _lookupRepository.OrderBy<BookStatus>(_context.BookStatus.AsNoTracking(), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
@@ -48,7 +49,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<BookStatus> GetStatus(int id)
         {
-            return Ok(_context.BookStatus.First(o => o.Id == id));
+            return Ok(_context.BookStatus.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]

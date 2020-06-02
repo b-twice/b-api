@@ -17,18 +17,18 @@ namespace B.API.Database
 
         public TransactionRecord Find(long id) 
         {
-            return Include(_context.TransactionRecord).First(b => b.Id == id);
+            return Include(_context.TransactionRecord.AsNoTracking()).First(b => b.Id == id);
         }
 
         
         public IQueryable<TransactionRecord> FindAll() 
         {
-            return Include(_context.TransactionRecord);
+            return Include(_context.TransactionRecord).AsNoTracking();
         }
 
         public IQueryable<TransactionRecord> Include(IQueryable<TransactionRecord> items) 
         {
-            return items.Include(o => o.Bank).Include(o => o.Category).Include(o => o.User);
+            return items.Include(o => o.Bank).Include(o => o.Category).Include(o => o.User).Include(o => o.TransactionRecordTag).ThenInclude(o => o.Tag);
         }
 
 
@@ -75,8 +75,7 @@ namespace B.API.Database
                     items = items.OrderByDescending(o => o.Amount);
                     break;
                 case "description_asc":
-                    items = items.OrderBy(o => o.Description);
-                    break;
+                    items = items.OrderBy(o => o.Description); break;
                 case "description_desc":
                     items = items.OrderByDescending(o => o.Description);
                     break;
@@ -86,13 +85,16 @@ namespace B.API.Database
             return items;
         }
  
-        public IQueryable<TransactionRecord> Filter(IQueryable<TransactionRecord> items, string description, List<long> categories, List<long> banks, List<long> users, List<string> years)
+        public IQueryable<TransactionRecord> Filter(IQueryable<TransactionRecord> items, string description, List<long> categories, List<long> tags, List<long> banks, List<long> users, List<string> years, List<string> months)
         {
             if (!string.IsNullOrEmpty(description)) {
                 items = items.Where(o => o.Description.Contains(description));
             }
             if (categories?.Any() == true) {
                 items = items.Where(o => categories.Contains(o.Category.Id));
+            }
+            if (tags?.Any() == true) {
+                items = items.Where(o => o.TransactionRecordTag.Any(r => tags.Any(t => t == r.TagId)));
             }
             if (banks?.Any() == true) {
                 items = items.Where(o => banks.Contains(o.Bank.Id));
@@ -103,7 +105,10 @@ namespace B.API.Database
             if (years?.Any() == true) {
                 items = items.Where(b => years.Contains(b.Date.Substring(0,4)));
             }
-           return items;
+            if (months?.Any() == true) {
+                items = items.Where(b => months.Contains(b.Date.Substring(0,4)));
+            }
+            return items;
         }
 
   }
