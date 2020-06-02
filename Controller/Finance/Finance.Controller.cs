@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using AutoMapper;
 using B.API.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller
 {
@@ -31,6 +32,14 @@ namespace B.API.Controller
         }
 
 
+        [HttpGet("categories")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<TransactionCategory>> GetCategories(string year) 
+        {
+            return Ok(_context.TransactionCategory.AsNoTracking().OrderBy(o => o.Name));
+        }
+
+
         [HttpGet("summary/{year}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<FinancialSummary> GetSummary(string year) 
@@ -40,28 +49,51 @@ namespace B.API.Controller
 
         [HttpGet("spending-categories")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<TransactionCategoryTotal>> GetTransactionCategoryTotals(
+        public ActionResult<IEnumerable<TransactionTotal>> GetTransactionCategoryTotals(
             [FromQuery] string year
         ) {
             return Ok(_repository.FindTransactionCategoryTotals(year));
         }
 
+        [HttpGet("spending-category-tags")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<TransactionTotal>> GetTransactionCategoryTagTotals(
+            [FromQuery] string year,
+            [FromQuery] string categoryName
+        ) {
+            return Ok(_repository.FindTransactionCategoryTagTotals(year, categoryName));
+        }
+
         [HttpGet("expenses")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<Expense>> GetExpenses(
-            [FromQuery] string year,
-            [FromQuery] string month
+        public ActionResult<IEnumerable<ExpenseSummary>> GetExpenses(
+            [FromQuery] List<string> years,
+            [FromQuery] List<string> months,
+            [FromQuery] List<long> categories
         ) {
-           return Ok(_repository.FindMonthlyExpenses(year, month));
+            if (years.Count > 0 && months.Count == 0) {
+                return Ok(new ExpenseSummary { expenses = _repository.FindYearlyExpenses(years, categories)});
+            }
+            else if (years.Count > 0 && months.Count > 0) {
+                return Ok(new ExpenseSummary { expenses =_repository.FindMonthlyExpenses(years, months, categories)});
+            }
+            return BadRequest();
         }
 
         [HttpGet("expense-summary")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<ExpenseSummary> GetExpenseSummary(
-            [FromQuery] string year,
-            [FromQuery] string month
+            [FromQuery] List<string> years,
+            [FromQuery] List<string> months,
+            [FromQuery] List<long> categories 
         ) {
-           return Ok(new ExpenseSummary { expenses = _repository.FindMonthlyExpenses(year, month)});
+            if (years.Count > 0 && months.Count == 0) {
+                return Ok(new ExpenseSummary { expenses = _repository.FindYearlyExpenses(years, categories)});
+            }
+            else if (years.Count > 0 && months.Count > 0) {
+                return Ok(new ExpenseSummary { expenses = _repository.FindMonthlyExpenses(years, months, categories)});
+            }
+            return BadRequest();
         }
 
    }

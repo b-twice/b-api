@@ -35,25 +35,98 @@ namespace B.API.Database
 
 
 
-    public IQueryable<TransactionCategoryTotal> FindTransactionCategoryTotals(string year) 
+    public IQueryable<TransactionTotal> FindTransactionCategoryTotals(string year) 
     {
         return (
             from tr in _context.TransactionRecord 
             where tr.Date.Substring(0,4) == year
-            group tr by tr.Category.Name into g
-            orderby g.Key
-            select new TransactionCategoryTotal {
-                Name = g.Key,
+            group tr by new { Id = tr.Category.Id, Name = tr.Category.Name } into g
+            orderby g.Key.Name
+            select new TransactionTotal {
+              Id = g.Key.Id,
+              Name = g.Key.Name,
+              Amount = g.Sum(gc => gc.Amount)
+            }
+        );
+    }
+
+    public IEnumerable<TransactionTotal> FindTransactionCategoryTagTotals(string year, string categoryName) 
+    {
+        var records = _context.TransactionRecord
+          .Include(t => t.Category)
+          .Where(record => record.Date.Substring(0,4) == year && record.Category.Name == categoryName).AsEnumerable();
+        
+        return (
+            from tr in records
+            join tags in _context.TransactionRecordTag.AsEnumerable() on tr.Id equals tags.TransactionRecordId into trt
+            from tags in trt.DefaultIfEmpty()
+            join tag in _context.TransactionTag on tags?.TagId equals tag.Id into t
+            from tag in t.DefaultIfEmpty()
+            group tr by new { Id = tags == null ? 0 : tag.Id, Name = tags == null ? "Untagged" : tag.Name} into g
+            orderby g.Key.Name
+            select new TransactionTotal {
+                Id = g.Key.Id,
+                Name = g.Key.Name,
                 Amount = g.Sum(gc => gc.Amount)
             }
         );
     }
 
-    public IQueryable<Expense> FindMonthlyExpenses(string year, string month) 
+
+
+    public IQueryable<Expense> FindYearlyExpenses(List<string> years, List<long> categories) 
     {
       var transactionGroups = (
+        from tr in _context.TransactionRecord 
+        where 
+          years.Contains(tr.Date.Substring(0,4))
+        group tr by new { Year = tr.Date.Substring(0,4), Name = tr.Category.Name } into g
+        select new {
+            Name = g.Key.Name,
+            Year = g.Key.Year,
+            Amount = g.Sum(gc => gc.Amount)
+        }
+      );
+      var plannedExpenses = (
+        from e in _context.YearlyPlannedExpense
+        where 
+          years.Contains(e.Date.Substring(0,4))
+          && (categories.Count > 0 ?  categories.Contains(e.Category.Id) : true)
+        group e by new { Year = e.Date.Substring(0,4), Category = e.Category.Name} into eg
+        select new {
+            Name  = eg.Key.Category,
+            Year = eg.Key.Year,
+            PlannedAmount = eg.Sum(gc => gc.Amount)
+        }
+      );
+      var expenses = (
+        from e in plannedExpenses
+        join g in transactionGroups on new { A = e.Year, B = e.Name} equals new { A = g.Year, B = g.Name} into gj
+        from subTransactionGroup in gj.DefaultIfEmpty()
+        select new Expense {
+            Date = e.Year,
+            CategoryName = e.Name,
+            PlannedAmount = e.PlannedAmount,
+            ActualAmount = subTransactionGroup.Amount
+        }
+      );
+      return expenses.OrderBy(o => o.CategoryName);
+    }
+
+
+
+    public IQueryable<Expense> FindMonthlyExpenses(List<string> years, List<string> months, List<long> categories) 
+    {
+      var yearMonths = new List<string>();
+      foreach(var year in years) {
+        foreach(var month in months) {
+          yearMonths.Add($"{year}-{month}");
+        }
+      }
+      var transactionGroups = (
           from tr in _context.TransactionRecord 
-          where !string.IsNullOrEmpty(month) ? tr.Date.Substring(0,7) == $"{year}-{month}" : tr.Date.Substring(0,4) == $"{year}" 
+          where 
+            yearMonths.Contains(tr.Date.Substring(0,7))
           group tr by new { YearMonth = tr.Date.Substring(0,7), Name = tr.Category.Name } into g
           select new {
               Name = g.Key.Name,
@@ -61,27 +134,22 @@ namespace B.API.Database
               Amount = g.Sum(gc => gc.Amount)
           }
       );
-      // if (!string.IsNullOrEmpty(year)) {
-      //   if (!string.IsNullOrEmpty(month)) {
-      //     var yearMonth = $"{year}-{month}";
-      //     transactionGroups.Where(tr => tr.YearMonth == yearMonth);
-      //   }
-      //   else {
-      //     transactionGroups.Where(tr => tr.YearMonth.Substring(0, 4) == year);
-      //   }
-      // }
       var expenses = (
           from e in _context.YearlyPlannedExpense
-          where !string.IsNullOrEmpty(month) ? e.Date.Substring(0,7) == $"{year}-{month}" : e.Date.Substring(0,4) == $"{year}" 
-          join g in transactionGroups on new { A = e.Date.Substring(0,7), B = e.Category.Name} equals new { A = g.YearMonth, B = g.Name}
+          where 
+            yearMonths.Contains(e.Date.Substring(0,7))
+            && (categories.Count > 0 ?  categories.Contains(e.Category.Id) : true)
+          join g in transactionGroups on new { A = e.Date.Substring(0,7), B = e.Category.Name} equals new { A = g.YearMonth, B = g.Name} into gj
+          from subTransactionGroup in gj.DefaultIfEmpty()
           select new Expense {
-              Date = e.Date,
-              Category = e.Category,
+              Date = e.Date.Substring(0,7),
+              CategoryName = e.Category.Name,
               PlannedAmount = e.Amount,
-              ActualAmount = g.Amount
+              ActualAmount = subTransactionGroup.Amount
           }
       );
-      return expenses.OrderByDescending(o => o.Date);
+      return expenses.OrderByDescending(o => o.Date).ThenBy(o => o.CategoryName);
     }
+
   }
 }

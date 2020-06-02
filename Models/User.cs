@@ -7,7 +7,6 @@ namespace B.API.Models
     {
         public User()
         {
-            Earning = new HashSet<Earning>();
             TransactionRecord = new HashSet<TransactionRecord>();
         }
 
@@ -17,7 +16,6 @@ namespace B.API.Models
         public string Email { get; set; }
         public string Phone { get; set; }
 
-        public virtual ICollection<Earning> Earning { get; set; }
         public virtual ICollection<TransactionRecord> TransactionRecord { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace B.API.Database
 
         public Book Find(long id) 
         {
-            return Include(_context.Book).First(b => b.Id == id);
+            return Include(_context.Book.AsNoTracking()).First(b => b.Id == id);
         }
 
         
@@ -28,9 +28,7 @@ namespace B.API.Database
 
         public IQueryable<Book> Include(IQueryable<Book> books) 
         {
-            // return books.AsNoTracking().Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
-            return books.Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus).AsNoTracking();
-            // return books;
+            return books.Include(b => b.BookCategory).Include(b => b.BookAuthor).Include(b => b.BookStatus);
         }
 
 
