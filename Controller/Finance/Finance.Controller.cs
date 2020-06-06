@@ -47,6 +47,15 @@ namespace B.API.Controller
             return Ok(_repository.GetSummary(year));
         }
 
+
+        [HttpGet("monthly-totals")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<TransactionTotal>> GetTransactionMonthlyTotals(
+            [FromQuery] string year
+        ) {
+            return Ok(_repository.FindTransactionMonthlyTotals(year));
+        }
+
         [HttpGet("spending-categories")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<TransactionTotal>> GetTransactionCategoryTotals(
@@ -54,6 +63,16 @@ namespace B.API.Controller
         ) {
             return Ok(_repository.FindTransactionCategoryTotals(year));
         }
+
+        [HttpGet("spending-categories-by-month")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<TransactionTotal>> GetTransactionCategoryMonthlyTotals(
+            [FromQuery] string year,
+            [FromQuery] string month 
+        ) {
+            return Ok(_repository.FindTransactionCategoryMonthlyTotals(year, month));
+        }
+
 
         [HttpGet("spending-category-tags")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]

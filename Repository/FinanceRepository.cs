@@ -24,7 +24,7 @@ namespace B.API.Database
         var asset = _context.Asset.First(o => o.Year.Substring(0,4) == year);
         var debt = _context.Debt.First(o => o.Year.Substring(0,4) == year);
         var investment = _context.Investment.First(o => o.Year.Substring(0,4) == year);
-        var earnings = _context.Earning.Where(o => o.Year.Substring(0,4) == year);
+        var earnings = _context.Earning.Where(o => o.Year.Substring(0,4) == year).AsNoTracking();
 
         var summary = _mapper.Map<FinancialSummary>(asset);
         summary = _mapper.Map(debt, summary);
@@ -47,14 +47,46 @@ namespace B.API.Database
               Name = g.Key.Name,
               Amount = g.Sum(gc => gc.Amount)
             }
-        );
+        ).AsNoTracking();
     }
+
+    public IQueryable<TransactionTotal> FindTransactionCategoryMonthlyTotals(string year, string month) 
+    {
+        return (
+            from tr in _context.TransactionRecord 
+            where tr.Date.Substring(0,4) == year && tr.Date.Substring(5, 2) == month
+            group tr by new { Id = tr.Category.Id, Name = tr.Category.Name } into g
+            orderby g.Key.Name
+            select new TransactionTotal {
+              Id = g.Key.Id,
+              Name = g.Key.Name,
+              Amount = g.Sum(gc => gc.Amount)
+            }
+        ).AsNoTracking();
+    }
+
+    public IQueryable<TransactionTotal> FindTransactionMonthlyTotals(string year) 
+    {
+        return (
+            from tr in _context.TransactionRecord 
+            where tr.Date.Substring(0,4) == year
+            group tr by new { Name = tr.Date.Substring(5,2)} into g
+            orderby  g.Key.Name descending
+            select new TransactionTotal {
+              Id = 0,
+              Name = g.Key.Name,
+              Amount = g.Sum(gc => gc.Amount)
+            }
+        ).AsNoTracking();
+    }
+
+
 
     public IEnumerable<TransactionTotal> FindTransactionCategoryTagTotals(string year, string categoryName) 
     {
         var records = _context.TransactionRecord
           .Include(t => t.Category)
-          .Where(record => record.Date.Substring(0,4) == year && record.Category.Name == categoryName).AsEnumerable();
+          .Where(record => record.Date.Substring(0,4) == year && record.Category.Name == categoryName).AsNoTracking().AsEnumerable();
         
         return (
             from tr in records
@@ -86,7 +118,7 @@ namespace B.API.Database
             Year = g.Key.Year,
             Amount = g.Sum(gc => gc.Amount)
         }
-      );
+      ).AsNoTracking();
       var plannedExpenses = (
         from e in _context.YearlyPlannedExpense
         where 
@@ -98,7 +130,7 @@ namespace B.API.Database
             Year = eg.Key.Year,
             PlannedAmount = eg.Sum(gc => gc.Amount)
         }
-      );
+      ).AsNoTracking();
       var expenses = (
         from e in plannedExpenses
         join g in transactionGroups on new { A = e.Year, B = e.Name} equals new { A = g.Year, B = g.Name} into gj
