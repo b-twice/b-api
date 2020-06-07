@@ -77,7 +77,7 @@ namespace B.API.Database
         public IQueryable<Book> Filter(IQueryable<Book> books, string bookName, List<long> bookAuthors, List<long> bookCategories, List<long> bookStatuses, List<string> readYears)
         {
             if (!string.IsNullOrEmpty(bookName)) {
-                books = books.Where(b => b.Name.Contains(bookName));
+                books = books.Where(b => b.Name.ToLower().Contains(bookName.ToLower()));
             }
             if (bookAuthors?.Any() == true) {
                 books = books.Where(b => bookAuthors.Contains(b.BookAuthor.Id));
