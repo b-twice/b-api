@@ -83,6 +83,14 @@ namespace B.API.Controller
             return Ok(_repository.FindTransactionCategoryTagTotals(year, categoryName));
         }
 
+        [HttpGet("frequent-category-tags")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<RecordCount>> GetFrequentCategoryTags(
+            [FromQuery] int categoryId
+        ) {
+            return Ok(_repository.FindMostUsedCategoryTags(categoryId));
+        }
+
         [HttpGet("expenses")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<ExpenseSummary>> GetExpenses(

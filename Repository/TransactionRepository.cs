@@ -88,7 +88,7 @@ namespace B.API.Database
         public IQueryable<TransactionRecord> Filter(IQueryable<TransactionRecord> items, string description, List<long> categories, List<long> tags, List<long> banks, List<long> users, List<string> years, List<string> months)
         {
             if (!string.IsNullOrEmpty(description)) {
-                items = items.Where(o => o.Description.Contains(description));
+                items = items.Where(o => o.Description.ToLower().Contains(description.ToLower()));
             }
             if (categories?.Any() == true) {
                 items = items.Where(o => categories.Contains(o.Category.Id));

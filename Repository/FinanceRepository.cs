@@ -80,6 +80,20 @@ namespace B.API.Database
         ).AsNoTracking();
     }
 
+    public IQueryable<RecordCount> FindMostUsedCategoryTags(int categoryId) 
+    {
+        return (
+            from tr in _context.TransactionRecord 
+            join tags in _context.TransactionRecordTag on tr.Id equals tags.TransactionRecordId
+            join tag in _context.TransactionTag on tags.TagId equals tag.Id
+            where tr.CategoryId == categoryId
+            group tag by new { Name = tag.Name} into g
+            select new RecordCount {
+              Name = g.Key.Name,
+              Count = g.Count()
+            }
+        ).AsNoTracking();
+    }
 
 
     public IEnumerable<TransactionTotal> FindTransactionCategoryTagTotals(string year, string categoryName) 
@@ -184,4 +198,6 @@ namespace B.API.Database
     }
 
   }
+
+  
 }
