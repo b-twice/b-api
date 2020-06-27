@@ -1,5 +1,5 @@
 # b-api
-An API for me, b (brian). The API has grown organically and started as both an exploration into setting up  a .NET API and a need to expose data to various webb applications.
+An API for me, b (brian). The API has grown organically and started as both an exploration into setting up a .NET API and a need to expose data to various web applications.
 
 ## Stack
 
@@ -16,7 +16,7 @@ Access DarkSky weather data.
 
 ### Finance
 
-Expose views of financial records that are collected via an ETL from financial instutitions. Groups and summarizes data to see both high level and granular views of how much I am spending.
+Expose views of financial records that are collected via an ETL from financial institutions. Groups and summarizes data to see both high level and granular views of how much I am spending.
 
 
 ### Groceries
