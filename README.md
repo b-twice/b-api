@@ -1,11 +1,22 @@
 # b-api
-API supporting various facets of my life. The API has grown organically, based on what I'm interested in or what I need to support one of my web apps.
+An API for me, b (brian). The API has grown organically and started as both an exploration into setting up  a .NET API and a need to expose data to various webb applications.
+
+## Stack
+
+* .NET Core 3
+* .NET Entity Framework 3
+* SQLite
+* Swagger
 
 ## Modules
 
+### Weather
+
+Access DarkSky weather data.
+
 ### Finance
 
-The first module that was setup to answer the queston: How much a I spending? The Finance module supports managing bank transactions, tracking spending by categories, and tracking monthly budgets.
+Expose views of financial records that are collected via an ETL from financial instutitions. Groups and summarizes data to see both high level and granular views of how much I am spending.
 
 
 ### Groceries
@@ -14,7 +25,7 @@ A key module supporting by my [groceries app](https://groceries.brianbrown.dev).
 
 ### Books
 
-A small module, but a helpful one for a frequent reader. Keep tracks of books I've read or plan to read, going back to 2014. Useful for sharing what I read and remembering authors, so I can find other books from them. Check it out over at my [me app](https://me.brianbrown.dev/books).
+ks of books I've read or plan to read, going back to 2014. Useful for sharing what I read and remembering authors, so I can find other books from them. See [me app](https://me.brianbrown.dev/books).
 
 
 
