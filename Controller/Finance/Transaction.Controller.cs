@@ -30,7 +30,7 @@ namespace B.API.Controller
 
         [HttpGet("")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<TransactionRecord>> GetTransactions(
+        public ActionResult<PaginatedTransactionResult> GetTransactions(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
@@ -98,8 +98,6 @@ namespace B.API.Controller
             }
             var deleteTags = existingTags.Where(old => !item.TransactionRecordTag.Any(t => t.Id == old.Id));
             _context.TransactionRecordTag.RemoveRange(deleteTags);
-
-            // _context.SaveChanges();
 
             return Update<TransactionRecord>(id, item);
         }

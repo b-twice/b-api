@@ -14,7 +14,7 @@ namespace B.API.AutoMapper
                 .ForMember(dest => dest.Investment, o => o.MapFrom(src => src));
             CreateMap<Debt, FinancialSummary>()
                 .ForMember(dest => dest.Debt, o => o.MapFrom(src => src));
-            CreateMap<IEnumerable<Earning>, FinancialSummary>()
+            CreateMap<Earning, FinancialSummary>()
                 .ForMember(dest => dest.Earnings, o => o.MapFrom(src => src));
 
         }
