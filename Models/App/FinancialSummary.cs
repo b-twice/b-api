@@ -9,17 +9,7 @@ namespace B.API.Models
         public virtual Investment Investment { get; set; }
         public virtual Debt Debt { get; set; }
 
-        public virtual ICollection<Earning> Earnings { get; set;}
-
-        public long totalIncome {
-            get {
-                long total = 0;
-                foreach( var earning in Earnings) {
-                    total += earning.Gross;
-                }
-                return total;
-            }
-        }
+        public virtual Earning Earnings { get; set;}
 
         public long NetWorth { 
             get {

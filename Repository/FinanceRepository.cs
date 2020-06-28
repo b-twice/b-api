@@ -21,10 +21,10 @@ namespace B.API.Database
 
     public FinancialSummary GetSummary(string year) 
     {
-        var asset = _context.Asset.First(o => o.Year.Substring(0,4) == year);
-        var debt = _context.Debt.First(o => o.Year.Substring(0,4) == year);
-        var investment = _context.Investment.First(o => o.Year.Substring(0,4) == year);
-        var earnings = _context.Earning.Where(o => o.Year.Substring(0,4) == year).AsNoTracking();
+        var asset = _context.Asset.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
+        var debt = _context.Debt.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
+        var investment = _context.Investment.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
+        var earnings = _context.Earning.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
 
         var summary = _mapper.Map<FinancialSummary>(asset);
         summary = _mapper.Map(debt, summary);
