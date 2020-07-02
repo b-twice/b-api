@@ -6,19 +6,19 @@ using Microsoft.AspNetCore.Authorization;
 namespace B.API 
 {
 
-    [Route("org")]
+    [Route("v1/blog/content")]
     [Produces("text/plain")]
     [ApiController]
-    public class OrgController: ControllerBase
+    public class BlogContentController: ControllerBase
     {
         private readonly ILogger _logger;
 
-        public OrgController ( ILogger<OrgController> logger)
+        public BlogContentController ( ILogger<BlogContentController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet("publlic/{primary}/{secondary}/{name}")]
+        [HttpGet("public/{primary}/{secondary}/{name}")]
         public IActionResult GetSecondary(string primary, string secondary, string name) 
         {
             var file = Path.Combine(Directory.GetCurrentDirectory(), "resources", "org", "public", $"{primary}", $"{secondary}", $"{name}.html");
