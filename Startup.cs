@@ -62,6 +62,7 @@ namespace B.API
             services.AddScoped<TransactionRepository>();
             services.AddScoped<LookupRepository>();
             services.AddScoped<FinanceRepository>();
+            services.AddScoped<BlogPostRepository>();
 
             // SOURCED FROM https://www.scottbrady91.com/Entity-Framework/Entity-Framework-Core-In-Memory-Testing
             // Building the connection string is necessary to avoid this error when publishing:

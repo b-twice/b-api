@@ -24,6 +24,8 @@ namespace B.API.Models
         public virtual DbSet<Debt> Debt { get; set; }
         public virtual DbSet<Earning> Earning { get; set; }
         public virtual DbSet<Investment> Investment { get; set; }
+        public virtual DbSet<Post> Post { get; set; }
+        public virtual DbSet<PostGroup> PostGroup { get; set; }
         public virtual DbSet<TransactionCategory> TransactionCategory { get; set; }
         public virtual DbSet<TransactionRecord> TransactionRecord { get; set; }
         public virtual DbSet<TransactionRecordTag> TransactionRecordTag { get; set; }
@@ -137,6 +139,35 @@ namespace B.API.Models
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Year).IsRequired();
+            });
+
+            modelBuilder.Entity<Post>(entity =>
+            {
+                entity.HasIndex(e => new { e.PostGroupId, e.Title, e.Date, e.Path })
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Date).IsRequired();
+
+                entity.Property(e => e.Path).IsRequired();
+
+                entity.Property(e => e.Title).IsRequired();
+
+                entity.HasOne(d => d.PostGroup)
+                    .WithMany(p => p.Post)
+                    .HasForeignKey(d => d.PostGroupId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<PostGroup>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<TransactionCategory>(entity =>
