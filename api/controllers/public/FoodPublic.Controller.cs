@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace B.API 
 {
-    [Route("api/public/food/")]
+    [Route("public/food/")]
     public class FoodPublicController: ControllerBase
     {
         private readonly DatabaseContext _context;

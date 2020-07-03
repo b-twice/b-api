@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace B.API 
 {
-    [Route("api/public/finance/")]
+    [Route("public/finance/")]
     public class FinancePublicController: ControllerBase
     {
         private readonly DatabaseContext _context;
