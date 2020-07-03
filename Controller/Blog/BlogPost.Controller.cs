@@ -6,6 +6,7 @@ using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace B.API.Controller
 {
@@ -41,8 +42,9 @@ namespace B.API.Controller
         [FromQuery] long? star
     )
     {
+      var authenticated = User.Identity.IsAuthenticated;
       var posts = _postRepository.Filter(_context.Post, title, description, groups, authenticate, star);
-      posts = _postRepository.Include(_postRepository.Order(posts, sortName));
+      posts = _postRepository.Include(_postRepository.Order(posts, sortName)).Where(p => !authenticated ? p.Authenticate == 0 : true);
       var paginatedList = PaginatedList<Post>.Create(posts, pageNumber, pageSize);
       return Ok(new PaginatedResult<Post>(paginatedList, paginatedList.TotalCount));
     }
@@ -54,7 +56,8 @@ namespace B.API.Controller
         [FromQuery] int size
     )
     {
-      var posts = _postRepository.FindAll().OrderByDescending(b => b.Date);
+      var authenticated = User.Identity.IsAuthenticated;
+      var posts = _postRepository.FindAll().Where(p => !authenticated ? p.Authenticate == 0 : true).OrderByDescending(b => b.Date);
       if (size > 0)
       {
         return Ok(posts.Take(size));
@@ -68,7 +71,12 @@ namespace B.API.Controller
         [FromQuery] int size
     )
     {
-      var groups = _context.PostGroup.AsNoTracking().OrderBy(b => b.Name);
+      var authenticated = User.Identity.IsAuthenticated;
+      var groups = _context.PostGroup.Include(pg => pg.Post).AsNoTracking();
+      if (!authenticated) {
+        groups = groups.Where(g => g.Post.Any(p => p.Authenticate == 0));
+      }
+      groups = groups.OrderBy(b => b.Name);
       if (size > 0)
       {
         return Ok(groups.Take(size));

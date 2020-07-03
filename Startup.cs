@@ -37,6 +37,7 @@ namespace B.API
 
 
 
+
             
         }
         public IConfigurationRoot Configuration { get; set; }
@@ -51,8 +52,9 @@ namespace B.API
             //     {
             //         options.RespectBrowserAcceptHeader = true; // false by default
             // });
-            services.AddControllers();
-
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddAutoMapper(typeof(MappingProfile));
 
 
