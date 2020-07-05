@@ -44,7 +44,7 @@ namespace B.API.Controller
     {
       var authenticated = User.Identity.IsAuthenticated;
       var posts = _postRepository.Filter(_context.Post, title, description, groups, authenticate, star);
-      posts = _postRepository.Include(_postRepository.Order(posts, sortName)).Where(p => !authenticated ? p.Authenticate == 0 : true);
+      posts = _postRepository.Include(_postRepository.Order(posts, sortName)).Where(p => !authenticated ? p.Authenticate != 1 : true);
       var paginatedList = PaginatedList<Post>.Create(posts, pageNumber, pageSize);
       return Ok(new PaginatedResult<Post>(paginatedList, paginatedList.TotalCount));
     }
@@ -57,7 +57,7 @@ namespace B.API.Controller
     )
     {
       var authenticated = User.Identity.IsAuthenticated;
-      var posts = _postRepository.FindAll().Where(p => !authenticated ? p.Authenticate == 0 : true).OrderByDescending(b => b.Date);
+      var posts = _postRepository.FindAll().Where(p => !authenticated ? p.Authenticate != 1 : true).OrderByDescending(b => b.Date);
       if (size > 0)
       {
         return Ok(posts.Take(size));
