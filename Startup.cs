@@ -29,7 +29,7 @@ namespace B.API
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddJsonFile("appsettings.Secrets.json", optional: true)
+                .AddJsonFile("secrets/appsettings.secrets.json", optional: true)
                 .AddEnvironmentVariables();
             Environment = env;
             if (env.EnvironmentName != "prod")
