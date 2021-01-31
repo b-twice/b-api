@@ -12,6 +12,8 @@ using B.API.Models;
 using B.API.AutoMapper;
 
 using AutoMapper;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace B.API
 {
@@ -27,6 +29,7 @@ namespace B.API
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.Secrets.json", optional: true)
                 .AddEnvironmentVariables();
             Environment = env;
             if (env.EnvironmentName != "prod")
@@ -34,12 +37,8 @@ namespace B.API
                 builder.AddUserSecrets<Startup>();
             }
             Configuration = builder.Build();
-
-
-
-
-            
         }
+
         public IConfigurationRoot Configuration { get; set; }
 
         public IWebHostEnvironment Environment { get; set; }
@@ -47,15 +46,11 @@ namespace B.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            // services.AddMvc(options =>
-            //     {
-            //         options.RespectBrowserAcceptHeader = true; // false by default
-            // });
-            services.AddControllers().AddNewtonsoftJson(options =>
+            services.AddControllers().AddNewtonsoftJson(options => 
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
             services.AddAutoMapper(typeof(MappingProfile));
+
 
 
             services.AddScoped(sp => new DarkSky.Services.DarkSkyService(Configuration["Weather:ServiceApiKey"]));
@@ -70,7 +65,7 @@ namespace B.API
             // Building the connection string is necessary to avoid this error when publishing:
             // Format of the initialization string does not conform to specification starting at index 0
             var connectionStringBuilder = new SqliteConnectionStringBuilder{ 
-                DataSource= Configuration.GetConnectionString(Environment.EnvironmentName)
+                DataSource= Configuration["BudgetDatabase"]
             };
 
             var connectionString = connectionStringBuilder.ToString();
@@ -78,18 +73,18 @@ namespace B.API
 
             // IMPORTANT - AppDatabase Context is using new database
             var appApiConnectionStringBuilder = new SqliteConnectionStringBuilder{ 
-                DataSource = Configuration.GetSection("Database")[Environment.EnvironmentName]
+                DataSource = Configuration["Database"]
             };
             var appApiConnectionString = appApiConnectionStringBuilder.ToString();
             services.AddEntityFrameworkSqlite().AddDbContext<AppDbContext>(options => options.UseSqlite(appApiConnectionString));
 
 
 
-            string domain = $"https://{Configuration["authentication:Domain"]}/";
+            string domain = $"https://{Configuration["Authentication:Domain"]}/";
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.Authority = domain;
-                options.Audience = Configuration["authentication:ApiIdentifier"];
+                options.Audience = Configuration["Authentication:ApiIdentifier"];
             });
 
             services.AddOpenApiDocument(config => 
@@ -99,7 +94,7 @@ namespace B.API
                     document.Info.Description = "";
 
                 }
-            ); // add OpenAPI v3 document
+            ); 
 
         }
 
@@ -107,14 +102,18 @@ namespace B.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // References launch.jon ASPNETCORE_Environment
-            if (env.EnvironmentName != "prod")
+            if (env.IsDevelopment())
             {
                 // display detailed errors for dev 
                 app.UseDeveloperExceptionPage();
             }
 
+            if (env.IsProduction()) {
+                app.UseExceptionHandler("/error");
+            }
+
             app.UseCors(builder =>
-                builder.WithOrigins(Configuration["clients:bgeo"], Configuration["clients:budget"], Configuration["clients:groceries"], Configuration["clients:me"])
+                builder.WithOrigins(Configuration["Clients:Bgeo"], Configuration["Clients:Budget"], Configuration["Clients:Groceries"], Configuration["Clients:Me"])
                 .AllowAnyHeader()
                 .AllowAnyMethod()
             );
@@ -124,6 +123,10 @@ namespace B.API
             app.UseReDoc(); // serve ReDoc UI
 
             app.UseStatusCodePages();
+
+            var options = new RewriteOptions()
+                .AddRewrite("api/(.*)", "$1", skipRemainingRules: true);
+            app.UseRewriter(options);
 
 
             app.UseRouting();
