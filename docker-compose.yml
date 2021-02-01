@@ -10,7 +10,7 @@ services:
       - "5000:5000"
     volumes:
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
-      - /Users/brianbrown/git/b-database:/b-database
+      - /Users/brianbrown/git/b-database:/data
       - ./api:/app/api
       - ./Controller:/app/Controller
       - ./AutoMapper:/app/AutoMapper
