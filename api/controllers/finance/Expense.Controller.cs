@@ -10,7 +10,7 @@ namespace B.API
 {
 
     [Authorize]
-    [Route("api/finance/expenses")]
+    [Route("finance/expenses")]
     public class ExpenseController: ControllerBase
     {
         private readonly DatabaseContext _context;

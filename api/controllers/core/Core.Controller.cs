@@ -7,7 +7,7 @@ namespace B.API
 {
 
     [Authorize]
-    [Route("api/core")]
+    [Route("core")]
     public class CoreController: ControllerBase
     {
         private readonly DatabaseContext _context;

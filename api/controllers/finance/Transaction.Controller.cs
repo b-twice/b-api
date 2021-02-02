@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace B.API 
 {
     [Authorize]
-    [Route("api/finance/transactions")]
+    [Route("finance/transactions")]
     public class TransactionDeprecatedController: ControllerBase
     {
         private readonly DatabaseContext _context;

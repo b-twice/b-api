@@ -13,7 +13,7 @@ namespace B.API
 {
 
     // [Authorize]
-    [Route("api/event")]
+    [Route("event")]
     [ApiController]
     public class EventController: AppControllerBase
     {

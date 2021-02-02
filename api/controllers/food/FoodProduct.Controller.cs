@@ -14,7 +14,7 @@ namespace B.API
 {
 
     [Authorize]
-    [Route("api/food/products")]
+    [Route("food/products")]
     public class FoodProductController: ControllerBase
     {
         private readonly DatabaseContext _context;
