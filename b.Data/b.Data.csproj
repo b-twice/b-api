@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType></DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants></DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <IntermediateOutputPath>obj\Debug</IntermediateOutputPath>
+    <NoWarn></NoWarn>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.3" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Crypto\" />
+    <Folder Include="AutoMapper\" />
+    <Folder Include="Models\" />
+    <Folder Include="Crypto\Read\Accessor\" />
+    <Folder Include="Crypto\Write\Accessor\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\b.Entities\b.Entities.csproj" />
+  </ItemGroup>
+</Project>

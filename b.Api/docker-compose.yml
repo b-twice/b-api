@@ -1,0 +1,20 @@
+version: "2"
+services:
+  web:
+    container_name: b-api-dev
+    image: b-api-dev:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+      - /Users/brianbrown/git/b-database:/data
+      - /Users/brianbrown/git/b-org/publish/:/app/resources/org:ro
+      - ./api:/app/api
+      - ./Controller:/app/Controller
+      - ./AutoMapper:/app/AutoMapper
+      - ./Repository:/app/Repository
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

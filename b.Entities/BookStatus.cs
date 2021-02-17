@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+
+#nullable disable
+
+namespace b.Entities
+{
+    public partial class BookStatus
+    {
+        public BookStatus()
+        {
+            Books = new HashSet<Book>();
+        }
+
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string Keyword { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<Book> Books { get; set; }
+    }
+}
