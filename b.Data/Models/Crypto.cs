@@ -6,7 +6,7 @@ namespace b.Data.Models
 {
     #region search
     #nullable enable
-    public record SearchHoldingsParams(string? Sort, IList<string>? Coins, IList<int>? YearsSold, string? HoldingStatus);
+    public record SearchHoldingsParams(string? Sort, IReadOnlyList<string>? Coins, IReadOnlyList<int>? YearsSold, string? HoldingStatus);
     #endregion
 
     #region dtos
@@ -27,5 +27,30 @@ namespace b.Data.Models
         public decimal? SellValue { get; init; }
         public DateTime? SellDate { get; init; }
     }
+
+    public record CryptoAnnualInvestmentSummaryDto
+    {
+        public int InvestmentYear { get; init; }
+        public decimal? MarketValue { get; init; }
+        public decimal? PurchaseValue { get; init; }
+        public decimal? NetGain { get; init; }
+        public decimal? SellValue { get; init; }
+    }
+
+    public record CoinPriceDto
+    {
+        public string Name { get; init; }
+        public DateTime? QueryDate { get; init; }
+        public decimal Price { get; init; }
+    }
+
+    public record CryptoInvestmentSummaryDto
+    {
+        public IEnumerable<CryptoAnnualInvestmentSummaryDto> AnnualInvestmentSummaries { get; init; }
+        public IEnumerable<CoinPriceDto> LatestCoinPrices { get; init; }
+
+    }
     #endregion
+
+
 }

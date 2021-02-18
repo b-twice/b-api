@@ -11,6 +11,9 @@ namespace b.Data.AutoMapper
             {
                 CreateMap<VCryptoInvestment, CryptoInvestmentDto>();
                 CreateMap<CryptoCoin, Lookup>();
+                CreateMap<VCryptoAnnualInvestmentSummary, CryptoAnnualInvestmentSummaryDto>();
+                CreateMap<VLatestCryptoCoinPrice, CoinPriceDto>();
+
         }
     }
 }

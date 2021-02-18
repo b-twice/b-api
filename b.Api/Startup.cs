@@ -83,8 +83,10 @@ namespace b.Api
                   (x
                   .GetInterfaces()
                   .Where(i => i.IsGenericType).Any(i =>
-                    i.GetGenericTypeDefinition() == typeof(IWriteAccessor<>) || i.GetGenericTypeDefinition() == typeof(IReadAccessor<,>))
-                  )))
+                    i.GetGenericTypeDefinition() == typeof(IWriteAccessor<>)
+                    || i.GetGenericTypeDefinition() == typeof(IReadAccessor<,>)
+                    || i.GetGenericTypeDefinition() == typeof(IReadAccessor<>)
+                  ))))
               .ToList().ForEach(t => services.AddScoped(t));
 
             // SOURCED FROM https://www.scottbrady91.com/Entity-Framework/Entity-Framework-Core-In-Memory-Testing

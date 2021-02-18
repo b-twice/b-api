@@ -38,6 +38,7 @@ namespace b.Entities
         public virtual DbSet<TransactionTag> TransactionTags { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<VCryptoInvestment> VCryptoInvestments { get; set; }
+        public virtual DbSet<VCryptoAnnualInvestmentSummary> VCryptoAnnualInvestmentSummaries { get; set; }
         public virtual DbSet<VLatestCryptoCoinPrice> VLatestCryptoCoinPrices { get; set; }
         public virtual DbSet<YearlyPlannedExpense> YearlyPlannedExpenses { get; set; }
 
@@ -336,6 +337,13 @@ namespace b.Entities
                 entity.HasNoKey();
 
                 entity.ToView("vLatestCryptoCoinPrice");
+            });
+
+            modelBuilder.Entity<VCryptoAnnualInvestmentSummary>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vCryptoAnnualInvestmentSummary");
             });
 
             modelBuilder.Entity<YearlyPlannedExpense>(entity =>

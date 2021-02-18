@@ -14,40 +14,43 @@ namespace b.Data.Crypto.Read
 
         private readonly IMapper _mapper;
         private readonly SearchInvestmentsAccessor _searchInvestmentsAccessor;
+        private readonly CryptoCoinsAccessor _cryptoCoinsAccessor;
+        private readonly LatestCoinPricesAccessor _latestCoinPricesAccessor;
+        private readonly AnnualSummaryAccessor _annualSummaryAccessor;
 
-        public CryptoInvestmentRds(AppDbContext context, IMapper mapper, SearchInvestmentsAccessor searchInvestmentsAccessor)
+
+        public CryptoInvestmentRds(
+            AppDbContext context,
+            IMapper mapper,
+            SearchInvestmentsAccessor searchInvestmentsAccessor,
+            CryptoCoinsAccessor cryptoCoinsAccessor,
+            LatestCoinPricesAccessor latestCoinPricesAccessor,
+            AnnualSummaryAccessor annualSummaryAccessor
+        )
         {
             _context = context;
             _mapper = mapper;
             _searchInvestmentsAccessor = searchInvestmentsAccessor;
+            _cryptoCoinsAccessor = cryptoCoinsAccessor;
+            _latestCoinPricesAccessor = latestCoinPricesAccessor;
+            _annualSummaryAccessor = annualSummaryAccessor;
         }
 
-        #region Lookups
-        public CryptoHoldingLookupsDto InvestmentLookups()
-        {
-            return new CryptoHoldingLookupsDto(
-                GetCryptoCoins.Execute(_context).ProjectTo<Lookup>(_mapper.ConfigurationProvider).AsEnumerable(),
+        public CryptoHoldingLookupsDto InvestmentLookups() =>
+            new CryptoHoldingLookupsDto(
+                _cryptoCoinsAccessor.Execute().ProjectTo<Lookup>(_mapper.ConfigurationProvider).AsEnumerable(),
                 new List<Lookup>() { new Lookup { Id = 0, Name = "Active" }, new Lookup { Id = 0, Name = "Sold" } }
             );
-        }
-        #endregion
-        #region Holdings
-        public CryptoHolding Holding(int id) =>
-            GetHoldingAccessor.Execute(_context, id);
+
+        public CryptoInvestmentSummaryDto InvestmentSummary() =>
+            new CryptoInvestmentSummaryDto { 
+                AnnualInvestmentSummaries = _annualSummaryAccessor.Execute().ProjectTo<CryptoAnnualInvestmentSummaryDto>(_mapper.ConfigurationProvider).AsEnumerable(),
+                LatestCoinPrices = _latestCoinPricesAccessor.Execute().ProjectTo<CoinPriceDto>(_mapper.ConfigurationProvider).AsEnumerable()
+            };
 
         #nullable enable
         public IEnumerable<CryptoInvestmentDto> SearchInvestments(SearchHoldingsParams? search) =>
             _searchInvestmentsAccessor.Execute(search).ProjectTo<CryptoInvestmentDto>(_mapper.ConfigurationProvider);
 
-        #endregion
-
-        #region Prices
-        public IEnumerable<CryptoPrice> LatestPrices() =>
-            LatestCoinPricesAccessor.Execute(_context);
-
-        public CryptoPrice LatestPrices(int id) =>
-            LatestCoinPriceAccessor.Execute(_context, id);
-        #endregion
-
-        }
+    }
 }

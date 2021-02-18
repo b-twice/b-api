@@ -12,48 +12,57 @@ using b.Api.Extensions;
 
 namespace b.Api.Controller
 {
-  [Authorize]
-  [Route("v1/cryptoholdings")]
-  [ApiController]
-  [ApiConventionType(typeof(DefaultApiConventions))]
-  public class CryptoController : AppBaseController<CryptoController>
-  {
-    private CryptoInvestmentRds _cryptoInvestmentRds;
-    private CryptoHoldingWds _cryptoHoldingWds;
-
-    private readonly ILogger _logger;
-    public CryptoController(CryptoInvestmentRds cryptoInvestmentRds, CryptoHoldingWds cryptoHoldingWds, ILogger<CryptoController> logger) : base(logger)
+    
+    [Route("v1/cryptoholdings")]
+    [ApiController]
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    public class CryptoController : AppBaseController<CryptoController>
     {
-      _cryptoInvestmentRds = cryptoInvestmentRds;
-      _logger = logger;
-      _cryptoHoldingWds = cryptoHoldingWds;
-    }
+        private CryptoInvestmentRds _cryptoInvestmentRds;
+        private CryptoHoldingWds _cryptoHoldingWds;
 
-    [HttpGet("lookups")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-    public ActionResult<CryptoHoldingLookupsDto> GetLookups()
-    {
-        return Ok(_cryptoInvestmentRds.InvestmentLookups());
-    }
+        private readonly ILogger _logger;
+        public CryptoController(CryptoInvestmentRds cryptoInvestmentRds, CryptoHoldingWds cryptoHoldingWds, ILogger<CryptoController> logger) : base(logger)
+        {
+            _cryptoInvestmentRds = cryptoInvestmentRds;
+            _logger = logger;
+            _cryptoHoldingWds = cryptoHoldingWds;
+        }
 
-    [HttpGet("page")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-    public ActionResult<PaginationResponse<CryptoInvestmentDto>> GetCryptoPage(
-        [FromQuery] int? offset,
-        [FromQuery] int? limit,
-        [FromQuery] string sort,
-        [FromQuery] IList<string> coins,
-        [FromQuery] IList<int> yearsSold,
-        [FromQuery] string holdingStatus
-    )
-    {
-      offset ??= 0;
-      limit = Math.Min(limit ?? 10, 500); // default to 10, limit max results to 500
-      var investments = _cryptoInvestmentRds.SearchInvestments(new SearchHoldingsParams(sort, coins, yearsSold, holdingStatus));  
-      return Ok(investments.Page(new PaginationInfo { offset = offset.Value, limit = limit.Value }));
-    }
+        [HttpGet("lookups")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<CryptoHoldingLookupsDto> GetLookups()
+        {
+            return Ok(_cryptoInvestmentRds.InvestmentLookups());
+        }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id) => Delete(id, _cryptoHoldingWds.DeleteHolding);
-  }
+        [HttpGet("summary")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<CryptoHoldingLookupsDto> GetSummary()
+        {
+            return Ok(_cryptoInvestmentRds.InvestmentSummary());
+        }
+
+
+        [HttpGet("page")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<PaginationResponse<CryptoInvestmentDto>> GetCryptoPage
+        (
+            [FromQuery] int? offset,
+            [FromQuery] int? limit,
+            [FromQuery] string sort,
+            [FromQuery] IReadOnlyList<string> coins,
+            [FromQuery] IReadOnlyList<int> yearsSold,
+            [FromQuery] string holdingStatus
+        )
+        {
+            offset ??= 0;
+            limit = Math.Min(limit ?? 10, 500); // default to 10, limit max results to 500
+            var investments = _cryptoInvestmentRds.SearchInvestments(new SearchHoldingsParams(sort, coins, yearsSold, holdingStatus));
+            return Ok(investments.Page(new PaginationInfo { offset = offset.Value, limit = limit.Value }));
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id) => Delete(id, _cryptoHoldingWds.DeleteHolding);
+    }
 }

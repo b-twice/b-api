@@ -5,4 +5,8 @@ namespace b.Data.Models
 	{
 		TResult Execute(TCommand command);
 	}
+	public interface IReadAccessor<TResult>
+	{
+		TResult Execute();
+	}
 }
