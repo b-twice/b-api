@@ -29,7 +29,7 @@ namespace B.API
                 .AddJsonFile("secrets/appsettings.secrets.json", optional: true)
                 .AddEnvironmentVariables();
             Environment = env;
-            if (env.EnvironmentName != "prod")
+            if (env.EnvironmentName == "Development")
             {
                 builder.AddUserSecrets<Startup>();
             }
