@@ -51,7 +51,7 @@ namespace B.API.Controller
             [FromQuery]int size 
         ) 
         {
-            var mealPlanRecipes =_mealPlanRecipeRepository.FindAll().OrderByDescending(b => b.MealPlan.Name);
+            var mealPlanRecipes =_mealPlanRecipeRepository.FindAll().OrderBy(b => b.MealPlan.Name);
             if (size > 0) {
                 return Ok(mealPlanRecipes.Take(size));
             }

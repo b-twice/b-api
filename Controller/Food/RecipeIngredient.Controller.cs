@@ -51,7 +51,7 @@ namespace B.API.Controller
             [FromQuery]int size 
         ) 
         {
-            var recipeIngredients =_recipeIngredientRepository.FindAll().OrderByDescending(b => b.Recipe.Name);
+            var recipeIngredients =_recipeIngredientRepository.FindAll().OrderBy(b => b.Recipe.Name);
             if (size > 0) {
                 return Ok(recipeIngredients.Take(size));
             }

@@ -52,7 +52,7 @@ namespace B.API.Controller
             [FromQuery]int size 
         ) 
         {
-            var foodProducts =_foodProductRepository.FindAll().OrderByDescending(b => b.Name);
+            var foodProducts =_foodProductRepository.FindAll().OrderBy(b => b.Name);
             if (size > 0) {
                 return Ok(foodProducts.Take(size));
             }

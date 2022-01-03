@@ -109,7 +109,7 @@ namespace B.API.Database
                 recipes = recipes.Where(b => cookbooks.Contains(b.Cookbook.Id));
             }
             if (products?.Any() == true) {
-                recipes = recipes.Where(b => b.RecipeIngredients.Any(r => products.Any(t => t == r.RecipeId)));
+                recipes = recipes.Where(b => b.RecipeIngredients.Any(r => products.Any(t => t == r.FoodProductId)));
             }
             if (!string.IsNullOrEmpty(name)) {
                 recipes = recipes.Where(b => b.Name.ToLower().Contains(name.ToLower()));
