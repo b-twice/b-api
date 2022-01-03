@@ -24,7 +24,7 @@ namespace B.API.Models {
             modelBuilder.Entity<CookbookAuthor>().Ignore(c => c.Cookbooks);
             modelBuilder.Entity<FoodQuantityType>().Ignore(c => c.FoodProducts);
             modelBuilder.Entity<FoodUnit>().Ignore(c => c.FoodProducts);
-            modelBuilder.Entity<MealPlanRecipe>();
+            modelBuilder.Entity<Recipe>().Ignore(c => c.MealPlanRecipes);
             modelBuilder.Entity<FoodCategory>().Ignore(c => c.FoodProducts);
             modelBuilder.Entity<RecipeIngredient>().Ignore(c => c.Recipe);
 
