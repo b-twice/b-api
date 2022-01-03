@@ -5,13 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
-using B.API.Entities;
 using B.API.Database;
 using Geocoding.Microsoft;
 using B.API.Models;
 using B.API.AutoMapper;
-
-using AutoMapper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Rewrite;
 
@@ -60,17 +57,17 @@ namespace B.API
             services.AddScoped<LookupRepository>();
             services.AddScoped<FinanceRepository>();
             services.AddScoped<BlogPostRepository>();
+            services.AddScoped<FoodProductRepository>();
+            services.AddScoped<CookbookRepository>();
+            services.AddScoped<RecipeRepository>();
+            services.AddScoped<RecipeIngredientRepository>();
+            services.AddScoped<MealPlanRecipeRepository>();
+            services.AddScoped<MealPlanRepository>();
+
 
             // SOURCED FROM https://www.scottbrady91.com/Entity-Framework/Entity-Framework-Core-In-Memory-Testing
             // Building the connection string is necessary to avoid this error when publishing:
             // Format of the initialization string does not conform to specification starting at index 0
-            var connectionStringBuilder = new SqliteConnectionStringBuilder{ 
-                DataSource= Configuration["BudgetDatabase"]
-            };
-
-            var connectionString = connectionStringBuilder.ToString();
-            services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>(options => options.UseSqlite(connectionString));
-
             // IMPORTANT - AppDatabase Context is using new database
             var appApiConnectionStringBuilder = new SqliteConnectionStringBuilder{ 
                 DataSource = Configuration["Database"]

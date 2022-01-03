@@ -21,10 +21,10 @@ namespace B.API.Database
 
     public FinancialSummary GetSummary(string year) 
     {
-        var asset = _context.Asset.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
-        var debt = _context.Debt.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
-        var investment = _context.Investment.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
-        var earnings = _context.Earning.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
+        var asset = _context.Assets.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
+        var debt = _context.Debts.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
+        var investment = _context.Investments.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
+        var earnings = _context.Earnings.AsNoTracking().First(o => o.Year.Substring(0,4) == year);
 
         var summary = _mapper.Map<FinancialSummary>(asset);
         summary = _mapper.Map(debt, summary);
@@ -38,7 +38,7 @@ namespace B.API.Database
     public IQueryable<TransactionTotal> FindTransactionCategoryTotals(string year) 
     {
         return (
-            from tr in _context.TransactionRecord 
+            from tr in _context.TransactionRecords
             where tr.Date.Substring(0,4) == year
             group tr by new { Id = tr.Category.Id, Name = tr.Category.Name } into g
             orderby g.Key.Name
@@ -53,7 +53,7 @@ namespace B.API.Database
     public IQueryable<TransactionTotal> FindTransactionCategoryMonthlyTotals(string year, string month) 
     {
         return (
-            from tr in _context.TransactionRecord 
+            from tr in _context.TransactionRecords
             where tr.Date.Substring(0,4) == year && tr.Date.Substring(5, 2) == month
             group tr by new { Id = tr.Category.Id, Name = tr.Category.Name } into g
             orderby g.Key.Name
@@ -68,7 +68,7 @@ namespace B.API.Database
     public IQueryable<TransactionTotal> FindTransactionMonthlyTotals(string year) 
     {
         return (
-            from tr in _context.TransactionRecord 
+            from tr in _context.TransactionRecords
             where tr.Date.Substring(0,4) == year
             group tr by new { Name = tr.Date.Substring(5,2)} into g
             orderby  g.Key.Name descending
@@ -83,9 +83,9 @@ namespace B.API.Database
     public IQueryable<RecordCount> FindMostUsedCategoryTags(int categoryId) 
     {
         return (
-            from tr in _context.TransactionRecord 
-            join tags in _context.TransactionRecordTag on tr.Id equals tags.TransactionRecordId
-            join tag in _context.TransactionTag on tags.TagId equals tag.Id
+            from tr in _context.TransactionRecords
+            join tags in _context.TransactionRecordTags on tr.Id equals tags.TransactionRecordId
+            join tag in _context.TransactionTags on tags.TagId equals tag.Id
             where tr.CategoryId == categoryId
             group tag by new { Name = tag.Name} into g
             select new RecordCount {
@@ -98,15 +98,15 @@ namespace B.API.Database
 
     public IEnumerable<TransactionTotal> FindTransactionCategoryTagTotals(string year, string categoryName) 
     {
-        var records = _context.TransactionRecord
+        var records = _context.TransactionRecords
           .Include(t => t.Category)
           .Where(record => record.Date.Substring(0,4) == year && record.Category.Name == categoryName).AsNoTracking().AsEnumerable();
         
         return (
             from tr in records
-            join tags in _context.TransactionRecordTag.AsEnumerable() on tr.Id equals tags.TransactionRecordId into trt
+            join tags in _context.TransactionRecordTags.AsEnumerable() on tr.Id equals tags.TransactionRecordId into trt
             from tags in trt.DefaultIfEmpty()
-            join tag in _context.TransactionTag on tags?.TagId equals tag.Id into t
+            join tag in _context.TransactionTags on tags?.TagId equals tag.Id into t
             from tag in t.DefaultIfEmpty()
             group tr by new { Id = tags == null ? 0 : tag.Id, Name = tags == null ? "Untagged" : tag.Name} into g
             orderby g.Key.Name
@@ -123,7 +123,7 @@ namespace B.API.Database
     public IQueryable<Expense> FindYearlyExpenses(List<string> years, List<long> categories) 
     {
       var transactionGroups = (
-        from tr in _context.TransactionRecord 
+        from tr in _context.TransactionRecords 
         where 
           years.Contains(tr.Date.Substring(0,4))
         group tr by new { Year = tr.Date.Substring(0,4), Name = tr.Category.Name } into g
@@ -134,7 +134,7 @@ namespace B.API.Database
         }
       ).AsNoTracking();
       var plannedExpenses = (
-        from e in _context.YearlyPlannedExpense
+        from e in _context.YearlyPlannedExpenses
         where 
           years.Contains(e.Date.Substring(0,4))
           && (categories.Count > 0 ?  categories.Contains(e.Category.Id) : true)
@@ -170,7 +170,7 @@ namespace B.API.Database
         }
       }
       var transactionGroups = (
-          from tr in _context.TransactionRecord 
+          from tr in _context.TransactionRecords
           where 
             yearMonths.Contains(tr.Date.Substring(0,7))
           group tr by new { YearMonth = tr.Date.Substring(0,7), Name = tr.Category.Name } into g
@@ -181,7 +181,7 @@ namespace B.API.Database
           }
       );
       var expenses = (
-          from e in _context.YearlyPlannedExpense
+          from e in _context.YearlyPlannedExpenses
           where 
             yearMonths.Contains(e.Date.Substring(0,7))
             && (categories.Count > 0 ?  categories.Contains(e.Category.Id) : true)

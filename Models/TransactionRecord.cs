@@ -7,7 +7,7 @@ namespace B.API.Models
     {
         public TransactionRecord()
         {
-            TransactionRecordTag = new HashSet<TransactionRecordTag>();
+            TransactionRecordTags = new HashSet<TransactionRecordTag>();
         }
 
         public long Id { get; set; }
@@ -22,6 +22,6 @@ namespace B.API.Models
         public virtual Bank Bank { get; set; }
         public virtual TransactionCategory Category { get; set; }
         public virtual User User { get; set; }
-        public virtual ICollection<TransactionRecordTag> TransactionRecordTag { get; set; }
+        public virtual ICollection<TransactionRecordTag> TransactionRecordTags { get; set; }
     }
 }

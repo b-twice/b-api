@@ -17,18 +17,18 @@ namespace B.API.Database
 
         public TransactionRecord Find(long id) 
         {
-            return Include(_context.TransactionRecord.AsNoTracking()).First(b => b.Id == id);
+            return Include(_context.TransactionRecords.AsNoTracking()).First(b => b.Id == id);
         }
 
         
         public IQueryable<TransactionRecord> FindAll() 
         {
-            return Include(_context.TransactionRecord).AsNoTracking();
+            return Include(_context.TransactionRecords).AsNoTracking();
         }
 
         public IQueryable<TransactionRecord> Include(IQueryable<TransactionRecord> items) 
         {
-            return items.Include(o => o.Bank).Include(o => o.Category).Include(o => o.User).Include(o => o.TransactionRecordTag).ThenInclude(o => o.Tag);
+            return items.Include(o => o.Bank).Include(o => o.Category).Include(o => o.User).Include(o => o.TransactionRecordTags).ThenInclude(o => o.Tag);
         }
 
 
@@ -94,7 +94,8 @@ namespace B.API.Database
                 items = items.Where(o => categories.Contains(o.Category.Id));
             }
             if (tags?.Any() == true) {
-                items = items.Where(o => o.TransactionRecordTag.Any(r => tags.Any(t => t == r.TagId)));
+                bool findUntagged = tags.Any(t => t == 0);
+                items = items.Where(o => (findUntagged && o.TransactionRecordTags.Count() == 0) ||  o.TransactionRecordTags.Any(r => tags.Any(t => t == r.TagId)));
             }
             if (banks?.Any() == true) {
                 items = items.Where(o => banks.Contains(o.Bank.Id));

@@ -30,7 +30,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<BookStatus>> GetStatuses()
         {
-            return Ok(_context.BookStatus.AsNoTracking());
+            return Ok(_context.BookStatuses.AsNoTracking());
         }
         [Authorize]
         [HttpGet("page")]
@@ -41,7 +41,7 @@ namespace B.API.Controller
             [FromQuery]int pageSize = 25
         ) 
         {
-            var items = _lookupRepository.OrderBy<BookStatus>(_context.BookStatus.AsNoTracking(), sortName);
+            var items = _lookupRepository.OrderBy<BookStatus>(_context.BookStatuses.AsNoTracking(), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
@@ -49,7 +49,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<BookStatus> GetStatus(int id)
         {
-            return Ok(_context.BookStatus.AsNoTracking().First(o => o.Id == id));
+            return Ok(_context.BookStatuses.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]

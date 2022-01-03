@@ -17,13 +17,13 @@ namespace B.API.Database
 
         public Post Find(long id) 
         {
-            return Include(_context.Post.AsNoTracking()).First(b => b.Id == id);
+            return Include(_context.Posts.AsNoTracking()).First(b => b.Id == id);
         }
 
         
         public IQueryable<Post> FindAll() 
         {
-            return Include(_context.Post).AsNoTracking();
+            return Include(_context.Posts).AsNoTracking();
         }
 
         public IQueryable<Post> Include(IQueryable<Post> posts) 

@@ -43,7 +43,7 @@ namespace B.API.Controller
 
         ) 
         {
-            var books = _bookRepository.Filter(_context.Book, bookName, bookAuthors, bookCategories, bookStatuses, readYears);
+            var books = _bookRepository.Filter(_context.Books, bookName, bookAuthors, bookCategories, bookStatuses, readYears);
             books = _bookRepository.Include(_bookRepository.Order(books, sortName));
             var paginatedList = PaginatedList<Book>.Create(books, pageNumber, pageSize);
             return Ok(new PaginatedResult<Book>(paginatedList, paginatedList.TotalCount));

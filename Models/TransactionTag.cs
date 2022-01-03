@@ -7,12 +7,12 @@ namespace B.API.Models
     {
         public TransactionTag()
         {
-            TransactionRecordTag = new HashSet<TransactionRecordTag>();
+            TransactionRecordTags = new HashSet<TransactionRecordTag>();
         }
 
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<TransactionRecordTag> TransactionRecordTag { get; set; }
+        public virtual ICollection<TransactionRecordTag> TransactionRecordTags { get; set; }
     }
 }

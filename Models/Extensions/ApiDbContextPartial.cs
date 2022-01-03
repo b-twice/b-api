@@ -9,17 +9,31 @@ namespace B.API.Models {
         {
             // prevent self referential loops
             // modelBuilder.Entity<PostGroup>().Ignore(c => c.Post);
-            modelBuilder.Entity<BookAuthor>().Ignore(c => c.Book);
-            modelBuilder.Entity<BookStatus>().Ignore(c => c.Book);
-            modelBuilder.Entity<BookCategory>().Ignore(c => c.Book);
-            modelBuilder.Entity<User>().Ignore(c => c.TransactionRecord);
-            modelBuilder.Entity<Bank>().Ignore(c => c.TransactionRecord);
-            modelBuilder.Entity<TransactionCategory>().Ignore(c => c.TransactionRecord);
+            modelBuilder.Entity<BookAuthor>().Ignore(c => c.Books);
+            modelBuilder.Entity<BookStatus>().Ignore(c => c.Books);
+            modelBuilder.Entity<BookCategory>().Ignore(c => c.Books);
+            modelBuilder.Entity<User>().Ignore(c => c.TransactionRecords);
+            modelBuilder.Entity<User>().Ignore(c => c.Recipes);
+            modelBuilder.Entity<User>().Ignore(c => c.MealPlans);
+            modelBuilder.Entity<Bank>().Ignore(c => c.TransactionRecords);
+            modelBuilder.Entity<TransactionCategory>().Ignore(c => c.TransactionRecords);
             modelBuilder.Entity<TransactionRecordTag>().Ignore(c => c.TransactionRecord);
-            modelBuilder.Entity<TransactionTag>().Ignore(c => c.TransactionRecordTag);
+            modelBuilder.Entity<TransactionTag>().Ignore(c => c.TransactionRecordTags);
+            modelBuilder.Entity<Supermarket>().Ignore(c => c.FoodProducts);
+            modelBuilder.Entity<Cookbook>().Ignore(c => c.Recipes);
+            modelBuilder.Entity<CookbookAuthor>().Ignore(c => c.Cookbooks);
+            modelBuilder.Entity<FoodQuantityType>().Ignore(c => c.FoodProducts);
+            modelBuilder.Entity<FoodUnit>().Ignore(c => c.FoodProducts);
+            modelBuilder.Entity<MealPlanRecipe>();
+            modelBuilder.Entity<FoodCategory>().Ignore(c => c.FoodProducts);
+            modelBuilder.Entity<RecipeIngredient>().Ignore(c => c.Recipe);
 
 
             modelBuilder.Entity<TransactionRecord>().Property(t => t.Amount).HasColumnType("decimal");
+            modelBuilder.Entity<RecipeIngredient>().Property(t => t.Weight).HasColumnType("decimal").HasConversion<decimal>();
+            modelBuilder.Entity<RecipeIngredient>().Property(t => t.Count).HasColumnType("decimal").HasConversion<decimal>();
+            // modelBuilder.Entity<RecipeIngredient>().Property(t => t.Weight)
+            // modelBuilder.Entity<RecipeIngredient>().Property(t => t.Count).HasConversion<double>();
 
         }
     }

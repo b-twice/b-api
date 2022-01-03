@@ -1,5 +1,4 @@
 using System.Linq;
-using B.API.Entities;
 using B.API.Models;
 
 namespace B.API.Database
@@ -7,9 +6,9 @@ namespace B.API.Database
 
     public class LookupRepository
     {
-        private readonly DatabaseContext _context;
+        private readonly AppDbContext _context;
 
-        public LookupRepository(DatabaseContext context)
+        public LookupRepository(AppDbContext context)
         {
             _context = context;
         }

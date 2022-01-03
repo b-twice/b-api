@@ -30,7 +30,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<TransactionTag>> GetTransactionTags()
         {
-            return Ok(_context.TransactionTag.AsNoTracking().OrderBy(c => c.Name));
+            return Ok(_context.TransactionTags.AsNoTracking().OrderBy(c => c.Name));
         }
 
         [Authorize]
@@ -43,7 +43,7 @@ namespace B.API.Controller
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy<TransactionTag>(_lookupRepository.Filter<TransactionTag>(_context.TransactionTag.AsNoTracking(), name), sortName);
+            var items = _lookupRepository.OrderBy<TransactionTag>(_lookupRepository.Filter<TransactionTag>(_context.TransactionTags.AsNoTracking(), name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
@@ -51,7 +51,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<TransactionTag> GetTransactionTag(int id)
         {
-            return Ok(_context.TransactionTag.AsNoTracking().First(o => o.Id == id));
+            return Ok(_context.TransactionTags.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]

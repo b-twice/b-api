@@ -30,7 +30,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<Bank>> GetBanks()
         {
-            return Ok(_context.Bank.AsNoTracking().OrderBy(c => c.Name));
+            return Ok(_context.Banks.AsNoTracking().OrderBy(c => c.Name));
         }
 
         [Authorize]
@@ -43,7 +43,7 @@ namespace B.API.Controller
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy<Bank>(_lookupRepository.Filter<Bank>(_context.Bank.AsNoTracking(), name), sortName);
+            var items = _lookupRepository.OrderBy<Bank>(_lookupRepository.Filter<Bank>(_context.Banks.AsNoTracking(), name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
@@ -51,7 +51,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<Bank> GetBank(int id)
         {
-            return Ok(_context.Bank.AsNoTracking().First(o => o.Id == id));
+            return Ok(_context.Banks.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]

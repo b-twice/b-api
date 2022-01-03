@@ -7,12 +7,12 @@ namespace B.API.Models
     {
         public PostGroup()
         {
-            Post = new HashSet<Post>();
+            Posts = new HashSet<Post>();
         }
 
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<Post> Post { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

@@ -44,7 +44,7 @@ namespace B.API.Controller
             [FromQuery]List<string>  months
         ) 
         {
-            var records =  _repository.Filter(_context.TransactionRecord, description, categories, tags, banks, users, years, months);
+            var records =  _repository.Filter(_context.TransactionRecords, description, categories, tags, banks, users, years, months);
             records = _repository.Include(_repository.Order(records, sortName));
             var paginatedList = PaginatedList<TransactionRecord>.Create(records, pageNumber, pageSize);
             return Ok(new PaginatedTransactionResult(paginatedList, paginatedList.TotalCount, records.Sum(t => t.Amount)));
@@ -65,7 +65,7 @@ namespace B.API.Controller
             _context.Entry(item.Category).State = EntityState.Unchanged;
             _context.Entry(item.User).State = EntityState.Unchanged;
 
-            foreach (TransactionRecordTag tag in item.TransactionRecordTag) {
+            foreach (TransactionRecordTag tag in item.TransactionRecordTags) {
                 _context.Entry(tag).State = EntityState.Added;
             }
  
@@ -81,9 +81,9 @@ namespace B.API.Controller
             item.CategoryId = item?.Category?.Id ?? default(int);
             item.BankId  = item?.Bank?.Id ?? default(int);
 
-            var existingTags = _context.TransactionRecordTag.Where(t => t.TransactionRecordId == id).ToList();
+            var existingTags = _context.TransactionRecordTags.Where(t => t.TransactionRecordId == id).ToList();
             var existingTagIds = existingTags.Select(t => t.Id).ToList();
-            foreach (var tag in item.TransactionRecordTag)  {
+            foreach (var tag in item.TransactionRecordTags)  {
                 if (existingTagIds.Contains(tag.Id)) {
                     var existingEntry  = _context.Entry(existingTags.Single(t => t.Id == tag.Id));
                     existingEntry.CurrentValues.SetValues(tag);
@@ -96,8 +96,8 @@ namespace B.API.Controller
                     existingTags.Add(tag);
                 }
             }
-            var deleteTags = existingTags.Where(old => !item.TransactionRecordTag.Any(t => t.Id == old.Id));
-            _context.TransactionRecordTag.RemoveRange(deleteTags);
+            var deleteTags = existingTags.Where(old => !item.TransactionRecordTags.Any(t => t.Id == old.Id));
+            _context.TransactionRecordTags.RemoveRange(deleteTags);
 
             return Update<TransactionRecord>(id, item);
         }
@@ -106,7 +106,7 @@ namespace B.API.Controller
         public IActionResult DeleteTransaction(long id)
         {
 
-            _context.RemoveRange(_context.TransactionRecordTag.Where(t => t.TransactionRecordId == id));
+            _context.RemoveRange(_context.TransactionRecordTags.Where(t => t.TransactionRecordId == id));
             return Delete<TransactionRecord>(id);
 
         }

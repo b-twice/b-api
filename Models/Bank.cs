@@ -7,12 +7,12 @@ namespace B.API.Models
     {
         public Bank()
         {
-            TransactionRecord = new HashSet<TransactionRecord>();
+            TransactionRecords = new HashSet<TransactionRecord>();
         }
 
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<TransactionRecord> TransactionRecord { get; set; }
+        public virtual ICollection<TransactionRecord> TransactionRecords { get; set; }
     }
 }

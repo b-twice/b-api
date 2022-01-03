@@ -36,7 +36,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<TransactionCategory>> GetCategories(string year) 
         {
-            return Ok(_context.TransactionCategory.AsNoTracking().OrderBy(o => o.Name));
+            return Ok(_context.TransactionCategories.AsNoTracking().OrderBy(o => o.Name));
         }
 
 

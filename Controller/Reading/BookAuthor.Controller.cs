@@ -30,7 +30,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<BookAuthor>> GetAuthors()
         {
-            return Ok(_context.BookAuthor.AsNoTracking().OrderBy(c => c.Name));
+            return Ok(_context.BookAuthors.AsNoTracking().OrderBy(c => c.Name));
         }
 
         [Authorize]
@@ -43,7 +43,7 @@ namespace B.API.Controller
             [FromQuery]string name
         ) 
         {
-            var items = _lookupRepository.OrderBy<BookAuthor>(_lookupRepository.Filter<BookAuthor>(_context.BookAuthor.AsNoTracking(), name), sortName);
+            var items = _lookupRepository.OrderBy<BookAuthor>(_lookupRepository.Filter<BookAuthor>(_context.BookAuthors.AsNoTracking(), name), sortName);
             return Ok(_lookupRepository.Paginate(items, pageNumber, pageSize));
         }
         [Authorize]
@@ -51,7 +51,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<BookAuthor> GetAuthor(int id)
         {
-            return Ok(_context.BookAuthor.AsNoTracking().First(o => o.Id == id));
+            return Ok(_context.BookAuthors.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPost]
