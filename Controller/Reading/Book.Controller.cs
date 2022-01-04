@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller
@@ -30,7 +29,7 @@ namespace B.API.Controller
 
         [HttpGet("page")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedResult<Book>> GetBookPage(
+        public ActionResult<PaginatedResult<Book>> GetPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
@@ -52,7 +51,7 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<Book>> GetBooks(
+        public ActionResult<IEnumerable<Book>> GetAll(
             [FromQuery]int size 
         ) 
         {
@@ -66,25 +65,25 @@ namespace B.API.Controller
         [Authorize]
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<Book> GetBook(long id)
+        public ActionResult<Book> Get(long id)
         {
             return Ok(_bookRepository.Find(id));
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult<Book> CreateBook([FromBody] Book item)
+        public ActionResult<Book> Create([FromBody] Book item)
         {
             // Without this EF Core will not bind the FK to these entities
             _context.Entry(item.BookAuthor).State = EntityState.Unchanged;
             _context.Entry(item.BookCategory).State = EntityState.Unchanged;
             _context.Entry(item.BookStatus).State = EntityState.Unchanged;
  
-            return Create<Book>(item, nameof(CreateBook));
+            return Create<Book>(item, nameof(Create));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(long id, [FromBody] Book item)
+        public IActionResult Update(long id, [FromBody] Book item)
         {
             item.BookAuthorId = item?.BookAuthor?.Id ?? default(int);
             item.BookCategoryId = item?.BookCategory?.Id ?? default(int);
@@ -94,7 +93,7 @@ namespace B.API.Controller
         }
         [Authorize]
         [HttpDelete("{id}")]
-        public IActionResult DeleteBook (long id)
+        public IActionResult Delete(long id)
         {
             return Delete<Book>(id);
 
@@ -102,3 +101,5 @@ namespace B.API.Controller
 
    }
 }
+
+

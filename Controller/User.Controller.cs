@@ -26,7 +26,7 @@ namespace B.API.Controller
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<User>> GetUsers() 
+        public ActionResult<IEnumerable<User>> GetAll() 
         {
             return Ok(_context.Users);
         }
@@ -34,7 +34,7 @@ namespace B.API.Controller
 
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<TransactionRecord> GetUser(long id)
+        public ActionResult<TransactionRecord> Get(long id)
         {
             return Ok(_context.Users.First(o => o.Id == id));
         }

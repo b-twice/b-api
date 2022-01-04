@@ -61,6 +61,19 @@ namespace B.API.Controller
             return Ok(recipes);
         }
 
+        [HttpGet("recent")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<Recipe>> GetRecent(
+            [FromQuery]int size 
+        ) 
+        {
+            var recipes =_recipeRepository.FindAll().OrderByDescending(b => b.Id);
+            if (size > 0) {
+                return Ok(recipes.Take(size));
+            }
+            return Ok(recipes);
+        }
+
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<Recipe> Get(long id)

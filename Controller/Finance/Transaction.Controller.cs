@@ -30,7 +30,7 @@ namespace B.API.Controller
 
         [HttpGet("")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<PaginatedTransactionResult> GetTransactions(
+        public ActionResult<PaginatedTransactionResult> GetPage(
             [FromQuery]string sortName,
             [FromQuery]int pageNumber,
             [FromQuery]int pageSize,
@@ -52,13 +52,13 @@ namespace B.API.Controller
 
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<TransactionRecord> GetTransaction(long id)
+        public ActionResult<TransactionRecord> Get(long id)
         {
             return Ok(_repository.Find(id));
         }
 
         [HttpPost]
-        public ActionResult<TransactionRecord> CreateTransaction([FromBody] TransactionRecord item)
+        public ActionResult<TransactionRecord> Create([FromBody] TransactionRecord item)
         {
             // Without this EF Core will not bind the FK to these entities
             _context.Entry(item.Bank).State = EntityState.Unchanged;
@@ -70,11 +70,11 @@ namespace B.API.Controller
             }
  
  
-            return Create<TransactionRecord>(item, nameof(CreateTransaction));
+            return Create<TransactionRecord>(item, nameof(Create));
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTransaction(long id, [FromBody] TransactionRecord item)
+        public IActionResult Update(long id, [FromBody] TransactionRecord item)
         {
             _context.Entry(item);
             item.UserId = item?.User?.Id ?? default(int);
@@ -103,7 +103,7 @@ namespace B.API.Controller
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTransaction(long id)
+        public IActionResult Delete(long id)
         {
 
             _context.RemoveRange(_context.TransactionRecordTags.Where(t => t.TransactionRecordId == id));

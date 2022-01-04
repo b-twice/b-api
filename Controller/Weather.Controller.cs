@@ -23,7 +23,7 @@ namespace B.API.Controller
 
         [HttpGet("forecast/today")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public async Task<ActionResult<DarkSkyResponse>> GetForecast([FromQuery] double latitude, [FromQuery] double longitude) 
+        public async Task<ActionResult<DarkSkyResponse>> Get([FromQuery] double latitude, [FromQuery] double longitude) 
         {
             var optionalParameters= new OptionalParameters();
             optionalParameters.DataBlocksToExclude = new List<ExclusionBlocks>(){ExclusionBlocks.Flags, ExclusionBlocks.Alerts, ExclusionBlocks.Hourly, ExclusionBlocks.Minutely};
