@@ -1,6 +1,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using B.API.Database;
+using B.API.Repository;
 using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;

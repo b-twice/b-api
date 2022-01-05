@@ -15,5 +15,6 @@ services:
       - ./Controller:/app/Controller
       - ./AutoMapper:/app/AutoMapper
       - ./Repository:/app/Repository
+      - ./Entity:/app/Entity
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

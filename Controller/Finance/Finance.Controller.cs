@@ -5,7 +5,7 @@ using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using AutoMapper;
-using B.API.Database;
+using B.API.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller

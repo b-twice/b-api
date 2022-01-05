@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using B.API.Database;
+using B.API.Repository;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 

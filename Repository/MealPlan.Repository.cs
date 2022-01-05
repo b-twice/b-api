@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using B.API.Models;
 using System.Collections.Generic;
 
-namespace B.API.Database
+namespace B.API.Repository
 {
 
     public class MealPlanRepository

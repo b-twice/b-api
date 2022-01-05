@@ -1,7 +1,8 @@
 using System.Linq;
+using B.API.Entity;
 using B.API.Models;
 
-namespace B.API.Database
+namespace B.API.Repository
 {
 
     public class LookupRepository

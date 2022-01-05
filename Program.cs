@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using B.API.AutoMapper;
-using B.API.Database;
+using B.API.Repository;
 using Geocoding.Microsoft;
 using Microsoft.Data.Sqlite;
 using B.API.Models;
@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
+using System.Linq;
 
 var configurationBuilder = new ConfigurationBuilder();
 IConfigurationRoot secrets = configurationBuilder
@@ -31,18 +33,13 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped(sp => new DarkSky.Services.DarkSkyService(secrets["Weather:ServiceApiKey"]));
 builder.Services.AddScoped(sp => new BingMapsGeocoder(secrets["Maps:ServiceApiKey"]));
-builder.Services.AddScoped<BookRepository>();
-builder.Services.AddScoped<TransactionRepository>();
-builder.Services.AddScoped<LookupRepository>();
-builder.Services.AddScoped<FinanceRepository>();
-builder.Services.AddScoped<BlogPostRepository>();
-builder.Services.AddScoped<FoodProductRepository>();
-builder.Services.AddScoped<CookbookRepository>();
-builder.Services.AddScoped<RecipeRepository>();
-builder.Services.AddScoped<RecipeIngredientRepository>();
-builder.Services.AddScoped<MealPlanRecipeRepository>();
-builder.Services.AddScoped<MealPlanRepository>();
 
+Assembly
+    .GetExecutingAssembly()
+    .GetTypes()
+    .Where(x => x.Namespace == "B.API.Repository")
+    .ToList()
+    .ForEach(t => builder.Services.AddScoped(t));
 
 // SOURCED FROM https://www.scottbrady91.com/Entity-Framework/Entity-Framework-Core-In-Memory-Testing
 // Building the connection string is necessary to avoid this error when publishing:

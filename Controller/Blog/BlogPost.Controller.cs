@@ -1,12 +1,13 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using B.API.Database;
+using B.API.Repository;
 using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using B.API.Entity;
 
 namespace B.API.Controller
 {

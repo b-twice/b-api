@@ -4,7 +4,7 @@ using B.API.Models;
 using System.Collections.Generic;
 using AutoMapper;
 
-namespace B.API.Database
+namespace B.API.Repository
 {
 
   public class FinanceRepository
