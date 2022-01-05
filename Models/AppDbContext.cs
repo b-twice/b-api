@@ -33,6 +33,7 @@ namespace B.API.Models
         public virtual DbSet<Investment> Investments { get; set; }
         public virtual DbSet<MealPlan> MealPlans { get; set; }
         public virtual DbSet<MealPlanGrocery> MealPlanGroceries { get; set; }
+        public virtual DbSet<MealPlanNote> MealPlanNotes { get; set; }
         public virtual DbSet<MealPlanRecipe> MealPlanRecipes { get; set; }
         public virtual DbSet<MealPlanRecipesView> MealPlanRecipesViews { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
@@ -41,6 +42,7 @@ namespace B.API.Models
         public virtual DbSet<RecipeCategory> RecipeCategories { get; set; }
         public virtual DbSet<RecipeIngredient> RecipeIngredients { get; set; }
         public virtual DbSet<RecipeIngredientsView> RecipeIngredientsViews { get; set; }
+        public virtual DbSet<RecipeNote> RecipeNotes { get; set; }
         public virtual DbSet<Supermarket> Supermarkets { get; set; }
         public virtual DbSet<TransactionCategory> TransactionCategories { get; set; }
         public virtual DbSet<TransactionRecord> TransactionRecords { get; set; }
@@ -282,8 +284,6 @@ namespace B.API.Models
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Days).IsRequired();
-
                 entity.Property(e => e.Name).IsRequired();
 
                 entity.HasOne(d => d.User)
@@ -297,6 +297,20 @@ namespace B.API.Models
                 entity.HasNoKey();
 
                 entity.ToView("MealPlanGroceries");
+            });
+
+            modelBuilder.Entity<MealPlanNote>(entity =>
+            {
+                entity.ToTable("MealPlanNote");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Content).IsRequired();
+
+                entity.HasOne(d => d.MealPlan)
+                    .WithMany(p => p.MealPlanNotes)
+                    .HasForeignKey(d => d.MealPlanId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<MealPlanRecipe>(entity =>
@@ -398,12 +412,6 @@ namespace B.API.Models
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Cost).HasDefaultValueSql("0");
-
-                entity.Property(e => e.CostOrganic).HasDefaultValueSql("0");
-
-                entity.Property(e => e.CostSeasonal).HasDefaultValueSql("0");
-
                 entity.Property(e => e.Count).HasDefaultValueSql("1");
 
                 entity.Property(e => e.Measurement).IsRequired();
@@ -426,6 +434,20 @@ namespace B.API.Models
                 entity.HasNoKey();
 
                 entity.ToView("RecipeIngredientsView");
+            });
+
+            modelBuilder.Entity<RecipeNote>(entity =>
+            {
+                entity.ToTable("RecipeNote");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Content).IsRequired();
+
+                entity.HasOne(d => d.Recipe)
+                    .WithMany(p => p.RecipeNotes)
+                    .HasForeignKey(d => d.RecipeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Supermarket>(entity =>

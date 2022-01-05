@@ -27,13 +27,8 @@ namespace B.API.Models {
             modelBuilder.Entity<Recipe>().Ignore(c => c.MealPlanRecipes);
             modelBuilder.Entity<FoodCategory>().Ignore(c => c.FoodProducts);
             modelBuilder.Entity<RecipeIngredient>().Ignore(c => c.Recipe);
-
-
-            modelBuilder.Entity<TransactionRecord>().Property(t => t.Amount).HasColumnType("decimal");
-            modelBuilder.Entity<RecipeIngredient>().Property(t => t.Weight).HasColumnType("decimal").HasConversion<decimal>();
-            modelBuilder.Entity<RecipeIngredient>().Property(t => t.Count).HasColumnType("decimal").HasConversion<decimal>();
-            // modelBuilder.Entity<RecipeIngredient>().Property(t => t.Weight)
-            // modelBuilder.Entity<RecipeIngredient>().Property(t => t.Count).HasConversion<double>();
+            modelBuilder.Entity<RecipeNote>().Ignore(c => c.Recipe);
+            modelBuilder.Entity<MealPlanNote>().Ignore(c => c.MealPlan);
 
         }
     }

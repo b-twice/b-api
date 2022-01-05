@@ -78,6 +78,13 @@ namespace B.API.Controller
             return Ok(_context.MealPlanRecipesViews.FirstOrDefault(r => r.RecipeId == id));
         }
 
+        [HttpGet("recipes/{id}/notes")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
+        public ActionResult<IEnumerable<RecipeNote>> GetRecipeNotes(long id)
+        {
+            return Ok(_context.RecipeNotes.Where(r => r.RecipeId == id));
+        }
+
         [HttpGet("recipes/{id}/ingredients")]
         public IActionResult GetRecipeIngredients(int id)
         {

@@ -11,9 +11,6 @@ namespace B.API.Models
         public decimal? Count { get; set; }
         public decimal? Weight { get; set; }
         public string Measurement { get; set; }
-        public long? Cost { get; set; }
-        public long? CostOrganic { get; set; }
-        public long? CostSeasonal { get; set; }
 
         public virtual FoodProduct FoodProduct { get; set; }
         public virtual Recipe Recipe { get; set; }

@@ -9,6 +9,7 @@ namespace B.API.Models
         {
             MealPlanRecipes = new HashSet<MealPlanRecipe>();
             RecipeIngredients = new HashSet<RecipeIngredient>();
+            RecipeNotes = new HashSet<RecipeNote>();
         }
 
         public long Id { get; set; }
@@ -19,11 +20,14 @@ namespace B.API.Models
         public long Servings { get; set; }
         public long? PageNumber { get; set; }
         public string Url { get; set; }
+        public long? Rating { get; set; }
+        public long? Complexity { get; set; }
 
         public virtual Cookbook Cookbook { get; set; }
         public virtual RecipeCategory RecipeCategory { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<MealPlanRecipe> MealPlanRecipes { get; set; }
         public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; }
+        public virtual ICollection<RecipeNote> RecipeNotes { get; set; }
     }
 }

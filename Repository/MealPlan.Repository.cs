@@ -28,8 +28,11 @@ namespace B.API.Repository
 
         public IQueryable<MealPlan> Include(IQueryable<MealPlan> mealPlans) 
         {
-            return mealPlans.Include(b => b.User)
-            .Include(b => b.MealPlanRecipes).ThenInclude(r => r.Recipe);
+            return mealPlans
+                .Include(b => b.User)
+                .Include(b => b.MealPlanRecipes)
+                    .ThenInclude(r => r.Recipe)
+                .Include(b => b.MealPlanNotes);
         }
 
 
@@ -49,23 +52,17 @@ namespace B.API.Repository
                 case "user_desc":
                     mealPlans = mealPlans.OrderByDescending(b => b.User.FirstName);
                     break;
-                case "days_asc":
-                    mealPlans = mealPlans.OrderBy(b => b.Days);
-                    break;
-                case "days_desc":
-                    mealPlans = mealPlans.OrderByDescending(b => b.Days);
-                    break;
                 case "name_asc":
                     mealPlans = mealPlans.OrderBy(b => b.Name);
                     break;
                 case "name_desc":
                     mealPlans = mealPlans.OrderByDescending(b => b.Name);
                     break;
-                case "notes_asc":
-                    mealPlans = mealPlans.OrderBy(b => b.Notes);
+                case "date_asc":
+                    mealPlans = mealPlans.OrderBy(o => o.Date);
                     break;
-                case "notes_desc":
-                    mealPlans = mealPlans.OrderByDescending(b => b.Notes);
+                case "date_desc":
+                    mealPlans = mealPlans.OrderByDescending(o => o.Date);
                     break;
              default:
                     break;
@@ -73,7 +70,7 @@ namespace B.API.Repository
             return mealPlans;
         }
  
-        public IQueryable<MealPlan> Filter(IQueryable<MealPlan> mealPlans, List<long> users, List<long> recipes, string name)
+        public IQueryable<MealPlan> Filter(IQueryable<MealPlan> mealPlans, List<long> users, List<long> recipes, string name, List<string> years, List<string> months)
         {
             if (users?.Any() == true) {
                 mealPlans = mealPlans.Where(b => users.Contains(b.User.Id));
@@ -83,6 +80,12 @@ namespace B.API.Repository
             }
             if (!string.IsNullOrEmpty(name)) {
                 mealPlans = mealPlans.Where(b => b.Name.ToLower().Contains(name.ToLower()));
+            }
+            if (years?.Any() == true) {
+                mealPlans = mealPlans.Where(b => years.Contains(b.Date.Substring(0,4)));
+            }
+            if (months?.Any() == true) {
+                mealPlans = mealPlans.Where(b => months.Contains(b.Date.Substring(0,4)));
             }
             return mealPlans;
         }

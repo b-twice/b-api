@@ -37,10 +37,12 @@ namespace B.API.Controller
             [FromQuery]int pageSize,
             [FromQuery]string name,
             [FromQuery]List<long> users,
-            [FromQuery]List<long> recipes
+            [FromQuery]List<long> recipes,
+            [FromQuery]List<string> years,
+            [FromQuery]List<string> months
         ) 
         {
-            var mealPlans = _mealPlanRepository.Filter(_context.MealPlans, users, recipes, name);
+            var mealPlans = _mealPlanRepository.Filter(_context.MealPlans, users, recipes, name, years, months);
             mealPlans = _mealPlanRepository.Include(_mealPlanRepository.Order(mealPlans, sortName));
             var paginatedList = PaginatedList<MealPlan>.Create(mealPlans, pageNumber, pageSize);
             return Ok(new PaginatedResult<MealPlan>(paginatedList, paginatedList.TotalCount));

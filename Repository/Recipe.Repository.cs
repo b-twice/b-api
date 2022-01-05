@@ -37,6 +37,7 @@ namespace B.API.Repository
                 .Include(b => b.User)
                 .Include(b => b.RecipeCategory)
                 .Include(b => b.Cookbook)
+                .Include(b => b.RecipeNotes)
                 .Include(r => r.RecipeIngredients).ThenInclude(i => i.FoodProduct);
         }
 
