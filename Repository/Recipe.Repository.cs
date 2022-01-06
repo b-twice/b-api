@@ -38,7 +38,7 @@ namespace B.API.Repository
                 .Include(b => b.RecipeCategory)
                 .Include(b => b.Cookbook)
                 .Include(b => b.RecipeNotes)
-                .Include(r => r.RecipeIngredients).ThenInclude(i => i.FoodProduct);
+                .Include(r => r.RecipeIngredients.OrderBy(i => i.FoodProduct.Name)).ThenInclude(i => i.FoodProduct);
         }
 
         public IQueryable<Recipe> Order(IQueryable<Recipe> recipes, string sortName) 

@@ -30,7 +30,7 @@ namespace B.API.Repository
         {
             return mealPlans
                 .Include(b => b.User)
-                .Include(b => b.MealPlanRecipes)
+                .Include(b => b.MealPlanRecipes.OrderBy(mr => mr.Recipe.Name))
                     .ThenInclude(r => r.Recipe)
                 .Include(b => b.MealPlanNotes);
         }
