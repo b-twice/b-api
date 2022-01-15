@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Models
 {
-    public partial class FoodCategory
+    [Table("FoodCategory")]
+    [Index(nameof(Name), IsUnique = true)]
+    public partial class FoodCategory : AppLookup
     {
         public FoodCategory()
         {
             FoodProducts = new HashSet<FoodProduct>();
         }
 
-        public long Id { get; set; }
-        public string Name { get; set; }
-
+        [JsonIgnore]
+        [InverseProperty(nameof(FoodProduct.FoodCategory))]
         public virtual ICollection<FoodProduct> FoodProducts { get; set; }
     }
 }

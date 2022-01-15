@@ -45,7 +45,7 @@ namespace B.API.Controller
             [FromQuery]List<string>  months
         ) 
         {
-            var records =  _repository.Filter(_context.TransactionRecords, description, categories, tags, banks, users, years, months);
+            var records =  _repository.Filter(_context.TransactionRecords.AsNoTracking(), description, categories, tags, banks, users, years, months);
             records = _repository.Include(_repository.Order(records, sortName));
             var paginatedList = PaginatedList<TransactionRecord>.Create(records, pageNumber, pageSize);
             return Ok(new PaginatedTransactionResult(paginatedList, paginatedList.TotalCount, records.Sum(t => t.Amount)));
@@ -61,26 +61,19 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<TransactionRecord> Create([FromBody] TransactionRecord item)
         {
-            // Without this EF Core will not bind the FK to these entities
-            _context.Entry(item.Bank).State = EntityState.Unchanged;
-            _context.Entry(item.Category).State = EntityState.Unchanged;
-            _context.Entry(item.User).State = EntityState.Unchanged;
-
             foreach (TransactionRecordTag tag in item.TransactionRecordTags) {
                 _context.Entry(tag).State = EntityState.Added;
             }
  
  
-            return Create<TransactionRecord>(item, nameof(Create));
+            return Create<TransactionRecord>(item, nameof(Create), (long id) => _repository.Find(id));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] TransactionRecord item)
+        [ProducesResponseType(200, Type = typeof(TransactionRecord))]
+        public ActionResult<TransactionRecord> Update(long id, [FromBody] TransactionRecord item)
         {
             _context.Entry(item);
-            item.UserId = item?.User?.Id ?? default(int);
-            item.CategoryId = item?.Category?.Id ?? default(int);
-            item.BankId  = item?.Bank?.Id ?? default(int);
 
             var existingTags = _context.TransactionRecordTags.Where(t => t.TransactionRecordId == id).ToList();
             var existingTagIds = existingTags.Select(t => t.Id).ToList();
@@ -100,7 +93,7 @@ namespace B.API.Controller
             var deleteTags = existingTags.Where(old => !item.TransactionRecordTags.Any(t => t.Id == old.Id));
             _context.TransactionRecordTags.RemoveRange(deleteTags);
 
-            return Update<TransactionRecord>(id, item);
+            return Update<TransactionRecord>(id, item, (long id) => _repository.Find(id));
         }
 
         [HttpDelete("{id}")]

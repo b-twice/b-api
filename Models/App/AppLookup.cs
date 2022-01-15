@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace B.API.Models
 {
     public class AppKeywordLookup : AppLookup
@@ -11,8 +13,10 @@ namespace B.API.Models
     public class AppLookup : IAppLookup
     {
 
+        [Key]
         public long Id { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
     }

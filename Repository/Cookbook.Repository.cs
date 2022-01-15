@@ -33,33 +33,19 @@ namespace B.API.Repository
 
 
 
-        public IQueryable<Cookbook> Order(IQueryable<Cookbook> books, string sortName) 
+        public IQueryable<Cookbook> Order(IQueryable<Cookbook> items, string sortName) 
         {
-            // TODO: tranlsate this to a generic method using IQueryable? 
-            // May not be worth it, this is clear and conscise as is
-            switch(sortName) {
-                case "id_asc":
-                    books = books.OrderBy(b => b.Id);
-                    break;
-                case "id_desc":
-                    books = books.OrderByDescending(b => b.Id);
-                    break;
-                case "name_asc":
-                    books = books.OrderBy(b => b.Name);
-                    break;
-                case "name_desc":
-                    books = books.OrderByDescending(b => b.Name);
-                    break;
-                case "bookAuthor_asc":
-                    books = books.OrderBy(b => b.CookbookAuthor.Name);
-                    break;
-                case "bookAuthor_desc":
-                    books = books.OrderByDescending(b => b.CookbookAuthor.Name);
-                    break;
-                default:
-                    break;
-            }
-            return books;
+            items = sortName switch
+            {
+                "id_asc" => items.OrderBy(b => b.Id),
+                "id_desc" => items.OrderByDescending(b => b.Id),
+                "name_asc" => items.OrderBy(b => b.Name),
+                "name_desc" => items.OrderByDescending(b => b.Name),
+                "bookAuthorId_asc" => items.OrderBy(b => b.CookbookAuthor.Name),
+                "bookAuthorId_desc" => items.OrderByDescending(b => b.CookbookAuthor.Name),
+               _ => items
+            };
+            return items;
         }
  
         public IQueryable<Cookbook> Filter(IQueryable<Cookbook> books, string bookName, List<long> bookAuthors)

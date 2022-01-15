@@ -55,7 +55,7 @@
             "type": "shell",
             // NOTE - Sed command is to address:https://github.com/dotnet/efcore/issues/11961
             // For my purposes, all tables have autoincrement PK. Slated for 5.0
-            "command": "dotnet ef dbcontext scaffold \"DataSource=../b-database/app.db;\" Microsoft.EntityFrameworkCore.Sqlite -o Models -v -c AppDbContext --force;sed -i '' 's/ValueGeneratedNever/ValueGeneratedOnAdd/g' Models/AppDbContext.cs",
+            "command": "dotnet ef dbcontext scaffold \"DataSource=../b-database/app.db;\" Microsoft.EntityFrameworkCore.Sqlite --data-annotations -o Models -v -c AppDbContext --force;sed -i '' 's/ValueGeneratedNever/ValueGeneratedOnAdd/g' Models/AppDbContext.cs",
             "problemMatcher": []
         }
     ]

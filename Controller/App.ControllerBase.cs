@@ -19,7 +19,7 @@ namespace B.API
         }
 
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
-        protected ActionResult<T> Create<T>(T item, string actionName) where T : class {
+        protected ActionResult<T> Create<T>(T item, string actionName, Func<long, T> fetch) where T : class {
            try {
                 _context.Set<T>().Add(item);
                 _context.SaveChanges();
@@ -30,11 +30,11 @@ namespace B.API
             }
 
             var itemId = (long)item.GetType().GetProperty("Id").GetValue(item, null);
-            return CreatedAtAction(actionName, new { id = itemId}, item);
+            return CreatedAtAction(actionName, new { id = itemId}, fetch(itemId));
         }
 
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        protected IActionResult Update<T>(long id, T item) where T : class {
+        protected ActionResult<T> Update<T>(long id, T item, Func<long, T> fetch) where T : class {
             var itemId = (long)item.GetType().GetProperty("Id").GetValue(item, null);
             if (item == null || itemId != id) {
                 _logger.LogWarning(LoggingEvents.UpdateItemBadRequest, $"UPDATE({id}) BAD REQUEST");
@@ -54,7 +54,7 @@ namespace B.API
                 _logger.LogError(LoggingEvents.UpdateItemApplicationError, ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return NoContent();
+            return Ok(fetch(itemId));
         }
 
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]

@@ -33,37 +33,22 @@ namespace B.API.Repository
 
 
 
-        public IQueryable<MealPlanRecipe> Order(IQueryable<MealPlanRecipe> mealPlanRecipes, string sortName) 
+        public IQueryable<MealPlanRecipe> Order(IQueryable<MealPlanRecipe> items, string sortName) 
         {
-            switch(sortName) {
-                case "id_asc":
-                    mealPlanRecipes = mealPlanRecipes.OrderBy(b => b.Id);
-                    break;
-                case "id_desc":
-                    mealPlanRecipes = mealPlanRecipes.OrderByDescending(b => b.Id);
-                    break;
-                case "mealPlan_asc":
-                    mealPlanRecipes = mealPlanRecipes.OrderBy(b => b.MealPlan.Name);
-                    break;
-                case "mealPlan_desc":
-                    mealPlanRecipes = mealPlanRecipes.OrderByDescending(b => b.MealPlan.Name);
-                    break;
-                case "recipe_asc":
-                    mealPlanRecipes = mealPlanRecipes.OrderBy(b => b.Recipe.Name);
-                    break;
-                case "recipe_desc":
-                    mealPlanRecipes = mealPlanRecipes.OrderByDescending(b => b.Recipe.Name);
-                    break;
-                case "count_asc":
-                    mealPlanRecipes = mealPlanRecipes.OrderBy(b => b.Count);
-                    break;
-                case "count_desc":
-                    mealPlanRecipes = mealPlanRecipes.OrderByDescending(b => b.Count);
-                    break;
-            default:
-                    break;
-            }
-            return mealPlanRecipes;
+            items = sortName switch 
+            {
+                "id_asc" => items.OrderBy(b => b.Id),
+                "id_desc" => items.OrderByDescending(b => b.Id),
+                "mealPlanId_asc" => items.OrderBy(b => b.MealPlan.Name),
+                "mealPlanId_desc" => items.OrderByDescending(b => b.MealPlan.Name),
+                "recipeId_asc" => items.OrderBy(b => b.Recipe.Name),
+                "recipeId_desc" => items.OrderByDescending(b => b.Recipe.Name),
+                "count_asc" => items.OrderBy(b => b.Count),
+                "count_desc" => items.OrderByDescending(b => b.Count),
+                _ => items
+            };
+            return items;
+
         }
  
         public IQueryable<MealPlanRecipe> Filter(IQueryable<MealPlanRecipe> mealPlanRecipes, List<long> mealPlans, List<long> recipes)

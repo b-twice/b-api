@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.IO;
-using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API 
 {
@@ -30,7 +30,7 @@ namespace B.API
 
             var path = HttpContext.Request.Path.Value.Replace("v1/blog/content/", "").TrimStart('/');
 
-            var post = _context.Posts.FirstOrDefault(p => p.Path == path && (!authenticated ? p.Authenticate != 1 : true));
+            var post = _context.Posts.AsNoTracking().FirstOrDefault(p => p.Path == path && (!authenticated ? p.Authenticate != 1 : true));
 
             if (post == null) {
                 return NotFound();

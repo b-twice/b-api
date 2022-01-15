@@ -41,61 +41,33 @@ namespace B.API.Repository
                 .Include(r => r.RecipeIngredients.OrderBy(i => i.FoodProduct.Name)).ThenInclude(i => i.FoodProduct);
         }
 
-        public IQueryable<Recipe> Order(IQueryable<Recipe> recipes, string sortName) 
+        public IQueryable<Recipe> Order(IQueryable<Recipe> items, string sortName) 
         {
-            switch(sortName) {
-                case "id_asc":
-                    recipes = recipes.OrderBy(b => b.Id);
-                    break;
-                case "id_desc":
-                    recipes = recipes.OrderByDescending(b => b.Id);
-                    break;
-                case "user_asc":
-                    recipes = recipes.OrderBy(b => b.User.FirstName);
-                    break;
-                case "user_desc":
-                    recipes = recipes.OrderByDescending(b => b.User.FirstName);
-                    break;
-                case "recipeCategory_asc":
-                    recipes = recipes.OrderBy(b => b.RecipeCategory.Name);
-                    break;
-                case "recipeCategory_desc":
-                    recipes = recipes.OrderByDescending(b => b.RecipeCategory.Name);
-                    break;
-                case "cookbook_asc":
-                    recipes = recipes.OrderBy(b => b.Cookbook.Name);
-                    break;
-                case "cookbook_desc":
-                    recipes = recipes.OrderByDescending(b => b.Cookbook.Name);
-                    break;
-                case "name_asc":
-                    recipes = recipes.OrderBy(b => b.Name);
-                    break;
-                case "name_desc":
-                    recipes = recipes.OrderByDescending(b => b.Name);
-                    break;
-                case "servings_asc":
-                    recipes = recipes.OrderBy(b => b.Servings);
-                    break;
-                case "servings_desc":
-                    recipes = recipes.OrderByDescending(b => b.Servings);
-                    break;
-                case "pageNumber_asc":
-                    recipes = recipes.OrderBy(b => b.PageNumber);
-                    break;
-                case "pageNumber_desc":
-                    recipes = recipes.OrderByDescending(b => b.PageNumber);
-                    break;
-                case "url_asc":
-                    recipes = recipes.OrderBy(b => b.Url);
-                    break;
-                case "url_desc":
-                    recipes = recipes.OrderByDescending(b => b.Url);
-                    break;
-              default:
-                    break;
-            }
-            return recipes;
+            items = sortName switch 
+            {
+                "id_asc" => items.OrderBy(b => b.Id),
+                "id_desc" => items.OrderByDescending(b => b.Id),
+                "userId_asc" => items.OrderBy(b => b.User.FirstName),
+                "userId_desc" => items.OrderByDescending(b => b.User.FirstName),
+                "recipeCategoryId_asc" => items.OrderBy(b => b.RecipeCategory.Name),
+                "recipeCategoryId_desc" => items.OrderByDescending(b => b.RecipeCategory.Name),
+                "cookbookId_asc" => items.OrderBy(b => b.Cookbook.Name),
+                "cookbookId_desc" => items.OrderByDescending(b => b.Cookbook.Name),
+                "name_asc" => items.OrderBy(b => b.Name),
+                "name_desc" => items.OrderByDescending(b => b.Name),
+                "servings_asc" => items.OrderBy(b => b.Servings),
+                "servings_desc" => items.OrderByDescending(b => b.Servings),
+                "pageNumber_asc" => items.OrderBy(b => b.PageNumber),
+                "pageNumber_desc" => items.OrderByDescending(b => b.PageNumber),
+                "url_asc" => items.OrderBy(b => b.Url),
+                "url_desc" => items.OrderByDescending(b => b.Url),
+                "rating_asc" => items.OrderBy(b => b.Rating),
+                "rating_desc" => items.OrderByDescending(b => b.Rating),
+                "complexity_asc" => items.OrderBy(b => b.Complexity),
+                "complexity_desc" => items.OrderByDescending(b => b.Complexity),
+                 _ => items
+            };
+            return items;
         }
  
         public IQueryable<Recipe> Filter(IQueryable<Recipe> recipes, List<long> users, List<long> categories, List<long> cookbooks, List<long> products, string name)

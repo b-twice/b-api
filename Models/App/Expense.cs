@@ -10,6 +10,7 @@ namespace B.API.Models
         public long PlannedAmount { get; set; }
         public long ActualAmount { get; set; }
 
+        public string CategoryName { get; set; }
         public long Remainder { 
             get {
                 return  PlannedAmount - ActualAmount;

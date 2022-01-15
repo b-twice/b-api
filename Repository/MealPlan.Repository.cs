@@ -37,37 +37,21 @@ namespace B.API.Repository
 
 
 
-        public IQueryable<MealPlan> Order(IQueryable<MealPlan> mealPlans, string sortName) 
+        public IQueryable<MealPlan> Order(IQueryable<MealPlan> items, string sortName) 
         {
-            switch(sortName) {
-                case "id_asc":
-                    mealPlans = mealPlans.OrderBy(b => b.Id);
-                    break;
-                case "id_desc":
-                    mealPlans = mealPlans.OrderByDescending(b => b.Id);
-                    break;
-                case "user_asc":
-                    mealPlans = mealPlans.OrderBy(b => b.User.FirstName);
-                    break;
-                case "user_desc":
-                    mealPlans = mealPlans.OrderByDescending(b => b.User.FirstName);
-                    break;
-                case "name_asc":
-                    mealPlans = mealPlans.OrderBy(b => b.Name);
-                    break;
-                case "name_desc":
-                    mealPlans = mealPlans.OrderByDescending(b => b.Name);
-                    break;
-                case "date_asc":
-                    mealPlans = mealPlans.OrderBy(o => o.Date);
-                    break;
-                case "date_desc":
-                    mealPlans = mealPlans.OrderByDescending(o => o.Date);
-                    break;
-             default:
-                    break;
-            }
-            return mealPlans;
+            items = sortName switch 
+            {
+                "id_asc" => items.OrderBy(b => b.Id),
+                "id_desc" => items.OrderByDescending(b => b.Id),
+                "userId_asc" => items.OrderBy(b => b.User.FirstName),
+                "userId_desc" => items.OrderByDescending(b => b.User.FirstName),
+                "name_asc" => items.OrderBy(b => b.Name),
+                "name_desc" => items.OrderByDescending(b => b.Name),
+                "date_asc" => items.OrderBy(o => o.Date),
+                "date_desc" => items.OrderByDescending(o => o.Date),
+                _ => items
+            };
+            return items;
         }
  
         public IQueryable<MealPlan> Filter(IQueryable<MealPlan> mealPlans, List<long> users, List<long> recipes, string name, List<string> years, List<string> months)

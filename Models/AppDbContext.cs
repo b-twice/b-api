@@ -24,6 +24,12 @@ namespace B.API.Models
         public virtual DbSet<BookStatus> BookStatuses { get; set; }
         public virtual DbSet<Cookbook> Cookbooks { get; set; }
         public virtual DbSet<CookbookAuthor> CookbookAuthors { get; set; }
+        public virtual DbSet<CryptoAnnualInvestmentSummary> CryptoAnnualInvestmentSummaries { get; set; }
+        public virtual DbSet<CryptoCoin> CryptoCoins { get; set; }
+        public virtual DbSet<CryptoHolding> CryptoHoldings { get; set; }
+        public virtual DbSet<CryptoInvestment> CryptoInvestments { get; set; }
+        public virtual DbSet<CryptoPrice> CryptoPrices { get; set; }
+        public virtual DbSet<CryptoSale> CryptoSales { get; set; }
         public virtual DbSet<Debt> Debts { get; set; }
         public virtual DbSet<Earning> Earnings { get; set; }
         public virtual DbSet<FoodCategory> FoodCategories { get; set; }
@@ -31,6 +37,7 @@ namespace B.API.Models
         public virtual DbSet<FoodQuantityType> FoodQuantityTypes { get; set; }
         public virtual DbSet<FoodUnit> FoodUnits { get; set; }
         public virtual DbSet<Investment> Investments { get; set; }
+        public virtual DbSet<LatestCryptoCoinPrice> LatestCryptoCoinPrices { get; set; }
         public virtual DbSet<MealPlan> MealPlans { get; set; }
         public virtual DbSet<MealPlanGrocery> MealPlanGroceries { get; set; }
         public virtual DbSet<MealPlanNote> MealPlanNotes { get; set; }
@@ -64,37 +71,17 @@ namespace B.API.Models
         {
             modelBuilder.Entity<Asset>(entity =>
             {
-                entity.ToTable("Asset");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Year).IsRequired();
             });
 
             modelBuilder.Entity<Bank>(entity =>
             {
-                entity.ToTable("Bank");
-
-                entity.HasIndex(e => e.Name, "IX_Bank_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<Book>(entity =>
             {
-                entity.ToTable("Book");
-
-                entity.HasIndex(e => new { e.Name, e.BookAuthorId, e.BookCategoryId, e.BookStatusId, e.ReadDate }, "IX_Book_Name_BookAuthorId_BookCategoryId_BookStatusId_ReadDate")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
-
-                entity.Property(e => e.ReadDate).IsRequired();
 
                 entity.HasOne(d => d.BookAuthor)
                     .WithMany(p => p.Books)
@@ -114,52 +101,22 @@ namespace B.API.Models
 
             modelBuilder.Entity<BookAuthor>(entity =>
             {
-                entity.ToTable("BookAuthor");
-
-                entity.HasIndex(e => e.Name, "IX_BookAuthor_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<BookCategory>(entity =>
             {
-                entity.ToTable("BookCategory");
-
-                entity.HasIndex(e => e.Name, "IX_BookCategory_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<BookStatus>(entity =>
             {
-                entity.ToTable("BookStatus");
-
-                entity.HasIndex(e => e.Name, "IX_BookStatus_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Keyword).IsRequired();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<Cookbook>(entity =>
             {
-                entity.ToTable("Cookbook");
-
-                entity.HasIndex(e => e.Name, "IX_Cookbook_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
 
                 entity.HasOne(d => d.CookbookAuthor)
                     .WithMany(p => p.Cookbooks)
@@ -169,58 +126,68 @@ namespace B.API.Models
 
             modelBuilder.Entity<CookbookAuthor>(entity =>
             {
-                entity.ToTable("CookbookAuthor");
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
 
-                entity.HasIndex(e => e.Name, "IX_CookbookAuthor_Name")
-                    .IsUnique();
+            modelBuilder.Entity<CryptoAnnualInvestmentSummary>(entity =>
+            {
+                entity.ToView("CryptoAnnualInvestmentSummary");
+            });
 
+            modelBuilder.Entity<CryptoCoin>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<CryptoHolding>(entity =>
+            {
+                entity.HasOne(d => d.CryptoCoin)
+                    .WithMany(p => p.CryptoHoldings)
+                    .HasForeignKey(d => d.CryptoCoinId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<CryptoInvestment>(entity =>
+            {
+                entity.ToView("CryptoInvestment");
+            });
+
+            modelBuilder.Entity<CryptoPrice>(entity =>
+            {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Name).IsRequired();
+                entity.HasOne(d => d.CryptoCoin)
+                    .WithMany(p => p.CryptoPrices)
+                    .HasForeignKey(d => d.CryptoCoinId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<CryptoSale>(entity =>
+            {
+                entity.HasOne(d => d.CryptoHolding)
+                    .WithMany(p => p.CryptoSales)
+                    .HasForeignKey(d => d.CryptoHoldingId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Debt>(entity =>
             {
-                entity.ToTable("Debt");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Year).IsRequired();
             });
 
             modelBuilder.Entity<Earning>(entity =>
             {
-                entity.ToTable("Earning");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Year).IsRequired();
             });
 
             modelBuilder.Entity<FoodCategory>(entity =>
             {
-                entity.ToTable("FoodCategory");
-
-                entity.HasIndex(e => e.Name, "IX_FoodCategory_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<FoodProduct>(entity =>
             {
-                entity.ToTable("FoodProduct");
-
-                entity.HasIndex(e => e.Name, "IX_FoodProduct_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.FoodQuantityTypeId).HasColumnType("INTERGER");
-
-                entity.Property(e => e.Name).IsRequired();
 
                 entity.HasOne(d => d.FoodCategory)
                     .WithMany(p => p.FoodProducts)
@@ -236,55 +203,31 @@ namespace B.API.Models
                     .WithMany(p => p.FoodProducts)
                     .HasForeignKey(d => d.FoodUnitId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
-
-                entity.HasOne(d => d.Supermarket)
-                    .WithMany(p => p.FoodProducts)
-                    .HasForeignKey(d => d.SupermarketId);
             });
 
             modelBuilder.Entity<FoodQuantityType>(entity =>
             {
-                entity.ToTable("FoodQuantityType");
-
-                entity.HasIndex(e => e.Name, "IX_FoodQuantityType_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<FoodUnit>(entity =>
             {
-                entity.ToTable("FoodUnit");
-
-                entity.HasIndex(e => e.Name, "IX_FoodUnit_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<Investment>(entity =>
             {
-                entity.ToTable("Investment");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
 
-                entity.Property(e => e.Year).IsRequired();
+            modelBuilder.Entity<LatestCryptoCoinPrice>(entity =>
+            {
+                entity.ToView("LatestCryptoCoinPrice");
             });
 
             modelBuilder.Entity<MealPlan>(entity =>
             {
-                entity.ToTable("MealPlan");
-
-                entity.HasIndex(e => e.Name, "IX_MealPlan_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.MealPlans)
@@ -294,18 +237,12 @@ namespace B.API.Models
 
             modelBuilder.Entity<MealPlanGrocery>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToView("MealPlanGroceries");
             });
 
             modelBuilder.Entity<MealPlanNote>(entity =>
             {
-                entity.ToTable("MealPlanNote");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Content).IsRequired();
 
                 entity.HasOne(d => d.MealPlan)
                     .WithMany(p => p.MealPlanNotes)
@@ -315,8 +252,6 @@ namespace B.API.Models
 
             modelBuilder.Entity<MealPlanRecipe>(entity =>
             {
-                entity.ToTable("MealPlanRecipe");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Count).HasDefaultValueSql("1");
@@ -334,50 +269,20 @@ namespace B.API.Models
 
             modelBuilder.Entity<MealPlanRecipesView>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToView("MealPlanRecipesView");
             });
 
             modelBuilder.Entity<Post>(entity =>
             {
-                entity.ToTable("Post");
-
-                entity.HasIndex(e => new { e.PostGroupId, e.Title, e.Date, e.Path }, "IX_Post_PostGroupId_Title_Date_Path")
-                    .IsUnique();
-
-                entity.Property(e => e.Date).IsRequired();
-
-                entity.Property(e => e.Path).IsRequired();
-
-                entity.Property(e => e.Title).IsRequired();
-
                 entity.HasOne(d => d.PostGroup)
                     .WithMany(p => p.Posts)
                     .HasForeignKey(d => d.PostGroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<PostGroup>(entity =>
-            {
-                entity.ToTable("PostGroup");
-
-                entity.HasIndex(e => e.Name, "IX_PostGroup_Name")
-                    .IsUnique();
-
-                entity.Property(e => e.Name).IsRequired();
-            });
-
             modelBuilder.Entity<Recipe>(entity =>
             {
-                entity.ToTable("Recipe");
-
-                entity.HasIndex(e => e.Name, "IX_Recipe_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
 
                 entity.Property(e => e.PageNumber).HasDefaultValueSql("0");
 
@@ -399,22 +304,14 @@ namespace B.API.Models
 
             modelBuilder.Entity<RecipeCategory>(entity =>
             {
-                entity.ToTable("RecipeCategory");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<RecipeIngredient>(entity =>
             {
-                entity.ToTable("RecipeIngredient");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Count).HasDefaultValueSql("1");
-
-                entity.Property(e => e.Measurement).IsRequired();
 
                 entity.Property(e => e.Weight).HasDefaultValueSql("0");
 
@@ -431,18 +328,12 @@ namespace B.API.Models
 
             modelBuilder.Entity<RecipeIngredientsView>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToView("RecipeIngredientsView");
             });
 
             modelBuilder.Entity<RecipeNote>(entity =>
             {
-                entity.ToTable("RecipeNote");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Content).IsRequired();
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeNotes)
@@ -452,39 +343,11 @@ namespace B.API.Models
 
             modelBuilder.Entity<Supermarket>(entity =>
             {
-                entity.ToTable("Supermarket");
-
-                entity.HasIndex(e => e.Name, "IX_Supermarket_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Code).IsRequired();
-
-                entity.Property(e => e.Name).IsRequired();
-            });
-
-            modelBuilder.Entity<TransactionCategory>(entity =>
-            {
-                entity.ToTable("TransactionCategory");
-
-                entity.HasIndex(e => e.Name, "IX_TransactionCategory_Name")
-                    .IsUnique();
-
-                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<TransactionRecord>(entity =>
             {
-                entity.ToTable("TransactionRecord");
-
-                entity.HasIndex(e => new { e.BankId, e.UserId, e.Date, e.Description, e.Amount }, "IX_TransactionRecord_BankId_UserId_Date_Description_Amount")
-                    .IsUnique();
-
-                entity.Property(e => e.Date).IsRequired();
-
-                entity.Property(e => e.Description).IsRequired();
-
                 entity.HasOne(d => d.Bank)
                     .WithMany(p => p.TransactionRecords)
                     .HasForeignKey(d => d.BankId)
@@ -503,8 +366,6 @@ namespace B.API.Models
 
             modelBuilder.Entity<TransactionRecordTag>(entity =>
             {
-                entity.ToTable("TransactionRecordTag");
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.HasOne(d => d.Tag)
@@ -518,44 +379,14 @@ namespace B.API.Models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<TransactionTag>(entity =>
-            {
-                entity.ToTable("TransactionTag");
-
-                entity.HasIndex(e => e.Name, "IX_TransactionTag_Name")
-                    .IsUnique();
-
-                entity.Property(e => e.Name).IsRequired();
-            });
-
             modelBuilder.Entity<User>(entity =>
             {
-                entity.ToTable("User");
-
-                entity.HasIndex(e => e.Email, "IX_User_Email")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Email).IsRequired();
-
-                entity.Property(e => e.FirstName).IsRequired();
-
-                entity.Property(e => e.LastName).IsRequired();
-
-                entity.Property(e => e.Phone).IsRequired();
             });
 
             modelBuilder.Entity<YearlyPlannedExpense>(entity =>
             {
-                entity.ToTable("YearlyPlannedExpense");
-
-                entity.HasIndex(e => new { e.Date, e.CategoryId }, "IX_YearlyPlannedExpense_Date_CategoryId")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Date).IsRequired();
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.YearlyPlannedExpenses)

@@ -6,7 +6,6 @@ using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using B.API.Entity;
 
 namespace B.API.Controller
@@ -32,7 +31,7 @@ namespace B.API.Controller
 
     [HttpGet("page")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-    public ActionResult<PaginatedResult<Post>> GetBlogPostPage(
+    public ActionResult<PaginatedResult<Post>> GetPage(
         [FromQuery] string sortName,
         [FromQuery] int pageNumber,
         [FromQuery] int pageSize,
@@ -44,7 +43,7 @@ namespace B.API.Controller
     )
     {
       var authenticated = User.Identity.IsAuthenticated;
-      var posts = _postRepository.Filter(_context.Posts, title, description, groups, authenticate, star);
+      var posts = _postRepository.Filter(_context.Posts.AsNoTracking(), title, description, groups, authenticate, star);
       posts = _postRepository.Include(_postRepository.Order(posts, sortName)).Where(p => !authenticated ? p.Authenticate != 1 : true);
       var paginatedList = PaginatedList<Post>.Create(posts, pageNumber, pageSize);
       return Ok(new PaginatedResult<Post>(paginatedList, paginatedList.TotalCount));
@@ -53,7 +52,7 @@ namespace B.API.Controller
 
     [HttpGet]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-    public ActionResult<IEnumerable<Post>> GetBlogPosts(
+    public ActionResult<IEnumerable<Post>> GetAll(
         [FromQuery] int size
     )
     {
@@ -68,12 +67,12 @@ namespace B.API.Controller
 
     [HttpGet("/groups")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-    public ActionResult<IEnumerable<PostGroup>> GetBlogPostGroups(
+    public ActionResult<IEnumerable<PostGroup>> GetGroups(
         [FromQuery] int size
     )
     {
       var authenticated = User.Identity.IsAuthenticated;
-      var groups = _context.PostGroups.Include(pg => pg.Posts).AsNoTracking();
+      var groups = _context.PostGroups.AsNoTracking().Include(pg => pg.Posts).AsNoTracking();
       if (!authenticated) {
         groups = groups.Where(g => g.Posts.Any(p => p.Authenticate == 0));
       }
@@ -88,31 +87,27 @@ namespace B.API.Controller
     [Authorize]
     [HttpGet("{id}")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-    public ActionResult<Post> GetBlogPost(long id)
+    public ActionResult<Post> Get(long id)
     {
       return Ok(_postRepository.Find(id));
     }
 
     [Authorize]
     [HttpPost]
-    public ActionResult<Post> CreateBlogPost([FromBody] Post item)
+    public ActionResult<Post> Create([FromBody] Post item)
     {
-      // Without this EF Core will not bind the FK to these entities
-      _context.Entry(item.PostGroup).State = EntityState.Unchanged;
-
-      return Create<Post>(item, nameof(CreateBlogPost));
+      return Create<Post>(item, nameof(Create), (long id ) => _postRepository.Find(id));
     }
     [Authorize]
     [HttpPut("{id}")]
-    public IActionResult UpdateBlogPost(long id, [FromBody] Post item)
+    [ProducesResponseType(200, Type = typeof(Post))]
+   public ActionResult<Post> Update(long id, [FromBody] Post item)
     {
-      item.PostGroupId = item?.PostGroup?.Id ?? default(int);
-
-      return Update<Post>(id, item);
+      return Update<Post>(id, item, (long id ) => _postRepository.Find(id));
     }
     [Authorize]
     [HttpDelete("{id}")]
-    public IActionResult DeleteBlogPost(long id)
+    public IActionResult Delete(long id)
     {
       return Delete<Post>(id);
     }

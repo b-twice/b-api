@@ -72,24 +72,15 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<FoodProduct> Create([FromBody] FoodProduct item)
         {
-            // Without this EF Core will not bind the FK to these entities
-            _context.Entry(item.FoodCategory).State = EntityState.Unchanged;
-            _context.Entry(item.FoodQuantityType).State = EntityState.Unchanged;
-            _context.Entry(item.FoodUnit).State = EntityState.Unchanged;
-            _context.Entry(item.Supermarket).State = EntityState.Unchanged;
- 
-            return Create<FoodProduct>(item, nameof(Create));
+            return Create<FoodProduct>(item, nameof(Create), (long id) => _foodProductRepository.Find(id));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] FoodProduct item)
+        [ProducesResponseType(200, Type = typeof(FoodProduct))]
+        public ActionResult<FoodProduct> Update(long id, [FromBody] FoodProduct item)
         {
-            item.FoodCategoryId = item?.FoodCategory?.Id ?? default(int);
-            item.FoodQuantityTypeId = item?.FoodQuantityType?.Id ?? default(int);
-            item.FoodUnitId = item?.FoodUnit?.Id ?? default(int);
-            item.SupermarketId = item?.Supermarket?.Id ?? null;
- 
-            return Update<FoodProduct>(id, item);
+
+            return Update<FoodProduct>(id, item, (long id) => _foodProductRepository.Find(id));
         }
         [Authorize]
         [HttpDelete("{id}")]

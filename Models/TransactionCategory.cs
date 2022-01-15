@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Models
 {
-    public partial class TransactionCategory
+    [Table("TransactionCategory")]
+    [Index(nameof(Name), IsUnique = true)]
+    public partial class TransactionCategory : AppLookup
     {
         public TransactionCategory()
         {
@@ -11,10 +17,11 @@ namespace B.API.Models
             YearlyPlannedExpenses = new HashSet<YearlyPlannedExpense>();
         }
 
-        public long Id { get; set; }
-        public string Name { get; set; }
 
+        [JsonIgnore]
+        [InverseProperty(nameof(TransactionRecord.Category))]
         public virtual ICollection<TransactionRecord> TransactionRecords { get; set; }
+        [InverseProperty(nameof(YearlyPlannedExpense.Category))]
         public virtual ICollection<YearlyPlannedExpense> YearlyPlannedExpenses { get; set; }
     }
 }

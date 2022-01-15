@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Controller
 {
@@ -28,7 +29,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<User>> GetAll() 
         {
-            return Ok(_context.Users);
+            return Ok(_context.Users.AsNoTracking());
         }
 
 
@@ -36,7 +37,7 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<TransactionRecord> Get(long id)
         {
-            return Ok(_context.Users.First(o => o.Id == id));
+            return Ok(_context.Users.AsNoTracking().First(o => o.Id == id));
         }
 
 

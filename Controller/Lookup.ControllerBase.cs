@@ -56,13 +56,11 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<TEntity> Create([FromBody] TEntity item)
         {
-            return Create<TEntity>(item, nameof(Create));
+            return Create<TEntity>(item, nameof(Create), (long id) => _dbset.AsNoTracking().First(o => o.Id == id));
         }
-        [Authorize]
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] TEntity item)
+        protected ActionResult<TEntity> Update(int id, [FromBody] TEntity item)
         {
-            return Update<TEntity>(id, item);
+            return Update<TEntity>(id, item, (long id) => _dbset.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpDelete("{id}")]

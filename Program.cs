@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using System.Linq;
+using System.Text.Json.Serialization;
+using B.NSwag;
 
 var configurationBuilder = new ConfigurationBuilder();
 IConfigurationRoot secrets = configurationBuilder
@@ -24,9 +26,7 @@ IConfigurationRoot secrets = configurationBuilder
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddControllers().AddNewtonsoftJson(options => 
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -60,14 +60,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     options.Audience = configuration.GetValue<string>("Authentication:ApiIdentifier");
 });
 
-builder.Services.AddOpenApiDocument(config => 
+builder.Services.AddOpenApiDocument(config => {
     config.PostProcess = document => {
         document.Info.Title = "B API";
         document.Info.Version = "v1";
         document.Info.Description = "";
-
-    }
-); 
+    };
+    config.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
+}); 
 
 var app = builder.Build();
 

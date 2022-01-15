@@ -43,8 +43,8 @@ namespace B.API.Controller
 
         ) 
         {
-            var books = _bookRepository.Filter(_context.Books, bookName, bookAuthors, bookCategories, bookStatuses, readYears);
-            books = _bookRepository.Include(_bookRepository.Order(books, sortName));
+            var books = _bookRepository.Filter(_context.Books.AsNoTracking(), bookName, bookAuthors, bookCategories, bookStatuses, readYears);
+            books = _bookRepository.Order(_bookRepository.Include(books), sortName);
             var paginatedList = PaginatedList<Book>.Create(books, pageNumber, pageSize);
             return Ok(new PaginatedResult<Book>(paginatedList, paginatedList.TotalCount));
         }
@@ -75,22 +75,15 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<Book> Create([FromBody] Book item)
         {
-            // Without this EF Core will not bind the FK to these entities
-            _context.Entry(item.BookAuthor).State = EntityState.Unchanged;
-            _context.Entry(item.BookCategory).State = EntityState.Unchanged;
-            _context.Entry(item.BookStatus).State = EntityState.Unchanged;
- 
-            return Create<Book>(item, nameof(Create));
+
+            return Create<Book>(item, nameof(Create), (long id) => _bookRepository.Find(id));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] Book item)
+        [ProducesResponseType(200, Type = typeof(Book))]
+        public ActionResult<Book> Update(long id, [FromBody] Book item)
         {
-            item.BookAuthorId = item?.BookAuthor?.Id ?? default(int);
-            item.BookCategoryId = item?.BookCategory?.Id ?? default(int);
-            item.BookStatusId  = item?.BookStatus?.Id ?? default(int);
- 
-            return Update<Book>(id, item);
+            return Update<Book>(id, item, (long id) => _bookRepository.Find(id));
         }
         [Authorize]
         [HttpDelete("{id}")]

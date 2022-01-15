@@ -35,55 +35,27 @@ namespace B.API.Repository
 
         public IQueryable<TransactionRecord> Order(IQueryable<TransactionRecord> items, string sortName) 
         {
-            // TODO: tranlsate this to a generic method using IQueryable? 
-            // May not be worth it, this is clear and conscise as is
-            switch(sortName) {
-                case "id_asc":
-                    items = items.OrderBy(o => o.Id);
-                    break;
-                case "id_desc":
-                    items = items.OrderByDescending(o => o.Id);
-                    break;
-                case "date_asc":
-                    items = items.OrderBy(o => o.Date);
-                    break;
-                case "date_desc":
-                    items = items.OrderByDescending(o => o.Date);
-                    break;
-                case "user_asc":
-                    items = items.OrderBy(o => o.User.FirstName);
-                    break;
-                case "user_desc":
-                    items = items.OrderByDescending(o => o.User.FirstName);
-                    break;
-                case "bank_asc":
-                    items = items.OrderBy(o => o.Bank.Name);
-                    break;
-                case "bank_desc":
-                    items = items.OrderByDescending(o => o.Bank.Name);
-                    break;
-                case "category_asc":
-                    items = items.OrderBy(o => o.Category.Name);
-                    break;
-                case "category_desc":
-                    items = items.OrderByDescending(o => o.Category.Name);
-                    break;
-                case "amount_asc":
-                    items = items.OrderBy(o => o.Amount);
-                    break;
-                case "amount_desc":
-                    items = items.OrderByDescending(o => o.Amount);
-                    break;
-                case "description_asc":
-                    items = items.OrderBy(o => o.Description); break;
-                case "description_desc":
-                    items = items.OrderByDescending(o => o.Description);
-                    break;
-                default:
-                    break;
-            }
+            items = sortName switch 
+            {
+                "id_asc" => items.OrderBy(o => o.Id),
+                "id_desc" => items.OrderByDescending(o => o.Id),
+                "date_asc" => items.OrderBy(o => o.Date),
+                "date_desc" => items.OrderByDescending(o => o.Date),
+                "userId_asc" => items.OrderBy(o => o.User.FirstName),
+                "userId_desc" => items.OrderByDescending(o => o.User.FirstName),
+                "bankId_asc" => items.OrderBy(o => o.Bank.Name),
+                "bankId_desc" => items.OrderByDescending(o => o.Bank.Name),
+                "categoryId_asc" => items.OrderBy(o => o.Category.Name),
+                "categoryId_desc" => items.OrderByDescending(o => o.Category.Name),
+                "amount_asc" => items.OrderBy(o => o.Amount),
+                "amount_desc" => items.OrderByDescending(o => o.Amount),
+                "description_asc" => items.OrderBy(o => o.Description),
+                "description_desc" => items.OrderByDescending(o => o.Description),
+                 _ => items
+            };
             return items;
         }
+ 
  
         public IQueryable<TransactionRecord> Filter(IQueryable<TransactionRecord> items, string description, List<long> categories, List<long> tags, List<long> banks, List<long> users, List<string> years, List<string> months)
         {

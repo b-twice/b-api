@@ -67,7 +67,7 @@ namespace B.API.Controller
         public ActionResult<IEnumerable<MealPlanRecipesView>> GetRecipes (int id)
         {
             return Ok(
-                _context.MealPlanRecipesViews.Where(o => o.MealPlanId == id)
+                _context.MealPlanRecipesViews.AsNoTracking().Where(o => o.MealPlanId == id)
             );
         }
 
@@ -75,20 +75,20 @@ namespace B.API.Controller
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<MealPlanRecipesView> GetGroceriesRecipe(long id)
         {
-            return Ok(_context.MealPlanRecipesViews.FirstOrDefault(r => r.RecipeId == id));
+            return Ok(_context.MealPlanRecipesViews.AsNoTracking().FirstOrDefault(r => r.RecipeId == id));
         }
 
         [HttpGet("recipes/{id}/notes")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
         public ActionResult<IEnumerable<RecipeNote>> GetRecipeNotes(long id)
         {
-            return Ok(_context.RecipeNotes.Where(r => r.RecipeId == id));
+            return Ok(_context.RecipeNotes.AsNoTracking().Where(r => r.RecipeId == id));
         }
 
         [HttpGet("recipes/{id}/ingredients")]
         public IActionResult GetRecipeIngredients(int id)
         {
-            return Ok(_context.RecipeIngredientsViews.Where(o => o.RecipeId == id));
+            return Ok(_context.RecipeIngredientsViews.AsNoTracking().Where(o => o.RecipeId == id));
         }
 
    }

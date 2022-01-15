@@ -62,15 +62,6 @@ namespace B.API.Controller
             return Ok(mealPlans);
         }
 
-        [HttpGet("latest")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<MealPlan>> GetLatest() 
-        {
-            var mealPlans =_mealPlanRepository.FindAll().OrderByDescending(o => o.Id);
-            return Ok(mealPlans.FirstOrDefault());
-        }
-
-
 
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
@@ -79,62 +70,18 @@ namespace B.API.Controller
             return Ok(_mealPlanRepository.Find(id));
         }
 
-        [HttpGet("{id}/groceries")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Find))]
-        public ActionResult<IEnumerable<MealPlanGrocery>> GetGroceries (int id)
-        {
-            return Ok(
-                _context.MealPlanGroceries.Where(o => o.MealPlanId == id).OrderBy(o => o.Name)
-            );
-        }
-
-        [HttpGet("{id}/recipes")]
-        public ActionResult<IEnumerable<MealPlanRecipe>> GetRecipes (int id)
-        {
-            return Ok(
-                _context.MealPlanRecipesViews.Where(o => o.MealPlanId == id)
-            );
-        }
-
-
         [Authorize]
         [HttpPost]
         public ActionResult<MealPlan> Create([FromBody] MealPlan item)
         {
-            // Without this EF Core will not bind the FK to these entities
-            _context.Entry(item.User).State = EntityState.Unchanged;
-            foreach (MealPlanRecipe recipe in item.MealPlanRecipes) {
-                _context.Entry(recipe).State = EntityState.Added;
-            }
- 
-            return Create<MealPlan>(item, nameof(Create));
+            return Create<MealPlan>(item, nameof(Create), (long id) => _mealPlanRepository.Find(id));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] MealPlan item)
+        [ProducesResponseType(200, Type = typeof(MealPlan))]
+        public ActionResult<MealPlan> Update(long id, [FromBody] MealPlan item)
         {
-            _context.Entry(item);
-            item.UserId = item?.User?.Id ?? default(int);
-            var existingRecipes = _context.MealPlanRecipes.Where(t => t.MealPlanId == id).ToList();
-            var existingRecipeIds = existingRecipes.Select(t => t.Id).ToList();
-            foreach (var tag in item.MealPlanRecipes)  {
-                if (existingRecipeIds.Contains(tag.Id)) {
-                    var existingEntry  = _context.Entry(existingRecipes.Single(t => t.Id == tag.Id));
-                    existingEntry.CurrentValues.SetValues(tag);
-                    existingEntry.State = EntityState.Modified;
-                }
-                else {
-                    tag.Id = 0;
-                    var newEntry = _context.Entry(tag);
-                    newEntry.State = EntityState.Added;
-                    existingRecipes.Add(tag);
-                }
-            }
-            var deleteRecipes = existingRecipes.Where(old => !item.MealPlanRecipes.Any(t => t.Id == old.Id));
-            _context.MealPlanRecipes.RemoveRange(deleteRecipes);
-
- 
-            return Update<MealPlan>(id, item);
+            return Update<MealPlan>(id, item, (long id) => _mealPlanRepository.Find(id));
         }
         [Authorize]
         [HttpDelete("{id}")]

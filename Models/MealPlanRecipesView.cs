@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Models
 {
+    [Keyless]
     public partial class MealPlanRecipesView
     {
         public long? Id { get; set; }
@@ -15,6 +19,6 @@ namespace B.API.Models
         public long? PageNumber { get; set; }
         public string Url { get; set; }
         public long? Count { get; set; }
-        public byte[] Servings { get; set; }
+        public decimal Servings { get; set; }
     }
 }

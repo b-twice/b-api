@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using B.API.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace B.API.Controller
 {
@@ -25,16 +26,14 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<RecipeNote> Create([FromBody] RecipeNote item)
         {
-            // Without this EF Core will not bind the FK to these entities
-            _context.Entry(item.Recipe).State = EntityState.Unchanged;
-            return Create<RecipeNote>(item, nameof(Create));
+            return Create<RecipeNote>(item, nameof(Create), (long id) => _context.RecipeNotes.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] RecipeNote item)
+        [ProducesResponseType(200, Type = typeof(RecipeNote))]
+       public ActionResult<RecipeNote> Update(long id, [FromBody] RecipeNote item)
         {
-            item.RecipeId = item?.Recipe?.Id ?? default(int);
-            return Update<RecipeNote>(id, item);
+            return Update<RecipeNote>(id, item, (long id) => _context.RecipeNotes.AsNoTracking().First(o => o.Id == id));
         }
         [Authorize]
         [HttpDelete("{id}")]

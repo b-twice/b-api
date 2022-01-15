@@ -42,7 +42,7 @@ namespace B.API.Controller
             [FromQuery]List<long> products
         ) 
         {
-            var recipes = _recipeRepository.Filter(_context.Recipes, users, categories, cookbooks, products, name);
+            var recipes = _recipeRepository.Filter(_context.Recipes.AsNoTracking(), users, categories, cookbooks, products, name);
             recipes = _recipeRepository.Include(_recipeRepository.Order(recipes, sortName));
             var paginatedList = PaginatedList<Recipe>.Create(recipes, pageNumber, pageSize);
             return Ok(new PaginatedResult<Recipe>(paginatedList, paginatedList.TotalCount));
@@ -88,22 +88,14 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<Recipe> Create([FromBody] Recipe item)
         {
-            // Without this EF Core will not bind the FK to these entities
-            _context.Entry(item.User).State = EntityState.Unchanged;
-            _context.Entry(item.Cookbook).State = EntityState.Unchanged;
-            _context.Entry(item.RecipeCategory).State = EntityState.Unchanged;
- 
-            return Create<Recipe>(item, nameof(Create));
+            return Create<Recipe>(item, nameof(Create), (long id) => _recipeRepository.Find(id));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] Recipe item)
+        [ProducesResponseType(200, Type = typeof(Recipe))]
+        public ActionResult<Recipe> Update(long id, [FromBody] Recipe item)
         {
-            item.RecipeCategoryId = item?.RecipeCategory?.Id ?? default(int);
-            item.UserId = item?.User?.Id ?? default(int);
-            item.CookbookId = item?.Cookbook?.Id ?? default(int);
-
-            return Update<Recipe>(id, item);
+            return Update<Recipe>(id, item, (long id) => _recipeRepository.Find(id));
         }
         [Authorize]
         [HttpDelete("{id}")]

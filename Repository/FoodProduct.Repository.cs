@@ -33,57 +33,27 @@ namespace B.API.Repository
 
 
 
-        public IQueryable<FoodProduct> Order(IQueryable<FoodProduct> foodProducts, string sortName) 
+        public IQueryable<FoodProduct> Order(IQueryable<FoodProduct> items, string sortName) 
         {
-            // TODO: tranlsate this to a generic method using IQueryable? 
-            // May not be worth it, this is clear and conscise as is
-            switch(sortName) {
-                case "id_asc":
-                    foodProducts = foodProducts.OrderBy(b => b.Id);
-                    break;
-                case "id_desc":
-                    foodProducts = foodProducts.OrderByDescending(b => b.Id);
-                    break;
-                case "name_asc":
-                    foodProducts = foodProducts.OrderBy(b => b.Name);
-                    break;
-                case "name_desc":
-                    foodProducts = foodProducts.OrderByDescending(b => b.Name);
-                    break;
-                case "foodUnit_asc":
-                    foodProducts = foodProducts.OrderBy(b => b.FoodUnit.Name);
-                    break;
-                case "foodUnit_desc":
-                    foodProducts = foodProducts.OrderByDescending(b => b.FoodUnit.Name);
-                    break;
-                case "dirty_asc":
-                    foodProducts = foodProducts.OrderBy(b => b.Dirty);
-                    break;
-                case "dirty_desc":
-                    foodProducts = foodProducts.OrderByDescending(b => b.Dirty);
-                    break;
-                case "supermarket_asc":
-                    foodProducts = foodProducts.OrderBy(b => b.Supermarket.Name);
-                    break;
-                case "supermarket_desc":
-                    foodProducts = foodProducts.OrderByDescending(b => b.Supermarket.Name);
-                    break;
-                case "measurement_asc":
-                    foodProducts = foodProducts.OrderBy(b => b.Measurement);
-                    break;
-                case "measurement_desc":
-                    foodProducts = foodProducts.OrderByDescending(b => b.Measurement);
-                    break;
-                case "foodQuantityType_asc":
-                    foodProducts = foodProducts.OrderBy(b => b.FoodQuantityType.Name);
-                    break;
-                case "foodQuantityType_desc":
-                    foodProducts = foodProducts.OrderByDescending(b => b.FoodQuantityType.Name);
-                    break;
-                default:
-                    break;
-            }
-            return foodProducts;
+            items = sortName switch
+            {
+                "id_asc" => items.OrderBy(b => b.Id),
+                "id_desc" => items.OrderByDescending(b => b.Id),
+                "name_asc" => items.OrderBy(b => b.Name),
+                "name_desc" => items.OrderByDescending(b => b.Name),
+                "foodUnitId_asc" => items.OrderBy(b => b.FoodUnit.Name),
+                "foodUnitId_desc" => items.OrderByDescending(b => b.FoodUnit.Name),
+                "dirty_asc" => items.OrderBy(b => b.Dirty),
+                "dirty_desc" => items.OrderByDescending(b => b.Dirty),
+                "supermarketId_asc" => items.OrderBy(b => b.Supermarket.Name),
+                "supermarketId_desc" => items.OrderByDescending(b => b.Supermarket.Name),
+                "measurement_asc" => items.OrderBy(b => b.Measurement),
+                "measurement_desc" => items.OrderByDescending(b => b.Measurement),
+                "foodQuantityTypeId_asc" => items.OrderBy(b => b.FoodQuantityType.Name),
+                "foodQuantityTypeId_desc" => items.OrderByDescending(b => b.FoodQuantityType.Name),
+              _ => items
+            };
+            return items;
         }
  
         public IQueryable<FoodProduct> Filter(IQueryable<FoodProduct> foodProducts, string foodProductName, List<long> categories, List<long> supermarkets)

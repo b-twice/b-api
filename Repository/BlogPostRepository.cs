@@ -31,64 +31,28 @@ namespace B.API.Repository
             return posts.Include(b => b.PostGroup);
         }
 
-        public IQueryable<Post> Order(IQueryable<Post> posts, string sortName) 
+        public IQueryable<Post> Order(IQueryable<Post> items, string sortName) 
         {
-            // TODO: tranlsate this to a generic method using IQueryable? 
-            // May not be worth it, this is clear and conscise as is
-            switch(sortName) {
-                case "id_asc":
-                    posts = posts.OrderBy(b => b.Id);
-                    break;
-                case "id_desc":
-                    posts = posts.OrderByDescending(b => b.Id);
-                    break;
-                case "title_asc":
-                    posts = posts.OrderBy(b => b.Title);
-                    break;
-                case "title_desc":
-                    posts = posts.OrderByDescending(b => b.Title);
-                    break;
-                case "postGroup_asc":
-                    posts = posts.OrderBy(b => b.PostGroup.Name);
-                    break;
-                case "postGroup_desc":
-                    posts = posts.OrderByDescending(b => b.PostGroup.Name);
-                    break;
-                case "description_asc":
-                    posts = posts.OrderBy(b => b.Description);
-                    break;
-                case "description_desc":
-                    posts = posts.OrderByDescending(b => b.Description);
-                    break;
-                case "date_asc":
-                    posts = posts.OrderBy(b => b.Date);
-                    break;
-                case "date_desc":
-                    posts = posts.OrderByDescending(b => b.Date);
-                    break;
-                case "authenticate_asc":
-                    posts = posts.OrderBy(b => b.Authenticate);
-                    break;
-                case "authenticate_desc":
-                    posts = posts.OrderByDescending(b => b.Authenticate);
-                    break;
-                case "star_asc":
-                    posts = posts.OrderBy(b => b.Star);
-                    break;
-                case "star_desc":
-                    posts = posts.OrderByDescending(b => b.Star);
-                    break;
-                case "path_asc":
-                    posts = posts.OrderBy(b => b.Path);
-                    break;
-                case "path_desc":
-                    posts = posts.OrderByDescending(b => b.Path);
-                    break;
-                default:
-                    break;
-            }
-            return posts;
-        }
+            items = sortName switch
+            {
+                "id_asc" => items.OrderBy(e => e.Id),
+                "id_desc" => items.OrderByDescending(e => e.Id),
+                "title_asc" => items.OrderBy(e => e.Title),
+                "title_desc" => items.OrderByDescending(e => e.Title),
+                "postGroupId_asc" => items.OrderBy(e => e.PostGroup.Name),
+                "postGroupId_desc" => items.OrderByDescending(e => e.PostGroup.Name),
+                "description_asc" => items.OrderBy(e => e.Description),
+                "description_desc" => items.OrderByDescending(e => e.Description),
+                "date_asc" => items.OrderBy(e => e.Date),
+                "date_desc" => items.OrderByDescending(e => e.Date),
+                "star_asc" => items.OrderBy(e => e.Star),
+                "star_desc" => items.OrderByDescending(e => e.Star),
+                "path_asc" => items.OrderBy(e => e.Path),
+                "path_desc" => items.OrderByDescending(e => e.Path),
+               _ => items
+            };
+            return items;
+       }
  
         public IQueryable<Post> Filter(IQueryable<Post> posts, string title, string description, List<long> groups, long? authenticate, long? star) 
         {

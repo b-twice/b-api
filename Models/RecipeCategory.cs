@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace B.API.Models
 {
-    public partial class RecipeCategory
+    [Table("RecipeCategory")]
+    public partial class RecipeCategory : AppLookup
     {
         public RecipeCategory()
         {
             Recipes = new HashSet<Recipe>();
         }
 
-        public long Id { get; set; }
-        public string Name { get; set; }
-
+        [JsonIgnore]
+        [InverseProperty(nameof(Recipe.RecipeCategory))]
         public virtual ICollection<Recipe> Recipes { get; set; }
     }
 }

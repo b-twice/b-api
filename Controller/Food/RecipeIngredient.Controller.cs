@@ -30,20 +30,14 @@ namespace B.API.Controller
         [HttpPost]
         public ActionResult<RecipeIngredient> Create([FromBody] RecipeIngredient item)
         {
-            // Without this EF Core will not bind the FK to these entities
-            _context.Entry(item.Recipe).State = EntityState.Unchanged;
-            _context.Entry(item.FoodProduct).State = EntityState.Unchanged;
- 
-            return Create<RecipeIngredient>(item, nameof(Create));
+            return Create<RecipeIngredient>(item, nameof(Create), (long id) => _context.RecipeIngredients.AsNoTracking().Include(o => o.FoodProduct).First(o => o.Id == id));
         }
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] RecipeIngredient item)
+        [ProducesResponseType(200, Type = typeof(RecipeIngredient))]
+        public ActionResult<RecipeIngredient> Update(long id, [FromBody] RecipeIngredient item)
         {
-            item.RecipeId = item?.Recipe?.Id ?? default(int);
-            item.FoodProductId = item?.FoodProduct?.Id ?? default(int);
-
-            return Update<RecipeIngredient>(id, item);
+            return Update<RecipeIngredient>(id, item, (long id) => _context.RecipeIngredients.AsNoTracking().Include(o => o.FoodProduct).First(o => o.Id == id));
         }
         [Authorize]
         [HttpDelete("{id}")]
