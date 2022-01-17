@@ -65,6 +65,10 @@ namespace B.API.Repository
                 "rating_desc" => items.OrderByDescending(b => b.Rating),
                 "complexity_asc" => items.OrderBy(b => b.Complexity),
                 "complexity_desc" => items.OrderByDescending(b => b.Complexity),
+                "makeCount_asc" => items.OrderBy(b => b.MakeCount),
+                "makeCount_desc" => items.OrderByDescending(b => b.MakeCount),
+                "lastMade_asc" => items.OrderBy(b => b.LastMade),
+                "lastMade_desc" => items.OrderByDescending(b => b.LastMade),
                  _ => items
             };
             return items;

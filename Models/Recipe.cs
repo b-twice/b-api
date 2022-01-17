@@ -30,6 +30,9 @@ namespace B.API.Models
         public string Url { get; set; }
         public long? Rating { get; set; }
         public long? Complexity { get; set; }
+        public string LastMade { get; set; }
+        public long? MakeCount { get; set; }
+
 
         [ForeignKey(nameof(CookbookId))]
         [InverseProperty("Recipes")]
