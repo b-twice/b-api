@@ -1,8 +1,7 @@
-version: '2'
+version: '3.7'
 services:
   web:
-    container_name: b-api-dev
-    image: b-api-dev:latest
+    image: b-api-dev
     build:
       context: ./
       dockerfile: Dockerfile.dev

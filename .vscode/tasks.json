@@ -38,25 +38,67 @@
             ],
             "problemMatcher": "$msCompile"
         },
-        // {
-        //     "label": "build",
-        //     "type": "shell",
-        //     "command": "./scripts/build_local.sh",
-        //     "windows": {
-        //         "command": "dotnet build"
-        //     },
-        //     "osx": {
-        //         "command": "dotnet build"
-        //     },
-        //     "problemMatcher": []
-        // },
         {
             "label": "generate",
             "type": "shell",
-            // NOTE - Sed command is to address:https://github.com/dotnet/efcore/issues/11961
-            // For my purposes, all tables have autoincrement PK. Slated for 5.0
             "command": "dotnet ef dbcontext scaffold \"DataSource=../b-database/app.db;\" Microsoft.EntityFrameworkCore.Sqlite --data-annotations -o Models -v -c AppDbContext --force;sed -i '' 's/ValueGeneratedNever/ValueGeneratedOnAdd/g' Models/AppDbContext.cs",
             "problemMatcher": []
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "b-api-dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/Dockerfile.dev",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/B.API.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "bapi:latest",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/B.API.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build: debug"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/B.API.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": [
+                "docker-build: release"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/B.API.csproj"
+            }
         }
     ]
 }
