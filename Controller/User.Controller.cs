@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace B.API.Controller
 {
 
-    [Authorize]
     [Route("v1/admin/users")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
