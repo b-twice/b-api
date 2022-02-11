@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   web:
     container_name: b-api-dev
@@ -11,7 +11,6 @@ services:
     volumes:
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
       - /Users/brianbrown/git/b-database:/data
-      - ./api:/app/api
       - ./Controller:/app/Controller
       - ./AutoMapper:/app/AutoMapper
       - ./Repository:/app/Repository

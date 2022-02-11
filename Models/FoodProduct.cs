@@ -20,7 +20,7 @@ namespace B.API.Models
         public long FoodCategoryId { get; set; }
         [Required]
         public string Name { get; set; }
-        public long FoodUnitId { get; set; }
+        public long? FoodUnitId { get; set; }
         public long Dirty { get; set; }
         public long? SupermarketId { get; set; }
         public string Measurement { get; set; }
